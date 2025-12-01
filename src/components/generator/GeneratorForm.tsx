@@ -624,7 +624,7 @@ export function GeneratorForm() {
                                 <Button
                                     variant={formData.distributionMode === DistributionMode.Public ? "default" : "outline"}
                                     onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Public })}
-                                    className={`h-12 font-medium ${formData.distributionMode === DistributionMode.Public
+                                    className={`h-12 font-medium hover:scale-100 ${formData.distributionMode === DistributionMode.Public
                                         ? "bg-white/90 text-black hover:bg-white"
                                         : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
                                         }`}
@@ -635,7 +635,7 @@ export function GeneratorForm() {
                                 <Button
                                     variant={formData.distributionMode === DistributionMode.Whitelist ? "default" : "outline"}
                                     onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Whitelist })}
-                                    className={`h-12 font-medium ${formData.distributionMode === DistributionMode.Whitelist
+                                    className={`h-12 font-medium hover:scale-100 ${formData.distributionMode === DistributionMode.Whitelist
                                         ? "bg-white/90 text-black hover:bg-white"
                                         : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
                                         }`}
@@ -646,7 +646,7 @@ export function GeneratorForm() {
                                 <Button
                                     variant={formData.distributionMode === DistributionMode.Signature ? "default" : "outline"}
                                     onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Signature })}
-                                    className={`h-12 font-medium ${formData.distributionMode === DistributionMode.Signature
+                                    className={`h-12 font-medium hover:scale-100 ${formData.distributionMode === DistributionMode.Signature
                                         ? "bg-white/90 text-black hover:bg-white"
                                         : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
                                         }`}
