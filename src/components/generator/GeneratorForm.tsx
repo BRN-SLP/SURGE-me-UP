@@ -1,0 +1,642 @@
+
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LivePreview } from "./LivePreview";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { SuccessModal } from "@/components/ui/SuccessModal";
+import { HelpButton } from "@/components/ui/HelpButton";
+import { SURGETemplate } from "@/data/templates";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { useAnalytics } from "@/hooks/useAnalytics";
+import { Sparkles, RefreshCw, Download, Wallet, CheckCircle2, Loader2, Upload, Image as ImageIcon, X } from "lucide-react";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain } from "wagmi";
+import { base, optimism, celo, zora } from "wagmi/chains";
+import { useFadeIn, useMagnetic } from "@/lib/gsap-hooks";
+
+export function GeneratorForm() {
+    const { address, isConnected, chain } = useAccount();
+    const { switchChain } = useSwitchChain();
+    const { writeContract, writeContractAsync, data: hash, isPending: isMinting, error: mintError } = useWriteContract();
+    const { isLoading: isConfirming, isSuccess: isConfirmed, data: receipt } = useWaitForTransactionReceipt({
+        hash,
+    });
+
+    const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
+    const [isBridging, setIsBridging] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+    const formRef = useFadeIn(0.2);
+
+    // Form data state - must be declared before validation rules that reference it
+    const [formData, setFormData] = useState<{
+        title: string;
+        date: string;
+        network: "base" | "celo" | "optimism";
+        theme: "sketch" | "modern" | "flat" | "pixel" | "monochrome" | "abstract";
+        keywords: string;
+        imageUrl?: string;
+    }>({
+        title: "",
+        date: "",
+        network: "base",
+        theme: "modern",
+        keywords: "",
+    });
+
+    // Form validation rules
+    const validationRules = {
+        title: [
+            { required: true, message: "Event title is required" },
+            { minLength: 3, message: "Minimum 3 characters" },
+            { maxLength: 50, message: "Maximum 50 characters" }
+        ],
+        date: [
+            {
+                custom: (value: string) => !value || new Date(value) >= new Date(new Date().setHours(0, 0, 0, 0)),
+                message: "Date cannot be in the past"
+            }
+        ]
+    };
+
+    const { errors, validate, validateAll, clearError } = useFormValidation(validationRules);
+    const { trackEvent } = useAnalytics();
+
+    useEffect(() => {
+        if (isConfirmed && receipt) {
+            const transferLog = receipt.logs.find(log =>
+                log.topics[0] === "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+            );
+            if (transferLog && transferLog.topics[3]) {
+                const id = parseInt(transferLog.topics[3], 16).toString();
+                setMintedTokenId(id);
+
+                trackEvent({
+                    name: "MINT_SURGE_SUCCESS",
+                    properties: {
+                        id,
+                        network: formData.network,
+                        title: formData.title
+                    }
+                });
+
+                // Show success modal when minting is confirmed
+                if (formData.imageUrl) {
+                    // Save to local collection
+                    const mySurges = JSON.parse(localStorage.getItem('my-surges') || '[]');
+                    mySurges.unshift({
+                        id: id,
+                        title: formData.title,
+                        image: formData.imageUrl,
+                        date: formData.date,
+                        network: formData.network,
+                        createdAt: new Date().toISOString()
+                    });
+                    localStorage.setItem('my-surges', JSON.stringify(mySurges));
+
+                    setShowSuccessModal(true);
+                }
+            }
+        }
+    }, [isConfirmed, receipt, formData.imageUrl, formData.network, formData.title, trackEvent]);
+
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [generationProgress, setGenerationProgress] = useState("");
+    const [generationMode, setGenerationMode] = useState<'ai' | 'manual'>('ai');
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                setError({
+                    title: "File too large",
+                    message: "Please upload an image smaller than 5MB",
+                    canRetry: false
+                });
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const result = reader.result as string;
+                setFormData(prev => ({ ...prev, imageUrl: result }));
+                trackEvent({
+                    name: "GENERATE_SURGE_SUCCESS",
+                    properties: { type: 'manual_upload' }
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const [error, setError] = useState<{
+        title: string;
+        message: string;
+        canRetry: boolean;
+    } | null>(null);
+
+    // Auto-save draft to localStorage
+    useEffect(() => {
+        const saveTimer = setTimeout(() => {
+            if (formData.title || formData.keywords) {
+                localStorage.setItem('surge-draft', JSON.stringify(formData));
+            }
+        }, 1000);
+        return () => clearTimeout(saveTimer);
+    }, [formData]);
+
+    // Restore draft on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('surge-draft');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                setFormData(parsed);
+            } catch (e) {
+                console.error('Failed to restore draft:', e);
+            }
+        }
+    }, []);
+
+    const getTargetChainId = () => {
+        switch (formData.network) {
+            case "base": return base.id;
+            case "optimism": return optimism.id;
+            case "celo": return celo.id;
+            default: return base.id;
+        }
+    };
+
+    // Style-specific prompt templates
+    const stylePrompts = {
+        sketch: "Hand-drawn sketch style badge, pencil or ink drawing aesthetic, artistic linework, hatching and cross-hatching shading, organic imperfect lines, artistic doodle elements, creative hand-lettered typography, sketch book illustration style, artistic and expressive design",
+        modern: "Contemporary sleek badge design, vibrant gradient backgrounds, clean sans-serif typography, geometric shapes, bold colors, minimalist composition, tech-forward aesthetic",
+        flat: "Flat design combined with minimalistic aesthetic, simple geometric shapes, limited color palette, clean vector art, no shadows or gradients, modern sans-serif fonts, Scandinavian design influence",
+        pixel: "8-bit pixel art badge, retro gaming aesthetic, pixelated typography, limited color palette like NES or Game Boy, sprite-based design, nostalgic 80s-90s video game style, pixel perfect details, blocky graphics",
+        monochrome: "Black and white badge design combining flat design with monochrome aesthetic, high contrast, bold typography, minimalist composition, ink drawing or woodcut style, grayscale only, strong graphic design, timeless elegance",
+        abstract: "Abstract art badge design, fluid organic shapes, vibrant color splashes, geometric patterns, surreal composition, artistic interpretation, creative expression, modern art style, dynamic movement, experimental design, psychedelic elements"
+    };
+
+    const handleTemplateSelect = (template: SURGETemplate) => {
+        setFormData(prev => ({
+            ...prev,
+            title: template.defaultData.title,
+            theme: template.defaultData.theme,
+            keywords: template.defaultData.keywords,
+            imageUrl: '' // Reset image when template changes
+        }));
+        clearError('title');
+
+        trackEvent({
+            name: "TEMPLATE_SELECTED",
+            properties: {
+                templateId: template.id,
+                templateName: template.name
+            }
+        });
+        // Clear errors when selecting a template
+        setError(null);
+        // Validate the new data (optional, but good practice)
+        validate('title', template.defaultData.title);
+    };
+
+    // Handle export PNG
+    const handleExport = () => {
+        if (!formData.imageUrl) return;
+
+        const link = document.createElement('a');
+        link.href = formData.imageUrl;
+        link.download = `surge-${formData.title.replace(/\s+/g, '-').toLowerCase() || 'untitled'}-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        trackEvent({
+            name: 'EXPORT_SURGE',
+            properties: {
+                network: formData.network,
+                title: formData.title
+            }
+        });
+    };
+
+    const handleGenerateAI = async () => {
+        console.log('[FRONTEND] Starting generation...');
+        setError(null);
+
+        // Validate form before generation
+        if (!validateAll({ title: formData.title, date: formData.date })) {
+            setError({
+                title: "Please check the form",
+                message: "Please fix errors before generating",
+                canRetry: false
+            });
+            return;
+        }
+
+        if (!formData.title) {
+            setError({
+                title: "Title is required",
+                message: "Please enter an event title",
+                canRetry: false
+            });
+            return;
+        }
+
+        setIsGenerating(true);
+        setGenerationProgress("AI is creating your unique SURGE...");
+        console.log('[FRONTEND] isGenerating set to true');
+
+        trackEvent({
+            name: "GENERATE_SURGE_START",
+            properties: {
+                theme: formData.theme,
+                hasKeywords: !!formData.keywords
+            }
+        });
+
+        try {
+            const styleKeywords = stylePrompts[formData.theme] || stylePrompts.modern;
+            const keywordsText = formData.keywords ? `. Visual elements: ${formData.keywords}` : "";
+            const dateText = formData.date ? `. Date: "${formData.date}"` : "";
+
+            const fullPrompt = `${styleKeywords}. A premium SURGE commemorative badge design. Title text must read: "${formData.title}"${dateText}${keywordsText}`;
+
+            console.log('[FRONTEND] Calling API with prompt:', fullPrompt.substring(0, 100));
+
+            // Call our backend API which uses Hugging Face
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: fullPrompt,
+                    style: formData.theme
+                }),
+            });
+
+            console.log('[FRONTEND] API response status:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`API returned status ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('[FRONTEND] API response data:', data);
+
+            if (!data.imageUrl) {
+                throw new Error('Image was not generated');
+            }
+
+            console.log('[FRONTEND] Setting imageUrl:', data.imageUrl);
+
+            // Set the generated image
+            setFormData(prev => {
+                const newData = {
+                    ...prev,
+                    imageUrl: data.imageUrl
+                };
+                console.log('[FRONTEND] New formData:', newData);
+                return newData;
+            });
+
+            setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
+
+            trackEvent({
+                name: "GENERATE_SURGE_SUCCESS",
+                properties: {
+                    imageUrl: data.imageUrl
+                }
+            });
+
+            console.log('[FRONTEND] Generation SUCCESS!');
+
+        } catch (err: any) {
+            console.error('[FRONTEND] Generation error:', err);
+            setError({
+                title: "Failed to create SURGE",
+                message: err.message || "Check your internet connection and try again",
+                canRetry: true
+            });
+            trackEvent({
+                name: "GENERATE_SURGE_ERROR",
+                properties: {
+                    error: err instanceof Error ? err.message : "Unknown error"
+                }
+            });
+        } finally {
+            console.log('[FRONTEND] Setting isGenerating to false');
+            setIsGenerating(false);
+            setGenerationProgress("");
+        }
+    };
+
+    const handleClearImage = () => {
+        setFormData(prev => ({ ...prev, imageUrl: undefined }));
+        setError(null);
+    };
+
+    const handleDownload = () => {
+        if (!formData.imageUrl) return;
+
+        const link = document.createElement('a');
+        link.href = formData.imageUrl;
+        link.download = `surge-${formData.title.replace(/\s+/g, '-').toLowerCase()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const handleCreateAnother = () => {
+        setShowSuccessModal(false);
+        setFormData({
+            title: "",
+            date: "",
+            network: "base",
+            theme: "modern",
+            keywords: "",
+        });
+        localStorage.removeItem('surge-draft');
+    };
+
+    const handleMint = async () => {
+        if (!isConnected) return;
+
+        // TODO: Implement actual SURGE event claiming
+        // This requires knowing the event contract address
+        // For now, show alert
+        alert("To mint SURGE tokens, please use the event-specific claim page. Full integration coming soon!");
+
+        // Example implementation:
+        // const eventAddress = "0x..."; // Get from event creation or selection
+        // const { claim } = useClaimToken(eventAddress);
+        // await claim();
+    };
+
+    const handleBridge = async () => {
+        if (!mintedTokenId || !address) return;
+        setIsBridging(true);
+        alert("Bridging requires a fee quote. In this demo, we'll simulate the bridge request.");
+        setIsBridging(false);
+    };
+
+    return (
+        <div ref={formRef} className="grid gap-8 lg:grid-cols-2 items-start">
+            <div className="space-y-6">
+
+                <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+                    <CardHeader>
+                        <CardTitle className="text-2xl font-heading">SURGE Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Network</label>
+                                <HelpButton content="Choose the blockchain network for your SURGE. Base and Optimism are L2 solutions with low fees." />
+                            </div>
+                            <div className="flex gap-3">
+                                <Button
+                                    variant={formData.network === "base" ? "default" : "outline"}
+                                    onClick={() => setFormData({ ...formData, network: "base" })}
+                                    className={`flex-1 capitalize h-12 font-semibold ${formData.network === "base"
+                                        ? "bg-base hover:bg-base-neon text-white btn-glow-base"
+                                        : "border-base/30 text-base hover:bg-base/10 hover:border-base"
+                                        }`}
+                                    aria-label="Select Base Network"
+                                    aria-pressed={formData.network === "base"}
+                                >
+                                    Base
+                                </Button>
+                                <Button
+                                    variant={formData.network === "optimism" ? "default" : "outline"}
+                                    onClick={() => setFormData({ ...formData, network: "optimism" })}
+                                    className={`flex-1 capitalize h-12 font-semibold ${formData.network === "optimism"
+                                        ? "bg-optimism hover:bg-optimism-neon text-white btn-glow-optimism"
+                                        : "border-optimism/30 text-optimism hover:bg-optimism/10 hover:border-optimism"
+                                        }`}
+                                    aria-label="Select Optimism Network"
+                                    aria-pressed={formData.network === "optimism"}
+                                >
+                                    Optimism
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    disabled
+                                    className="flex-1 capitalize h-12 opacity-40 cursor-not-allowed border-celo/20 text-celo/50"
+                                >
+                                    Celo (Soon)
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Event Title *</label>
+                            <Input
+                                placeholder="e.g. Superchain Summit 2024"
+                                value={formData.title}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, title: e.target.value });
+                                    validate('title', e.target.value);
+                                }}
+                                onBlur={(e) => validate('title', e.target.value)}
+                                className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-lg placeholder:text-white/30 text-white ${errors.title ? 'border-red-500 focus:border-red-500' : ''
+                                    }`}
+                                aria-label="Event Title"
+                                aria-invalid={!!errors.title}
+                                aria-describedby={errors.title ? "title-error" : undefined}
+                            />
+                            {errors.title && (
+                                <p id="title-error" role="alert" className="text-sm text-red-400">{errors.title}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Date</label>
+                            <Input
+                                type="date"
+                                value={formData.date}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, date: e.target.value });
+                                    validate('date', e.target.value);
+                                }}
+                                onBlur={(e) => validate('date', e.target.value)}
+                                className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-white ${errors.date ? 'border-red-500 focus:border-red-500' : ''
+                                    }`}
+                                aria-label="Event Date"
+                                aria-invalid={!!errors.date}
+                                aria-describedby={errors.date ? "date-error" : undefined}
+                            />
+                            {errors.date && (
+                                <p id="date-error" role="alert" className="text-sm text-red-400">{errors.date}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">SURGE Style</label>
+                                <HelpButton content="Select an artistic style for your badge. AI will generate a unique design based on this style." />
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {(["sketch", "modern", "flat", "pixel", "monochrome", "abstract"] as const).map((theme) => (
+                                    <Button
+                                        key={theme}
+                                        variant={formData.theme === theme ? "default" : "ghost"}
+                                        size="sm"
+                                        onClick={() => setFormData({ ...formData, theme })}
+                                        className={`capitalize h-10 font-medium ${formData.theme === theme
+                                            ? "bg-white/90 text-black hover:bg-white"
+                                            : "text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
+                                            }`}
+                                    >
+                                        {theme}
+                                    </Button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Keywords (Optional)</label>
+                                <HelpButton content="Add specific visual elements you want to see (e.g., 'futuristic city', 'golden trophy')." />
+                            </div>
+                            <Input
+                                placeholder="e.g., clouds, boat, fish, summer"
+                                value={formData.keywords}
+                                onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
+                                className="bg-black/40 border-white/20 focus:border-white/40 h-12 text-white placeholder:text-white/30"
+                            />
+                            <p className="text-xs text-white/50">Add visual themes and elements for your SURGE</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {error && (
+                    <ErrorAlert
+                        title={error.title}
+                        message={error.message}
+                        onRetry={error.canRetry ? handleGenerateAI : undefined}
+                        onDismiss={() => setError(null)}
+                    />
+                )}
+
+                <div className="flex gap-4">
+                    <Button
+                        className="flex-1 h-14 text-lg font-bold bg-gradient-to-r from-base via-optimism to-celo hover:opacity-90 hover:scale-[1.02] text-white hover:text-black shadow-lg shadow-base/30 hover:shadow-xl hover:shadow-base/50 transition-all duration-200 rounded-xl relative overflow-hidden group"
+                        onClick={handleGenerateAI}
+                        disabled={isGenerating}
+                    >
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                        <span className="relative z-10 flex items-center justify-center">
+                            {isGenerating ? (
+                                <RefreshCw className="mr-2 h-5 w-5 animate-spin" />
+                            ) : (
+                                <Sparkles className="mr-2 h-5 w-5" />
+                            )}
+                            {isGenerating ? "Generating..." : "Generate with AI"}
+                        </span>
+                    </Button>
+
+                    {formData.imageUrl && (
+                        <Button
+                            variant="outline"
+                            className="h-14 px-6 border-white/10 hover:bg-white/10 text-white"
+                            onClick={handleClearImage}
+                        >
+                            Clear
+                        </Button>
+                    )}
+                </div>
+            </div>
+
+            <div className="sticky top-24 flex flex-col items-center gap-8">
+                <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-base via-optimism to-celo rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="relative">
+                        <LivePreview {...formData} isGenerating={isGenerating} />
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-4 w-full max-w-md">
+                    <div className="flex gap-4 w-full">
+                        <Button
+                            variant="outline"
+                            className="flex-1 border-white/10 hover:bg-white/5 hover:text-white h-12"
+                            onClick={handleExport}
+                            disabled={!formData.imageUrl}
+                        >
+                            <Download className="mr-2 h-4 w-4" /> Export PNG
+                        </Button>
+                        <Button
+                            className="flex-1 bg-white text-black hover:bg-white/90 h-12 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={handleMint}
+                            disabled={!isConnected || isMinting || isConfirming || !formData.imageUrl}
+                            title={!formData.imageUrl ? "Generate an image first to save SURGE to gallery" : ""}
+                        >
+                            {isMinting || isConfirming ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <Wallet className="mr-2 h-4 w-4" />
+                            )}
+                            {isMinting ? "Minting..." : isConfirming ? "Confirming..." : "Mint SURGE"}
+                        </Button>
+                    </div>
+
+                    {hash && (
+                        <div className="w-full p-4 bg-white/5 rounded-xl border border-white/10 text-sm break-all backdrop-blur-sm">
+                            <p className="font-medium mb-2 flex items-center gap-2 text-green-400">
+                                <CheckCircle2 className="h-4 w-4" />
+                                Transaction Sent
+                            </p>
+                            <a
+                                href={formData.network === 'base'
+                                    ? `https://basescan.org/tx/${hash}`
+                                    : `https://sepolia-optimism.etherscan.io/tx/${hash}`
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-muted-foreground hover:text-white transition-colors underline decoration-white/20 underline-offset-4"
+                            >
+                                {hash}
+                            </a>
+                            {mintedTokenId && (
+                                <div className="mt-4 pt-4 border-t border-white/10">
+                                    <p className="font-medium text-white mb-3">Token ID: {mintedTokenId}</p>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="w-full bg-white/10 hover:bg-white/20 text-white border-0"
+                                        onClick={handleBridge}
+                                        disabled={isBridging}
+                                    >
+                                        Bridge to {formData.network === 'base' ? 'Optimism' : 'Base'}
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {mintError && (
+                        <div className="w-full p-4 bg-red-500/10 text-red-400 rounded-xl border border-red-500/20 text-sm">
+                            <p className="font-medium mb-1">Error Minting</p>
+                            <p className="opacity-90">{mintError.message.slice(0, 100)}...</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <SuccessModal
+                isOpen={showSuccessModal}
+                onClose={() => setShowSuccessModal(false)}
+                surgeImage={formData.imageUrl || ''}
+                surgeTitle={formData.title}
+                onDownload={handleDownload}
+                onCreateAnother={handleCreateAnother}
+            />
+        </div >
+    );
+}

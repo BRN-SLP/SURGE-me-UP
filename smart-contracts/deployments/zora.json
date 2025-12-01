@@ -1,0 +1,12 @@
+{
+  "network": "zora",
+  "chainId": "7777777",
+  "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "timestamp": "2025-12-01T07:35:11.378Z",
+  "contracts": {
+    "reputation": "0xa918772Ee4C1843B72c303feb4b77222cc07236D",
+    "factory": "0x543B57fB141855e5590DBaDfbc1302F5239271f3",
+    "bridge": "0xBc084dAAfd26FB35245940072b91Ebdf571C0153"
+  }
+}

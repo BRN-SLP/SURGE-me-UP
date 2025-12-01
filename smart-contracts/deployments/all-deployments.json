@@ -1,0 +1,86 @@
+{
+  "baseSepolia": {
+    "network": "baseSepolia",
+    "chainId": "84532",
+    "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "timestamp": "2025-12-01T04:14:07.254Z",
+    "contracts": {
+      "reputation": "0x71A7879735aDC9Ed89Fdf82BF10504C8ed94aeCC",
+      "factory": "0x6925450E0DAb8de345C6bE865F58247605aCbd0a",
+      "bridge": "0x98865Bc0219D9E002329c37994A0d7d475bAB4d7"
+    }
+  },
+  "optimismSepolia": {
+    "network": "optimismSepolia",
+    "chainId": "11155420",
+    "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "timestamp": "2025-12-01T04:16:07.428Z",
+    "contracts": {
+      "reputation": "0xBc084dAAfd26FB35245940072b91Ebdf571C0153",
+      "factory": "0x21D37b2Bb9893110a5FCf6f800a7e6D654913A79",
+      "bridge": "0xB87bDdEeDE00Bbe4c75A176F809253517d6204d4"
+    }
+  },
+  "celoSepolia": {
+    "network": "celoSepolia",
+    "chainId": "42220",
+    "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "timestamp": "2025-12-01T04:24:45.302Z",
+    "contracts": {
+      "reputation": "0x543B57fB141855e5590DBaDfbc1302F5239271f3",
+      "factory": "0x387FbEAc23967f967337dD9249A358c72214942B",
+      "bridge": "0x21D37b2Bb9893110a5FCf6f800a7e6D654913A79"
+    }
+  },
+  "base": {
+    "network": "base",
+    "chainId": "8453",
+    "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "timestamp": "2025-12-01T05:01:15.053Z",
+    "contracts": {
+      "reputation": "0x170fb7943d29299D6941029e5dF6C42281C90e47",
+      "factory": "0xEeB8fB619dD0cf0e185e590955Ba98487d6A3547",
+      "bridge": "0x43dB642E37750BE34fd5f1e34BFDd3aB5F9c7f22"
+    }
+  },
+  "optimism": {
+    "network": "optimism",
+    "chainId": "10",
+    "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "timestamp": "2025-12-01T05:07:32.243Z",
+    "contracts": {
+      "reputation": "0x543B57fB141855e5590DBaDfbc1302F5239271f3",
+      "factory": "0x387FbEAc23967f967337dD9249A358c72214942B",
+      "bridge": "0x21D37b2Bb9893110a5FCf6f800a7e6D654913A79"
+    }
+  },
+  "zora": {
+    "network": "zora",
+    "chainId": "7777777",
+    "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "timestamp": "2025-12-01T07:35:11.378Z",
+    "contracts": {
+      "reputation": "0xa918772Ee4C1843B72c303feb4b77222cc07236D",
+      "factory": "0x543B57fB141855e5590DBaDfbc1302F5239271f3",
+      "bridge": "0xBc084dAAfd26FB35245940072b91Ebdf571C0153"
+    }
+  },
+  "celo": {
+    "network": "celo",
+    "chainId": "42220",
+    "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+    "timestamp": "2025-12-01T07:51:49.360Z",
+    "contracts": {
+      "reputation": "0x2Fe1d369299C0f525CAC9d618680301BbfB89712",
+      "factory": "0x98865Bc0219D9E002329c37994A0d7d475bAB4d7",
+      "bridge": "0xa48Fab6213fED674230D581b4649968a50AD19E7"
+    }
+  }
+}

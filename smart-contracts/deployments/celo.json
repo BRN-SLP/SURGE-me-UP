@@ -1,0 +1,12 @@
+{
+  "network": "celo",
+  "chainId": "42220",
+  "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "timestamp": "2025-12-01T07:51:49.360Z",
+  "contracts": {
+    "reputation": "0x2Fe1d369299C0f525CAC9d618680301BbfB89712",
+    "factory": "0x98865Bc0219D9E002329c37994A0d7d475bAB4d7",
+    "bridge": "0xa48Fab6213fED674230D581b4649968a50AD19E7"
+  }
+}

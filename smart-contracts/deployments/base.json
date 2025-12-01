@@ -1,0 +1,12 @@
+{
+  "network": "base",
+  "chainId": "8453",
+  "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "timestamp": "2025-12-01T05:01:15.053Z",
+  "contracts": {
+    "reputation": "0x170fb7943d29299D6941029e5dF6C42281C90e47",
+    "factory": "0xEeB8fB619dD0cf0e185e590955Ba98487d6A3547",
+    "bridge": "0x43dB642E37750BE34fd5f1e34BFDd3aB5F9c7f22"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "network": "optimismSepolia",
+  "chainId": "11155420",
+  "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "timestamp": "2025-12-01T04:16:07.428Z",
+  "contracts": {
+    "reputation": "0xBc084dAAfd26FB35245940072b91Ebdf571C0153",
+    "factory": "0x21D37b2Bb9893110a5FCf6f800a7e6D654913A79",
+    "bridge": "0xB87bDdEeDE00Bbe4c75A176F809253517d6204d4"
+  }
+}

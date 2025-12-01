@@ -1,0 +1,300 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --border: #2a2a2a;
+  --border-light: #1a1a1a;
+  --accent: #4a9eff;
+  --accent-muted: #2a5a8f;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a0a0a0;
+  --text-muted: #6a6a6a;
+  --font-inter: "Inter", sans-serif;
+  --font-outfit: "Outfit", sans-serif;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-inter);
+  font-weight: 300;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: rgba(74, 158, 255, 0.2);
+  color: white;
+}
+
+/* Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Subtle Background Texture */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  background-color: #0a0a0a;
+  background-image: 
+    radial-gradient(circle at 50% 20%, rgba(74, 158, 255, 0.03), transparent 50%);
+}
+
+/* Fine Grain Texture */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+@layer utilities {
+  /* Minimal Card Design */
+  .minimal-card {
+    @apply bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm;
+  }
+
+  .minimal-card-hover {
+    @apply hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300;
+  }
+
+  /* Sketch-like Borders */
+  .sketch-border {
+    position: relative;
+    border: none;
+  }
+
+  .sketch-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  /* Thin Line Separator */
+  .thin-line {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  }
+
+  /* Refined Typography */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-refined {
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+  }
+
+  .heading-refined {
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  /* Subtle Text Accent */
+  .text-accent {
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .text-accent-muted {
+    color: var(--text-secondary);
+  }
+
+  /* Minimal Button Styles */
+  .btn-minimal {
+    height: 2.75rem;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 300;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-minimal:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .btn-minimal-accent {
+    height: 2.75rem;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-weight: 300;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-minimal-accent:hover {
+    background: rgba(74, 158, 255, 0.05);
+    border-color: var(--accent);
+  }
+
+  .btn-minimal-filled {
+    height: 2.75rem;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: white;
+    font-weight: 300;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-minimal-filled:hover {
+    background: rgba(74, 158, 255, 0.9);
+  }
+
+  /* Sketch Effect for Lines */
+  .sketch-line {
+    position: relative;
+  }
+
+  .sketch-line::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.4;
+  }
+
+  /* Subtle Animations */
+  @keyframes fade-in-subtle {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-subtle {
+    animation: fade-in-subtle 0.6s ease-out forwards;
+  }
+
+  /* Hover Underline Effect */
+  .hover-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hover-underline::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+
+  .hover-underline:hover::after {
+    width: 100%;
+  }
+
+  /* Minimal Glass Panel */
+  .glass-minimal {
+    @apply bg-white/[0.015] backdrop-blur-md border border-white/[0.08];
+  }
+
+  /* Hand-drawn Circle for Icons */
+  .sketch-circle {
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+
+  /* Refined Spacing */
+  .space-refined {
+    @apply space-y-12;
+  }
+
+  /* Dot Pattern Background */
+  .dot-pattern {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Subtle Glow (very minimal) */
+  .subtle-glow {
+    box-shadow: 0 0 40px rgba(74, 158, 255, 0.05);
+  }
+
+  /* Text with Inline Accent */
+  .inline-accent {
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+  }
+
+  /* Minimal Link Style */
+  .link-minimal {
+    @apply text-white/60 hover:text-white transition-colors duration-200;
+  }
+
+  /* Counter Badge Minimal */
+  .badge-minimal {
+    @apply inline-flex items-center justify-center px-2.5 py-0.5 text-xs font-light border border-white/10 rounded bg-white/5;
+  }
+
+  /* Clean Section Divider */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.08) 20%,
+      rgba(255, 255, 255, 0.08) 80%,
+      transparent
+    );
+  }
+}

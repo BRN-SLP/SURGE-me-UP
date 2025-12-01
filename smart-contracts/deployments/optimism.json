@@ -1,0 +1,12 @@
+{
+  "network": "optimism",
+  "chainId": "10",
+  "deployer": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "treasury": "0x3504273b762a746369E77da2070e08b9bDd36db4",
+  "timestamp": "2025-12-01T05:07:32.243Z",
+  "contracts": {
+    "reputation": "0x543B57fB141855e5590DBaDfbc1302F5239271f3",
+    "factory": "0x387FbEAc23967f967337dD9249A358c72214942B",
+    "bridge": "0x21D37b2Bb9893110a5FCf6f800a7e6D654913A79"
+  }
+}

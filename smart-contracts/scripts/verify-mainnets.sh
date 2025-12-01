@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Verify SURGE Protocol on Mainnets
+# Usage: bash scripts/verify-mainnets.sh
+
+echo "╔═══════════════════════════════════════════════╗"
+echo "║  SURGE Protocol - Mainnet Verification       ║"
+echo "║  Networks: Base, Optimism, Celo, Zora        ║"
+echo "╚═══════════════════════════════════════════════╝"
+echo ""
+
+# Colors
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Mainnet networks
+NETWORKS=("base" "optimism" "celo" "zora")
+
+echo "🔍 Starting verification..."
+echo ""
+
+# Verify each network
+for network in "${NETWORKS[@]}"; do
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e "${BLUE}🔎 Verifying: $network${NC}"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    
+    if npx hardhat run scripts/verify-contracts.ts --network "$network"; then
+        echo -e "${GREEN}✅ $network verification complete${NC}"
+    else
+        echo -e "${RED}❌ $network verification failed${NC}"
+    fi
+    
+    echo ""
+    
+    # Wait between calls
+    if [ "$network" != "${NETWORKS[-1]}" ]; then
+        echo -e "${YELLOW}⏸️  Waiting 5 seconds...${NC}"
+        sleep 5
+        echo ""
+    fi
+done
+
+echo "✨ All Done!"
