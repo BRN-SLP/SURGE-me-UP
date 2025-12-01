@@ -291,8 +291,11 @@ export function GeneratorForm() {
         console.log('[FRONTEND] Starting generation...');
         setError(null);
 
-        // Validate form before generation
-        if (!validateAll({ title: formData.title, date: formData.date })) {
+        // Validate only required fields for generation (title and date)
+        const titleValid = validate('title', formData.title);
+        const dateValid = formData.date ? validate('date', formData.date) : true;
+
+        if (!titleValid || !dateValid) {
             setError({
                 title: "Please check the form",
                 message: "Please fix errors before generating",
