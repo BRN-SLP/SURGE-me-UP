@@ -57,11 +57,11 @@ export function ProcessTimeline() {
                                         <div className={`p-4 rounded-xl bg-white/[0.02] border border-white/[0.08] transition-all duration-300 text-accent`}>
                                             {step.icon}
                                         </div>
-                                        <h3 className="text-xl font-heading font-normal text-white">
+                                        <h3 className={`text-xl font-heading font-normal text-white ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
                                             {step.title}
                                         </h3>
                                     </div>
-                                    <p className="text-neutral-400 leading-relaxed font-light">
+                                    <p className={`text-neutral-400 leading-relaxed font-light ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
                                         {step.description}
                                     </p>
                                 </div>
