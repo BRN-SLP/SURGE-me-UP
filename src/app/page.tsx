@@ -55,7 +55,7 @@ export default function Home() {
                     <div ref={buttonsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
                         <Link href="/generator">
                             <Button size="lg" className="group">
-                                <span className="flex items-center">Start Generating <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></span>
+                                <span className="flex items-center">Start Generating <ArrowRight className="ml-2 h-5 w-5" /></span>
                             </Button>
                         </Link>
                         <Link href="/about">
