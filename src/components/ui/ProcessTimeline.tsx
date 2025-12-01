@@ -53,7 +53,7 @@ export function ProcessTimeline() {
                             {/* Content */}
                             <div className={`flex-1 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
                                 <div className={`minimal-card p-8 rounded-xl border border-white/[0.08] hover:border-white/[0.12] transition-all duration-300 group ${step.gradient}`}>
-                                    <div className={`flex items-center gap-4 mb-4 ${index % 2 === 0 ? "md:flex-row-reverse md:justify-end" : ""}`}>
+                                    <div className={`flex items-center gap-4 mb-4 ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}>
                                         <div className={`p-4 rounded-xl bg-white/[0.02] border border-white/[0.08] transition-all duration-300 text-accent`}>
                                             {step.icon}
                                         </div>
