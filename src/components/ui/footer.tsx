@@ -14,31 +14,39 @@ export function Footer() {
                             Amplify your achievements with SURGE - the recognition engine for the Superchain ecosystem. Built for the future of on-chain identity.
                         </p>
                     </div>
-
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
                     <div>
-                        <h4 className="mb-8 text-xs font-normal uppercase tracking-widest text-neutral-500">Platform</h4>
-                        <ul className="space-y-4 text-sm text-neutral-400 font-light">
-                            <li><Link href="/generator" className="hover:text-white transition-colors duration-200">Generator</Link></li>
-                            <li><Link href="/explore" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Explore</Link></li>
-                            <li><Link href="/grants" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Grants</Link></li>
+                        <h4 className="font-bold text-white mb-4">Product</h4>
+                        <ul className="space-y-2 text-sm text-white/60">
+                            <li><Link href="/generator" className="hover:text-base transition-colors">Create SURGE</Link></li>
+                            <li><Link href="/gallery" className="hover:text-optimism transition-colors">Gallery</Link></li>
+                            {/* <li><Link href="/explore" className="hover:text-celo transition-colors">Explore</Link></li> */}
                         </ul>
                     </div>
-
                     <div>
-                        <h4 className="mb-8 text-xs font-bold uppercase tracking-widest text-white/50">Resources</h4>
-                        <ul className="space-y-4 text-sm text-white/60">
-                            <li><Link href="/about" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">About</Link></li>
-                            <li><Link href="/docs" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Documentation</Link></li>
-                            <li><Link href="/terms" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">Terms of Service</Link></li>
+                        <h4 className="font-bold text-white mb-4">Resources</h4>
+                        <ul className="space-y-2 text-sm text-white/60">
+                            <li><Link href="/about" className="hover:text-base transition-colors">About</Link></li>
+                            {/* <li><Link href="/docs" className="hover:text-optimism transition-colors">Documentation</Link></li> */}
+                            {/* <li><Link href="/grants" className="hover:text-celo transition-colors">Grants</Link></li> */}
                         </ul>
                     </div>
-
                     <div>
-                        <h4 className="mb-8 text-xs font-bold uppercase tracking-widest text-white/50">Community</h4>
-                        <ul className="space-y-4 text-sm text-white/60">
-                            <li><a href="#" className="hover:text-base transition-all duration-300 hover:translate-x-1 inline-block">Twitter</a></li>
-                            <li><a href="#" className="hover:text-optimism transition-all duration-300 hover:translate-x-1 inline-block">Discord</a></li>
-                            <li><a href="#" className="hover:text-celo transition-all duration-300 hover:translate-x-1 inline-block">GitHub</a></li>
+                        <h4 className="font-bold text-white mb-4">Legal</h4>
+                        <ul className="space-y-2 text-sm text-white/60">
+                            {/* <li><Link href="/terms" className="hover:text-base transition-colors">Terms</Link></li> */}
+                            {/* <li><Link href="/privacy" className="hover:text-optimism transition-colors">Privacy</Link></li> */}
+                            <li><span className="opacity-50 cursor-not-allowed">Terms (Soon)</span></li>
+                            <li><span className="opacity-50 cursor-not-allowed">Privacy (Soon)</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-white mb-4">Social</h4>
+                        <ul className="space-y-2 text-sm text-white/60">
+                            <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-base transition-colors">Twitter</a></li>
+                            <li><a href="https://github.com/BRN-SLP/SURGE-me-UP" target="_blank" rel="noopener noreferrer" className="hover:text-optimism transition-colors">GitHub</a></li>
+                            <li><a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="hover:text-celo transition-colors">Discord</a></li>
                         </ul>
                     </div>
                 </div>
