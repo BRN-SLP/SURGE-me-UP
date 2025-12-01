@@ -8,7 +8,7 @@ import { Sparkles, Circle, Zap, CircleDot } from "lucide-react";
 interface LivePreviewProps {
     title: string;
     date: string;
-    network: "base" | "celo" | "optimism";
+    network: "base" | "celo" | "optimism" | "zora";
     theme: "sketch" | "modern" | "flat" | "pixel" | "monochrome" | "abstract";
     keywords: string;
     imageUrl?: string;
@@ -41,6 +41,11 @@ export function LivePreview({
                 Icon: CircleDot,
                 gradient: "from-[#FCFF52] to-[#FEFF85]",
                 color: "#FCFF52"
+            },
+            zora: {
+                Icon: Circle,
+                gradient: "from-black to-gray-700",
+                color: "#000000"
             }
         };
 

@@ -13,6 +13,8 @@ import { HelpButton } from "@/components/ui/HelpButton";
 import { SURGETemplate } from "@/data/templates";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useCreateSurgeEvent } from "@/hooks/useSurgeContracts";
+import { DistributionMode, type EventMetadata, type DistributionConfig } from "@/types/surge";
 import { Sparkles, RefreshCw, Download, Wallet, CheckCircle2, Loader2, Upload, Image as ImageIcon, X } from "lucide-react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain } from "wagmi";
 import { base, optimism, celo, zora } from "wagmi/chains";
@@ -32,18 +34,26 @@ export function GeneratorForm() {
 
     const formRef = useFadeIn(0.2);
 
-    // Form data state - must be declared before validation rules that reference it
+    // Form data state - SURGE event creation fields
     const [formData, setFormData] = useState<{
         title: string;
+        description: string;
         date: string;
-        network: "base" | "celo" | "optimism";
+        network: "base" | "celo" | "optimism" | "zora";
+        distributionMode: DistributionMode;
+        maxSupply: number;
+        expiryDate: string; // ISO string, empty if no expiry
         theme: "sketch" | "modern" | "flat" | "pixel" | "monochrome" | "abstract";
         keywords: string;
         imageUrl?: string;
     }>({
         title: "",
+        description: "",
         date: "",
         network: "base",
+        distributionMode: DistributionMode.Public,
+        maxSupply: 100,
+        expiryDate: "",
         theme: "modern",
         keywords: "",
     });
@@ -53,18 +63,42 @@ export function GeneratorForm() {
         title: [
             { required: true, message: "Event title is required" },
             { minLength: 3, message: "Minimum 3 characters" },
-            { maxLength: 50, message: "Maximum 50 characters" }
+            { maxLength: 100, message: "Maximum 100 characters" }
+        ],
+        description: [
+            { required: true, message: "Event description is required" },
+            { minLength: 10, message: "Minimum 10 characters" },
+            { maxLength: 500, message: "Maximum 500 characters" }
         ],
         date: [
             {
                 custom: (value: string) => !value || new Date(value) >= new Date(new Date().setHours(0, 0, 0, 0)),
                 message: "Date cannot be in the past"
             }
+        ],
+        maxSupply: [
+            { required: true, message: "Max supply is required" },
+            {
+                custom: (value: string) => {
+                    const num = typeof value === 'number' ? value : parseInt(value);
+                    return !isNaN(num) && num >= 1 && num <= 10000;
+                },
+                message: "Supply must be between 1 and 10,000"
+            }
+        ],
+        expiryDate: [
+            {
+                custom: (value: string) => !value || new Date(value) > new Date(),
+                message: "Expiry date must be in the future"
+            }
         ]
     };
 
     const { errors, validate, validateAll, clearError } = useFormValidation(validationRules);
     const { trackEvent } = useAnalytics();
+
+    // SURGE event creation hook
+    const { createEvent, isPending: isCreatingEvent, isConfirming: isConfirmingEvent, isSuccess: isEventCreated, hash: eventCreationHash } = useCreateSurgeEvent();
 
     useEffect(() => {
         if (isConfirmed && receipt) {
@@ -102,7 +136,36 @@ export function GeneratorForm() {
                 }
             }
         }
-    }, [isConfirmed, receipt, formData.imageUrl, formData.network, formData.title, trackEvent]);
+    }, [isConfirmed, receipt, formData, trackEvent]);
+
+    // Handle successful SURGE event creation
+    useEffect(() => {
+        if (isEventCreated && eventCreationHash) {
+            trackEvent({
+                name: "CREATE_EVENT_SUCCESS",
+                properties: {
+                    network: formData.network,
+                    title: formData.title,
+                    txHash: eventCreationHash
+                }
+            });
+
+            // Save event to localStorage for user's created events
+            const myEvents = JSON.parse(localStorage.getItem('my-surge-events') || '[]');
+            myEvents.push({
+                title: formData.title,
+                description: formData.description,
+                network: formData.network,
+                imageUrl: formData.imageUrl,
+                createdAt: new Date().toISOString(),
+                txHash: eventCreationHash,
+            });
+            localStorage.setItem('my-surge-events', JSON.stringify(myEvents));
+
+            // Show success modal
+            setShowSuccessModal(true);
+        }
+    }, [isEventCreated, eventCreationHash, formData, trackEvent]);
 
     const [isGenerating, setIsGenerating] = useState(false);
     const [generationProgress, setGenerationProgress] = useState("");
@@ -356,26 +419,121 @@ export function GeneratorForm() {
         setShowSuccessModal(false);
         setFormData({
             title: "",
+            description: "",
             date: "",
             network: "base",
+            distributionMode: DistributionMode.Public,
+            maxSupply: 100,
+            expiryDate: "",
             theme: "modern",
             keywords: "",
         });
         localStorage.removeItem('surge-draft');
     };
 
-    const handleMint = async () => {
-        if (!isConnected) return;
+    const handleCreateEvent = async () => {
+        if (!isConnected) {
+            setError({
+                title: "Wallet Not Connected",
+                message: "Please connect your wallet to create a SURGE event.",
+                canRetry: false
+            });
+            return;
+        }
 
-        // TODO: Implement actual SURGE event claiming
-        // This requires knowing the event contract address
-        // For now, show alert
-        alert("To mint SURGE tokens, please use the event-specific claim page. Full integration coming soon!");
+        if (!address) return;
 
-        // Example implementation:
-        // const eventAddress = "0x..."; // Get from event creation or selection
-        // const { claim } = useClaimToken(eventAddress);
-        // await claim();
+        // Validate all required fields
+        // Convert formData to string record for validation
+        const formDataForValidation: Record<string, string> = {
+            title: formData.title,
+            description: formData.description,
+            date: formData.date,
+            maxSupply: formData.maxSupply.toString(),
+            expiryDate: formData.expiryDate,
+        };
+
+        const validationResult = validateAll(formDataForValidation);
+        if (!validationResult) {
+            setError({
+                title: "Validation Error",
+                message: "Please fill in all required fields correctly.",
+                canRetry: false
+            });
+            return;
+        }
+
+        // Check if image is generated
+        if (!formData.imageUrl) {
+            setError({
+                title: "Image Required",
+                message: "Please generate an event image before creating the event.",
+                canRetry: false
+            });
+            return;
+        }
+
+        try {
+            trackEvent({
+                name: "CREATE_EVENT_START",
+                properties: {
+                    network: formData.network,
+                    distributionMode: formData.distributionMode,
+                    maxSupply: formData.maxSupply
+                }
+            });
+
+            // Get chain ID for current network
+            const getChainId = (network: string): bigint => {
+                switch (network) {
+                    case 'base': return BigInt(8453);
+                    case 'optimism': return BigInt(10);
+                    case 'celo': return BigInt(42220);
+                    case 'zora': return BigInt(7777777);
+                    default: return BigInt(8453);
+                }
+            };
+
+            // Construct EventMetadata
+            const metadata: EventMetadata = {
+                name: formData.title,
+                description: formData.description,
+                imageURI: formData.imageUrl, // Could upload to IPFS in future
+                chainId: getChainId(formData.network),
+                tier: 0, // Community tier by default - could be determined by wallet verification
+                maxSupply: BigInt(formData.maxSupply),
+                expiryTimestamp: formData.expiryDate ? BigInt(Math.floor(new Date(formData.expiryDate).getTime() / 1000)) : BigInt(0),
+                mode: formData.distributionMode,
+                creator: address
+            };
+
+            // Construct DistributionConfig
+            const config: DistributionConfig = {
+                merkleRoot: '0x0000000000000000000000000000000000000000000000000000000000000000', // Empty merkle root for Public mode
+                startTimestamp: formData.date ? BigInt(Math.floor(new Date(formData.date).getTime() / 1000)) : BigInt(Math.floor(Date.now() / 1000))
+            };
+
+            // Call createEvent
+            await createEvent(metadata, config);
+
+            // Hash will be available in eventCreationHash from hook
+            // Success modal will be triggered by useEffect when isEventCreated becomes true
+        } catch (err: any) {
+            console.error('[CREATE_EVENT_ERROR]', err);
+            trackEvent({
+                name: "CREATE_EVENT_ERROR",
+                properties: {
+                    error: err.message,
+                    network: formData.network
+                }
+            });
+
+            setError({
+                title: "Event Creation Failed",
+                message: err.message || "Failed to create SURGE event. Please try again.",
+                canRetry: true
+            });
+        }
     };
 
     const handleBridge = async () => {
@@ -453,6 +611,123 @@ export function GeneratorForm() {
                             {errors.title && (
                                 <p id="title-error" role="alert" className="text-sm text-red-400">{errors.title}</p>
                             )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Description *</label>
+                            <textarea
+                                placeholder="Describe your event and what makes it special..."
+                                value={formData.description}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, description: e.target.value });
+                                    validate('description', e.target.value);
+                                }}
+                                onBlur={(e) => validate('description', e.target.value)}
+                                className={`bg-black/40 border-white/20 focus:border-white/40 p-3 text-white placeholder:text-white/30 rounded-lg w-full min-h-[100px] resize-y ${errors.description ? 'border-red-500 focus:border-red-500' : ''
+                                    }`}
+                                aria-label="Event Description"
+                                aria-invalid={!!errors.description}
+                                aria-describedby={errors.description ? "description-error" : undefined}
+                            />
+                            {errors.description && (
+                                <p id="description-error" role="alert" className="text-sm text-red-400">{errors.description}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Distribution Mode *</label>
+                                <HelpButton content="Public: Anyone can claim. Whitelist: Requires merkle proof. Signature: Requires server signature." />
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                                <Button
+                                    variant={formData.distributionMode === DistributionMode.Public ? "default" : "outline"}
+                                    onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Public })}
+                                    className={`h-12 font-medium ${formData.distributionMode === DistributionMode.Public
+                                        ? "bg-white/90 text-black hover:bg-white"
+                                        : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+                                        }`}
+                                    type="button"
+                                >
+                                    Public
+                                </Button>
+                                <Button
+                                    variant={formData.distributionMode === DistributionMode.Whitelist ? "default" : "outline"}
+                                    onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Whitelist })}
+                                    className={`h-12 font-medium ${formData.distributionMode === DistributionMode.Whitelist
+                                        ? "bg-white/90 text-black hover:bg-white"
+                                        : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+                                        }`}
+                                    type="button"
+                                >
+                                    Whitelist
+                                </Button>
+                                <Button
+                                    variant={formData.distributionMode === DistributionMode.Signature ? "default" : "outline"}
+                                    onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Signature })}
+                                    className={`h-12 font-medium ${formData.distributionMode === DistributionMode.Signature
+                                        ? "bg-white/90 text-black hover:bg-white"
+                                        : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+                                        }`}
+                                    type="button"
+                                >
+                                    Signature
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Max Supply *</label>
+                                    <HelpButton content="Maximum number of tokens that can be claimed (1-10,000)" />
+                                </div>
+                                <Input
+                                    type="number"
+                                    min="1"
+                                    max="10000"
+                                    placeholder="100"
+                                    value={formData.maxSupply}
+                                    onChange={(e) => {
+                                        const value = parseInt(e.target.value) || 0;
+                                        setFormData({ ...formData, maxSupply: value });
+                                        validate('maxSupply', value.toString());
+                                    }}
+                                    onBlur={(e) => validate('maxSupply', (parseInt(e.target.value) || 0).toString())}
+                                    className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-white ${errors.maxSupply ? 'border-red-500 focus:border-red-500' : ''
+                                        }`}
+                                    aria-label="Max Supply"
+                                    aria-invalid={!!errors.maxSupply}
+                                    aria-describedby={errors.maxSupply ? "maxSupply-error" : undefined}
+                                />
+                                {errors.maxSupply && (
+                                    <p id="maxSupply-error" role="alert" className="text-sm text-red-400">{errors.maxSupply}</p>
+                                )}
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Expiry (Optional)</label>
+                                    <HelpButton content="When should claims stop? Leave empty for no expiration." />
+                                </div>
+                                <Input
+                                    type="datetime-local"
+                                    value={formData.expiryDate}
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, expiryDate: e.target.value });
+                                        validate('expiryDate', e.target.value);
+                                    }}
+                                    onBlur={(e) => validate('expiryDate', e.target.value)}
+                                    className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-white ${errors.expiryDate ? 'border-red-500 focus:border-red-500' : ''
+                                        }`}
+                                    aria-label="Expiry Date"
+                                    aria-invalid={!!errors.expiryDate}
+                                    aria-describedby={errors.expiryDate ? "expiryDate-error" : undefined}
+                                />
+                                {errors.expiryDate && (
+                                    <p id="expiryDate-error" role="alert" className="text-sm text-red-400">{errors.expiryDate}</p>
+                                )}
+                            </div>
                         </div>
 
                         <div className="space-y-2">
@@ -573,16 +848,16 @@ export function GeneratorForm() {
                         </Button>
                         <Button
                             className="flex-1 bg-white text-black hover:bg-white/90 h-12 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-                            onClick={handleMint}
-                            disabled={!isConnected || isMinting || isConfirming || !formData.imageUrl}
-                            title={!formData.imageUrl ? "Generate an image first to save SURGE to gallery" : ""}
+                            onClick={handleCreateEvent}
+                            disabled={!isConnected || isCreatingEvent || isConfirmingEvent || !formData.imageUrl}
+                            title={!formData.imageUrl ? "Generate an event image first" : ""}
                         >
-                            {isMinting || isConfirming ? (
+                            {isCreatingEvent || isConfirmingEvent ? (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             ) : (
                                 <Wallet className="mr-2 h-4 w-4" />
                             )}
-                            {isMinting ? "Minting..." : isConfirming ? "Confirming..." : "Mint SURGE"}
+                            {isCreatingEvent ? "Creating..." : isConfirmingEvent ? "Confirming..." : "Create Event"}
                         </Button>
                     </div>
 

@@ -3,40 +3,40 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ExternalLink, Calendar, Network, Share2, Twitter, Copy, Heart, Download } from "lucide-react";
+import { Sparkles, ExternalLink, Calendar, Twitter, Heart } from "lucide-react";
 import Link from "next/link";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
-interface SavedSURGE {
-    id: string;
+interface CreatedSURGEEvent {
     title: string;
-    image: string;
-    date: string;
-    network: 'base' | 'optimism';
+    description: string;
+    network: 'base' | 'optimism' | 'celo' | 'zora';
+    imageUrl?: string;
     createdAt: string;
+    txHash?: string;
 }
 
 export function GalleryGrid() {
-    const [surges, setSurges] = useState<SavedSURGE[]>([]);
+    const [events, setEvents] = useState<CreatedSURGEEvent[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [likedSurges, setLikedSurges] = useState<string[]>([]);
+    const [likedEvents, setLikedEvents] = useState<string[]>([]);
     const { trackEvent } = useAnalytics();
 
     useEffect(() => {
-        const saved = localStorage.getItem('my-surges');
+        const savedEvents = localStorage.getItem('my-surge-events');
         const savedLikes = localStorage.getItem('liked-surges');
 
-        if (saved) {
+        if (savedEvents) {
             try {
-                setSurges(JSON.parse(saved));
+                setEvents(JSON.parse(savedEvents));
             } catch (e) {
-                console.error("Failed to parse saved SURGEs", e);
+                console.error("Failed to parse saved events", e);
             }
         }
 
         if (savedLikes) {
             try {
-                setLikedSurges(JSON.parse(savedLikes));
+                setLikedEvents(JSON.parse(savedLikes));
             } catch (e) {
                 console.error("Failed to parse saved likes", e);
             }
@@ -45,21 +45,54 @@ export function GalleryGrid() {
         setIsLoading(false);
     }, []);
 
-    const toggleLike = (id: string) => {
-        setLikedSurges(prev => {
-            const newLikes = prev.includes(id)
-                ? prev.filter(p => p !== id)
-                : [...prev, id];
+    const toggleLike = (eventId: string) => {
+        setLikedEvents(prev => {
+            const newLikes = prev.includes(eventId)
+                ? prev.filter(p => p !== eventId)
+                : [...prev, eventId];
 
             localStorage.setItem('liked-surges', JSON.stringify(newLikes));
 
-            // Track like/unlike event
-            if (!prev.includes(id)) {
-                trackEvent({ name: "SHARE_CLICK", properties: { platform: "like", surgeId: id } });
+            if (!prev.includes(eventId)) {
+                trackEvent({ name: "SHARE_CLICK", properties: { platform: "like", eventId } });
             }
 
             return newLikes;
         });
+    };
+
+    const handleShare = (event: CreatedSURGEEvent) => {
+        const text = `Check out my SURGE event "${event.title}" on ${event.network}! 🌊✨`;
+        const url = window.location.origin;
+
+        trackEvent({ name: "SHARE_CLICK", properties: { platform: "twitter", eventTitle: event.title } });
+
+        window.open(
+            `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+            '_blank'
+        );
+    };
+
+    const getNetworkColor = (network: string) => {
+        switch (network) {
+            case 'base': return 'from-[#0052FF] to-[#3374FF]';
+            case 'optimism': return 'from-[#FF0420] to-[#FF334B]';
+            case 'celo': return 'from-[#FCFF52] to-[#FEFF85]';
+            case 'zora': return 'from-black to-gray-700';
+            default: return 'from-blue-500 to-purple-500';
+        }
+    };
+
+    const getExplorerUrl = (network: string, txHash?: string) => {
+        if (!txHash) return null;
+
+        switch (network) {
+            case 'base': return `https://basescan.org/tx/${txHash}`;
+            case 'optimism': return `https://optimistic.etherscan.io/tx/${txHash}`;
+            case 'celo': return `https://celoscan.io/tx/${txHash}`;
+            case 'zora': return `https://explorer.zora.energy/tx/${txHash}`;
+            default: return null;
+        }
     };
 
     if (isLoading) {
@@ -72,19 +105,20 @@ export function GalleryGrid() {
         );
     }
 
-    if (surges.length === 0) {
+    if (events.length === 0) {
         return (
             <div className="text-center py-20">
                 <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Sparkles className="w-10 h-10 text-white/20" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">No SURGEs Yet</h3>
+                <h3 className="text-2xl font-semibold text-white mb-3">No Events Yet</h3>
                 <p className="text-white/60 mb-8 max-w-md mx-auto">
-                    You haven't created any SURGEs on this device yet. Start your collection by creating your first achievement!
+                    Start creating SURGE events and they'll appear here.
                 </p>
                 <Link href="/generator">
-                    <Button className="btn-primary text-lg">
-                        Create SURGE
+                    <Button className="bg-gradient-to-r from-base via-optimism to-celo text-white">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Create Your First Event
                     </Button>
                 </Link>
             </div>
@@ -92,86 +126,95 @@ export function GalleryGrid() {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {surges.map((surge, index) => (
-                <Card key={`${surge.id}-${index}`} className="glass-panel border-white/10 bg-white/5 overflow-hidden group hover:border-white/20 transition-all duration-300">
-                    <div className="aspect-square relative overflow-hidden bg-black/20">
-                        <img
-                            src={surge.image}
-                            alt={surge.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                            <div className="flex gap-2 mb-4">
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-8 w-8 rounded-full bg-white/10 hover:bg-[#1DA1F2] text-white border-none"
-                                    onClick={() => {
-                                        trackEvent({ name: "SHARE_CLICK", properties: { platform: "twitter", surgeId: surge.id } });
-                                        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out my SURGE "${surge.title}"! 🌊`)}&url=${encodeURIComponent(window.location.origin)}`, '_blank');
-                                    }}
-                                    title="Share on Twitter"
-                                >
-                                    <Twitter className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 text-white border-none"
-                                    onClick={() => {
-                                        const link = document.createElement('a');
-                                        link.href = surge.image;
-                                        link.download = `surge-${surge.title.replace(/\s+/g, '-').toLowerCase()}.png`;
-                                        document.body.appendChild(link);
-                                        link.click();
-                                        document.body.removeChild(link);
-                                    }}
-                                    title="Download Image"
-                                >
-                                    <Download className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className={`h-8 w-8 rounded-full border-none transition-colors ${likedSurges.includes(surge.id)
-                                        ? "bg-red-500/20 text-red-500 hover:bg-red-500/30"
-                                        : "bg-white/10 text-white hover:bg-white/20"
-                                        }`}
-                                    onClick={() => toggleLike(surge.id)}
-                                    title={likedSurges.includes(surge.id) ? "Unlike" : "Like"}
-                                >
-                                    <Heart className={`w-4 h-4 ${likedSurges.includes(surge.id) ? "fill-current" : ""}`} />
-                                </Button>
-                            </div>
+        <div className="space-y-8">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-3xl font-heading font-bold text-white">My SURGE Events</h2>
+                    <p className="text-white/60 mt-1">{events.length} event{events.length !== 1 ? 's' : ''} created</p>
+                </div>
+                <Link href="/generator">
+                    <Button variant="outline" className="border-white/10 text-white hover:bg-white/10">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Create New Event
+                    </Button>
+                </Link>
+            </div>
 
-                            {/* TODO: Update with SURGE event contract addresses */}
-                            {/* <a
-                                href={`https://basescan.org/token/[event-address]?a=${surge.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => trackEvent({ name: "EXPLORER_VIEW", properties: { network: surge.network, surgeId: surge.id } })}
-                                className="text-white hover:text-blue-400 flex items-center gap-2 text-sm font-medium"
-                            >
-                                View on Explorer <ExternalLink className="w-4 h-4" />
-                            </a> */}
-                        </div>
-                    </div>
-                    <div className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-2 truncate">{surge.title}</h3>
-                        <div className="flex items-center gap-4 text-sm text-white/60">
-                            <div className="flex items-center gap-1.5">
-                                <Calendar className="w-4 h-4" />
-                                <span>{new Date(surge.date).toLocaleDateString()}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {events.map((event, index) => {
+                    const eventId = `${event.title}-${event.createdAt}`;
+                    const isLiked = likedEvents.includes(eventId);
+                    const explorerUrl = getExplorerUrl(event.network, event.txHash);
+
+                    return (
+                        <Card key={index} className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden group hover:border-white/20 transition-all duration-300">
+                            {event.imageUrl && (
+                                <div className="aspect-square overflow-hidden relative">
+                                    <img
+                                        src={event.imageUrl}
+                                        alt={event.title}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                    <div className={`absolute top-3 right-3 px-3 py-1 rounded-full bg-gradient-to-r ${getNetworkColor(event.network)} text-white text-xs font-bold uppercase backdrop-blur-sm`}>
+                                        {event.network}
+                                    </div>
+                                    <button
+                                        onClick={() => toggleLike(eventId)}
+                                        className="absolute top-3 left-3 p-2 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-colors"
+                                    >
+                                        <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-white'}`} />
+                                    </button>
+                                </div>
+                            )}
+
+                            <div className="p-6 space-y-4">
+                                <div>
+                                    <h3 className="font-heading font-bold text-lg text-white mb-2 line-clamp-2">
+                                        {event.title}
+                                    </h3>
+                                    <p className="text-white/60 text-sm line-clamp-2">
+                                        {event.description}
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-xs text-white/50">
+                                    <Calendar className="w-3 h-3" />
+                                    <span>{new Date(event.createdAt).toLocaleDateString()}</span>
+                                </div>
+
+                                <div className="flex gap-2 pt-2">
+                                    {explorerUrl && (
+                                        <a
+                                            href={explorerUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-1"
+                                        >
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+                                            >
+                                                <ExternalLink className="w-3 h-3 mr-1" />
+                                                Explorer
+                                            </Button>
+                                        </a>
+                                    )}
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleShare(event)}
+                                        className="flex-1 border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+                                    >
+                                        <Twitter className="w-3 h-3 mr-1" />
+                                        Share
+                                    </Button>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-1.5 capitalize">
-                                <Network className="w-4 h-4" />
-                                <span>{surge.network}</span>
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-            ))}
+                        </Card>
+                    );
+                })}
+            </div>
         </div>
     );
 }

@@ -27,12 +27,12 @@ export function useCreateSurgeEvent() {
 
         const addresses = getSurgeAddresses(chain.id);
 
-        // @ts-ignore - wagmi type inference issue with complex ABI args
+        // @ts-ignore - wagmi v2 type inference with complex ABI structs
         return writeContract({
             address: addresses.factory,
             abi: SURGE_FACTORY_ABI,
             functionName: 'createSURGEEvent',
-            args: [metadata, config],
+            args: [metadata, config] as any,
         });
     };
 
