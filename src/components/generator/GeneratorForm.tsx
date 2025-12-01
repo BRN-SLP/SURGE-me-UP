@@ -557,11 +557,11 @@ export function GeneratorForm() {
                                 <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Network</label>
                                 <HelpButton content="Choose the blockchain network for your SURGE. Base and Optimism are L2 solutions with low fees." />
                             </div>
-                            <div className="flex gap-3">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                 <Button
                                     variant={formData.network === "base" ? "default" : "outline"}
                                     onClick={() => setFormData({ ...formData, network: "base" })}
-                                    className={`flex-1 capitalize h-12 font-semibold ${formData.network === "base"
+                                    className={`capitalize h-12 font-semibold ${formData.network === "base"
                                         ? "bg-base hover:bg-base-neon text-white btn-glow-base"
                                         : "border-base/30 text-base hover:bg-base/10 hover:border-base"
                                         }`}
@@ -573,7 +573,7 @@ export function GeneratorForm() {
                                 <Button
                                     variant={formData.network === "optimism" ? "default" : "outline"}
                                     onClick={() => setFormData({ ...formData, network: "optimism" })}
-                                    className={`flex-1 capitalize h-12 font-semibold ${formData.network === "optimism"
+                                    className={`capitalize h-12 font-semibold ${formData.network === "optimism"
                                         ? "bg-optimism hover:bg-optimism-neon text-white btn-glow-optimism"
                                         : "border-optimism/30 text-optimism hover:bg-optimism/10 hover:border-optimism"
                                         }`}
@@ -583,11 +583,28 @@ export function GeneratorForm() {
                                     Optimism
                                 </Button>
                                 <Button
-                                    variant="outline"
-                                    disabled
-                                    className="flex-1 capitalize h-12 opacity-40 cursor-not-allowed border-celo/20 text-celo/50"
+                                    variant={formData.network === "celo" ? "default" : "outline"}
+                                    onClick={() => setFormData({ ...formData, network: "celo" })}
+                                    className={`capitalize h-12 font-semibold ${formData.network === "celo"
+                                        ? "bg-celo hover:bg-celo-neon text-white btn-glow-celo"
+                                        : "border-celo/30 text-celo hover:bg-celo/10 hover:border-celo"
+                                        }`}
+                                    aria-label="Select Celo Network"
+                                    aria-pressed={formData.network === "celo"}
                                 >
-                                    Celo (Soon)
+                                    Celo
+                                </Button>
+                                <Button
+                                    variant={formData.network === "zora" ? "default" : "outline"}
+                                    onClick={() => setFormData({ ...formData, network: "zora" })}
+                                    className={`capitalize h-12 font-semibold ${formData.network === "zora"
+                                        ? "bg-zora hover:bg-zora-neon text-white btn-glow-zora" // Assuming zora colors defined in tailwind or fallback
+                                        : "border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500"
+                                        }`}
+                                    aria-label="Select Zora Network"
+                                    aria-pressed={formData.network === "zora"}
+                                >
+                                    Zora
                                 </Button>
                             </div>
                         </div>
