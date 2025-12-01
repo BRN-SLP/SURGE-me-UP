@@ -548,64 +548,28 @@ export function GeneratorForm() {
             <div className="space-y-6">
 
                 <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-                    <CardHeader>
-                        <CardTitle className="text-2xl font-heading">SURGE Details</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
+                    <CardContent className="space-y-6 pt-6">
                         <div className="space-y-3">
                             <div className="flex items-center gap-2">
                                 <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Network</label>
                                 <HelpButton content="Choose the blockchain network for your SURGE. Base and Optimism are L2 solutions with low fees." />
                             </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <Button
-                                    variant={formData.network === "base" ? "default" : "outline"}
-                                    onClick={() => setFormData({ ...formData, network: "base" })}
-                                    className={`capitalize h-12 font-semibold ${formData.network === "base"
-                                        ? "bg-base hover:bg-base-neon text-white btn-glow-base"
-                                        : "border-base/30 text-base hover:bg-base/10 hover:border-base"
-                                        }`}
-                                    aria-label="Select Base Network"
-                                    aria-pressed={formData.network === "base"}
+                            <div className="relative">
+                                <select
+                                    value={formData.network}
+                                    onChange={(e) => setFormData({ ...formData, network: e.target.value as any })}
+                                    className="flex h-12 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-white appearance-none cursor-pointer hover:bg-white/10 transition-colors"
                                 >
-                                    Base
-                                </Button>
-                                <Button
-                                    variant={formData.network === "optimism" ? "default" : "outline"}
-                                    onClick={() => setFormData({ ...formData, network: "optimism" })}
-                                    className={`capitalize h-12 font-semibold ${formData.network === "optimism"
-                                        ? "bg-optimism hover:bg-optimism-neon text-white btn-glow-optimism"
-                                        : "border-optimism/30 text-optimism hover:bg-optimism/10 hover:border-optimism"
-                                        }`}
-                                    aria-label="Select Optimism Network"
-                                    aria-pressed={formData.network === "optimism"}
-                                >
-                                    Optimism
-                                </Button>
-                                <Button
-                                    variant={formData.network === "celo" ? "default" : "outline"}
-                                    onClick={() => setFormData({ ...formData, network: "celo" })}
-                                    className={`capitalize h-12 font-semibold ${formData.network === "celo"
-                                        ? "bg-celo hover:bg-celo-neon text-white btn-glow-celo"
-                                        : "border-celo/30 text-celo hover:bg-celo/10 hover:border-celo"
-                                        }`}
-                                    aria-label="Select Celo Network"
-                                    aria-pressed={formData.network === "celo"}
-                                >
-                                    Celo
-                                </Button>
-                                <Button
-                                    variant={formData.network === "zora" ? "default" : "outline"}
-                                    onClick={() => setFormData({ ...formData, network: "zora" })}
-                                    className={`capitalize h-12 font-semibold ${formData.network === "zora"
-                                        ? "bg-zora hover:bg-zora-neon text-white btn-glow-zora" // Assuming zora colors defined in tailwind or fallback
-                                        : "border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500"
-                                        }`}
-                                    aria-label="Select Zora Network"
-                                    aria-pressed={formData.network === "zora"}
-                                >
-                                    Zora
-                                </Button>
+                                    <option value="base" className="bg-neutral-900 text-white">Base</option>
+                                    <option value="optimism" className="bg-neutral-900 text-white">Optimism</option>
+                                    <option value="celo" className="bg-neutral-900 text-white">Celo</option>
+                                    <option value="zora" className="bg-neutral-900 text-white">Zora</option>
+                                </select>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/50">
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
 
