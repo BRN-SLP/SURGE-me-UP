@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useFadeIn, useFloating, useHeroScroll, useStagger, useParallax, useMagnetic } from "@/lib/gsap-hooks";
+import { useFadeIn, useFloating, useHeroScroll, useStagger, useParallax } from "@/lib/gsap-hooks";
 import { useRef } from "react";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { SURGEExplainer } from "@/components/ui/SURGEExplainer";
@@ -32,9 +32,6 @@ export default function Home() {
     // Subtle Scroll Animation
     useHeroScroll(containerRef, heroRef, [blob1Ref, blob2Ref]);
 
-    const primaryBtnRef = useMagnetic();
-    const secondaryBtnRef = useMagnetic();
-
     return (
         <div className="flex flex-col min-h-screen relative overflow-hidden dot-pattern bg-dot">
             {/* Hero Section */}
@@ -57,12 +54,12 @@ export default function Home() {
 
                     <div ref={buttonsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
                         <Link href="/generator">
-                            <Button ref={primaryBtnRef} size="lg" className="group">
+                            <Button size="lg" className="group">
                                 <span className="flex items-center">Start Generating <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></span>
                             </Button>
                         </Link>
                         <Link href="/about">
-                            <Button ref={secondaryBtnRef} variant="outline" size="lg">
+                            <Button variant="outline" size="lg">
                                 Learn More
                             </Button>
                         </Link>
