@@ -149,7 +149,7 @@ export default function Home() {
                                 Join thousands of creators preserving memories on the Superchain.
                             </p>
                             <Link href="/generator">
-                                <Button size="lg" className="mt-4">
+                                <Button size="lg" className="mt-4 btn-minimal-filled">
                                     Create Your First SURGE
                                 </Button>
                             </Link>
