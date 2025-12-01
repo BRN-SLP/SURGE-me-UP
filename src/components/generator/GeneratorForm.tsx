@@ -544,7 +544,7 @@ export function GeneratorForm() {
     };
 
     return (
-        <div ref={formRef} className="grid gap-8 lg:grid-cols-2 items-start">
+        <div ref={formRef} className="grid gap-12 xl:grid-cols-2 items-start">
             <div className="space-y-6">
 
                 <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
