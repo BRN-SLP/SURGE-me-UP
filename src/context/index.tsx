@@ -34,7 +34,7 @@ const queryClient = new QueryClient()
 const metadata = {
     name: "SURGE me UP",
     description: "Amplify your achievements with SURGE - the Superchain recognition engine",
-    url: "http://185.229.251.126:3000",
+    url: "http://157.180.7.165:3000",
     icons: ["https://avatars.githubusercontent.com/u/179229932"],
 }
 
