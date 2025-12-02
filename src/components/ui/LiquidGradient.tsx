@@ -46,11 +46,8 @@ export function LiquidGradient() {
 
     return (
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-black">
-            {/* Ambient background glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black via-black/95 to-black/90 z-10" />
-
             {/* Liquid Gradient Container */}
-            <div className="absolute inset-0 z-0 filter blur-[80px] opacity-60">
+            <div className="absolute inset-0 z-0 filter blur-[100px] opacity-100">
                 {/* Blob 1: Base Blue - Follows closely */}
                 <motion.div
                     className="absolute w-[600px] h-[600px] rounded-full bg-[#0052FF]"
