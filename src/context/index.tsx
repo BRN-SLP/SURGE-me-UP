@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
-import { base, baseSepolia, optimismSepolia, celoAlfajores } from '@reown/appkit/networks'
+import { base, baseSepolia, optimism, optimismSepolia, celo, celoAlfajores, zora } from '@reown/appkit/networks'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 import { cookieStorage, createStorage } from '@wagmi/core'
@@ -15,7 +15,8 @@ if (!projectId) {
     throw new Error('Project ID is not defined')
 }
 
-export const networks = [base, baseSepolia, optimismSepolia, celoAlfajores]
+// Include both mainnet and testnet networks
+export const networks = [base, optimism, celo, zora, baseSepolia, optimismSepolia, celoAlfajores]
 
 // Create wagmiAdapter locally to avoid import issues
 export const wagmiAdapter = new WagmiAdapter({
@@ -42,7 +43,7 @@ const metadata = {
 const modal = createAppKit({
     adapters: [wagmiAdapter],
     projectId,
-    networks: [base, baseSepolia, optimismSepolia, celoAlfajores] as any,
+    networks: [base, optimism, celo, zora, baseSepolia, optimismSepolia, celoAlfajores] as any,
     defaultNetwork: base,
     metadata: metadata,
     features: {
