@@ -1,4 +1,4 @@
-import { CheckCircle2, Download, Share2, Twitter, Copy } from "lucide-react";
+import { CheckCircle2, Download, Share2, Twitter, Copy, Link as LinkIcon } from "lucide-react";
 import { Button } from "./button";
 import { useState } from "react";
 
@@ -9,6 +9,7 @@ interface SuccessModalProps {
     surgeTitle: string;
     onDownload: () => void;
     onCreateAnother: () => void;
+    eventAddress?: string; // NEW: deployed event contract address
 }
 
 export function SuccessModal({
@@ -17,18 +18,32 @@ export function SuccessModal({
     surgeImage,
     surgeTitle,
     onDownload,
-    onCreateAnother
+    onCreateAnother,
+    eventAddress // NEW
 }: SuccessModalProps) {
     const [copied, setCopied] = useState(false);
+    const [claimLinkCopied, setClaimLinkCopied] = useState(false);
 
     if (!isOpen) return null;
 
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+    // Generate claim URL if event address is available
+    const claimUrl = eventAddress
+        ? `${typeof window !== 'undefined' ? window.location.origin : ''}/claim/${eventAddress}`
+        : null;
+    const shareUrl = claimUrl || (typeof window !== 'undefined' ? window.location.href : '');
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(shareUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleCopyClaimLink = () => {
+        if (claimUrl) {
+            navigator.clipboard.writeText(claimUrl);
+            setClaimLinkCopied(true);
+            setTimeout(() => setClaimLinkCopied(false), 2000);
+        }
     };
 
     const handleShareTwitter = () => {
@@ -88,6 +103,33 @@ export function SuccessModal({
                         className="w-full h-auto max-h-[35vh] object-contain"
                     />
                 </div>
+
+                {/* Claim URL Section - NEW */}
+                {claimUrl && (
+                    <div className="mb-4 p-3 rounded-xl bg-white/5 border border-white/10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <LinkIcon className="w-4 h-4 text-green-500" />
+                            <span className="text-sm font-semibold text-white">Share this link to let others mint:</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={claimUrl}
+                                readOnly
+                                className="flex-1 px-3 py-2 text-xs bg-black/30 border border-white/10 rounded-lg text-white/80 font-mono truncate"
+                            />
+                            <Button
+                                onClick={handleCopyClaimLink}
+                                variant="outline"
+                                size="sm"
+                                className="border-white/20 hover:bg-white/10 shrink-0"
+                            >
+                                <Copy className="w-3 h-3 mr-1" />
+                                {claimLinkCopied ? "Copied!" : "Copy"}
+                            </Button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Actions */}
                 <div className="space-y-2.5 mb-4">

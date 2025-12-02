@@ -99,7 +99,7 @@ export function GeneratorForm() {
     const { trackEvent } = useAnalytics();
 
     // SURGE event creation hook
-    const { createEvent, isPending: isCreatingEvent, isConfirming: isConfirmingEvent, isSuccess: isEventCreated, hash: eventCreationHash } = useCreateSurgeEvent();
+    const { createEvent, isPending: isCreatingEvent, isConfirming: isConfirmingEvent, isSuccess: isEventCreated, hash: eventCreationHash, eventAddress } = useCreateSurgeEvent();
 
     useEffect(() => {
         if (isConfirmed && receipt) {
@@ -141,17 +141,18 @@ export function GeneratorForm() {
 
     // Handle successful SURGE event creation
     useEffect(() => {
-        if (isEventCreated && eventCreationHash) {
+        if (isEventCreated && eventCreationHash && eventAddress) {
             trackEvent({
                 name: "CREATE_EVENT_SUCCESS",
                 properties: {
                     network: formData.network,
                     title: formData.title,
-                    txHash: eventCreationHash
+                    txHash: eventCreationHash,
+                    eventAddress // NEW
                 }
             });
 
-            // Save event to localStorage for user's created events
+            // Save event to localStorage for user's created events  
             const myEvents = JSON.parse(localStorage.getItem('my-surge-events') || '[]');
             myEvents.push({
                 title: formData.title,
@@ -160,13 +161,14 @@ export function GeneratorForm() {
                 imageUrl: formData.imageUrl,
                 createdAt: new Date().toISOString(),
                 txHash: eventCreationHash,
+                eventAddress, // NEW: save deployed contract address
             });
             localStorage.setItem('my-surge-events', JSON.stringify(myEvents));
 
             // Show success modal
             setShowSuccessModal(true);
         }
-    }, [isEventCreated, eventCreationHash, formData, trackEvent]);
+    }, [isEventCreated, eventCreationHash, eventAddress, formData, trackEvent]);
 
     const [isGenerating, setIsGenerating] = useState(false);
     const [generationProgress, setGenerationProgress] = useState("");
@@ -967,6 +969,7 @@ export function GeneratorForm() {
                 surgeTitle={formData.title}
                 onDownload={handleDownload}
                 onCreateAnother={handleCreateAnother}
+                eventAddress={eventAddress || undefined} // NEW: pass deployed event address
             />
         </div >
     );

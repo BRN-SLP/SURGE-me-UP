@@ -1,5 +1,6 @@
 // SURGE Protocol Contract Interaction Hooks
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useState, useEffect } from 'react';
 import {
     SURGE_FACTORY_ABI,
     SURGE_CORE_ABI,
@@ -16,11 +17,46 @@ import type { EventMetadata, DistributionConfig } from '@/types/surge';
 
 /**
  * Hook to create a new SURGE event
+ * Returns the deployed event contract address after successful creation
  */
 export function useCreateSurgeEvent() {
     const { chain } = useAccount();
     const { writeContract, data: hash, isPending } = useWriteContract();
-    const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+    const { isLoading: isConfirming, isSuccess, data: receipt } = useWaitForTransactionReceipt({ hash });
+    const [eventAddress, setEventAddress] = useState<Address | null>(null);
+
+    // Extract event address from transaction receipt
+    useEffect(() => {
+        if (receipt && receipt.logs && isSuccess) {
+            try {
+                // Find the SURGEEventCreated event log
+                // Event signature: SURGEEventCreated(address indexed eventContract, address indexed creator, string name, uint8 tier, uint256 maxSupply)
+                // The first indexed parameter (eventContract) is in topics[1]
+                const eventLog = receipt.logs.find(log => {
+                    // Factory address should match
+                    const addresses = chain ? getSurgeAddresses(chain.id) : null;
+                    return log.address.toLowerCase() === addresses?.factory.toLowerCase();
+                });
+
+                if (eventLog && eventLog.topics && eventLog.topics.length > 1) {
+                    // Extract event contract address from topics[1]
+                    // Topics are 32 bytes, address is last 20 bytes
+                    const addressHex = `0x${eventLog.topics[1].slice(-40)}` as Address;
+                    setEventAddress(addressHex);
+                    console.log('[SURGE] Event contract deployed at:', addressHex);
+                }
+            } catch (error) {
+                console.error('[SURGE] Failed to extract event address from receipt:', error);
+            }
+        }
+    }, [receipt, isSuccess, chain]);
+
+    // Reset event address when starting new creation
+    useEffect(() => {
+        if (isPending) {
+            setEventAddress(null);
+        }
+    }, [isPending]);
 
     const createEvent = async (metadata: EventMetadata, config: DistributionConfig) => {
         if (!chain) throw new Error('No chain connected');
@@ -42,6 +78,7 @@ export function useCreateSurgeEvent() {
         isPending,
         isConfirming,
         isSuccess,
+        eventAddress, // NEW: deployed event contract address
     };
 }
 
