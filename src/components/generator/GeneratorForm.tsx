@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,9 @@ import { Sparkles, RefreshCw, Download, Wallet, CheckCircle2, Loader2, Upload, I
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain } from "wagmi";
 import { base, optimism, celo, zora } from "wagmi/chains";
 import { useFadeIn, useMagnetic } from "@/lib/gsap-hooks";
+import { NetworkSelector } from "./NetworkSelector";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 export function GeneratorForm() {
     const { address, isConnected, chain } = useAccount();
@@ -34,6 +37,30 @@ export function GeneratorForm() {
     const [isSwitchingNetwork, setIsSwitchingNetwork] = useState(false);
 
     const formRef = useFadeIn(0.2);
+    const bgRef = useRef<HTMLDivElement>(null);
+
+    const handleNetworkSelect = async (selectedNetwork: string) => {
+        const network = selectedNetwork as "base" | "celo" | "optimism" | "zora";
+        setFormData(prev => ({ ...prev, network }));
+
+        // Auto-switch wallet to selected network if different from current
+        if (isConnected && chain) {
+            const newTargetChainId = network === "base" ? base.id :
+                network === "optimism" ? optimism.id :
+                    network === "celo" ? celo.id : zora.id;
+
+            if (chain.id !== newTargetChainId) {
+                try {
+                    setIsSwitchingNetwork(true);
+                    await switchChain({ chainId: newTargetChainId });
+                } catch (err) {
+                    console.error('Failed to switch network:', err);
+                } finally {
+                    setIsSwitchingNetwork(false);
+                }
+            }
+        }
+    };
 
     // Form data state - SURGE event creation fields
     const [formData, setFormData] = useState<{
@@ -58,6 +85,24 @@ export function GeneratorForm() {
         theme: "modern",
         keywords: "",
     });
+
+    // Dynamic background color based on network
+    useGSAP(() => {
+        const colors = {
+            base: "#0052FF",
+            optimism: "#FF0420",
+            celo: "#FCFF52",
+            zora: "#111111",
+            mode: "#DFFE00"
+        };
+        const color = colors[formData.network] || colors.base;
+
+        gsap.to(bgRef.current, {
+            background: `radial-gradient(circle at 50% 0%, ${color}40 0%, transparent 70%)`,
+            duration: 1.5,
+            ease: "power2.out"
+        });
+    }, { dependencies: [formData.network] });
 
     // Form validation rules
     const validationRules = {
@@ -573,7 +618,13 @@ export function GeneratorForm() {
     };
 
     return (
-        <div ref={formRef} className="grid gap-12 xl:grid-cols-2 items-start">
+        <div ref={formRef} className="grid gap-12 xl:grid-cols-2 items-start relative">
+            {/* Dynamic Background */}
+            <div
+                ref={bgRef}
+                className="absolute inset-0 -z-10 blur-[100px] opacity-50 transition-all duration-1000"
+                style={{ background: 'radial-gradient(circle at 50% 0%, #0052FF40 0%, transparent 70%)' }}
+            />
             <div className="space-y-6">
 
                 <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
@@ -581,52 +632,14 @@ export function GeneratorForm() {
                         <div className="space-y-3">
                             <div className="flex items-center gap-2">
                                 <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Network</label>
-                                <HelpButton content="Choose the blockchain network for your SURGE. Base and Optimism are L2 solutions with low fees." />
+                                <HelpButton content="Drag a network logo into the box to select it. Base and Optimism are L2 solutions with low fees." />
                             </div>
-                            <div className="relative">
-                                <select
-                                    value={formData.network}
-                                    onChange={async (e) => {
-                                        const selectedNetwork = e.target.value as "base" | "celo" | "optimism" | "zora";
-                                        setFormData({ ...formData, network: selectedNetwork });
 
-                                        // Auto-switch wallet to selected network if different from current
-                                        if (isConnected && chain) {
-                                            const newTargetChainId = selectedNetwork === "base" ? base.id :
-                                                selectedNetwork === "optimism" ? optimism.id :
-                                                    selectedNetwork === "celo" ? celo.id : zora.id;
+                            <NetworkSelector
+                                selectedNetwork={formData.network}
+                                onSelect={handleNetworkSelect}
+                            />
 
-                                            if (chain.id !== newTargetChainId) {
-                                                try {
-                                                    setIsSwitchingNetwork(true);
-                                                    await switchChain({ chainId: newTargetChainId });
-                                                } catch (err) {
-                                                    console.error('Failed to switch network:', err);
-                                                    // User rejected network switch - that's ok
-                                                } finally {
-                                                    setIsSwitchingNetwork(false);
-                                                }
-                                            }
-                                        }
-                                    }}
-                                    disabled={isSwitchingNetwork}
-                                    className="flex h-12 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-white appearance-none cursor-pointer hover:bg-white/10 transition-colors"
-                                >
-                                    <option value="base" className="bg-neutral-900 text-white">Base</option>
-                                    <option value="optimism" className="bg-neutral-900 text-white">Optimism</option>
-                                    <option value="celo" className="bg-neutral-900 text-white">Celo</option>
-                                    <option value="zora" className="bg-neutral-900 text-white">Zora</option>
-                                </select>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/50">
-                                    {isSwitchingNetwork ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    )}
-                                </div>
-                            </div>
                             {/* Network status indicator */}
                             {isConnected && chain && (() => {
                                 const targetChainId = getTargetChainId();
@@ -634,7 +647,7 @@ export function GeneratorForm() {
 
                                 if (!isNetworkMatched) {
                                     return (
-                                        <div className="flex items-center gap-2 text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2">
+                                        <div className="flex items-center gap-2 text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2 mt-4">
                                             <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
                                             <span>Connected to {chain.name}, but {formData.network.charAt(0).toUpperCase() + formData.network.slice(1)} is selected. Switch your wallet network.</span>
                                         </div>
@@ -642,7 +655,7 @@ export function GeneratorForm() {
                                 }
 
                                 return (
-                                    <div className="flex items-center gap-2 text-xs text-green-400">
+                                    <div className="flex items-center gap-2 text-xs text-green-400 mt-4">
                                         <div className="w-2 h-2 rounded-full bg-green-400" />
                                         <span>Connected to {chain.name}</span>
                                     </div>
