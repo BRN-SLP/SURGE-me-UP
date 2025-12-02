@@ -38,7 +38,7 @@ export function useCreateSurgeEvent() {
                     return log.address.toLowerCase() === addresses?.factory.toLowerCase();
                 });
 
-                if (eventLog && eventLog.topics && eventLog.topics.length > 1) {
+                if (eventLog && eventLog.topics && eventLog.topics.length > 1 && eventLog.topics[1]) {
                     // Extract event contract address from topics[1]
                     // Topics are 32 bytes, address is last 20 bytes
                     const addressHex = `0x${eventLog.topics[1].slice(-40)}` as Address;
