@@ -1,5 +1,5 @@
 import "@nomiclabs/hardhat-ethers";
-import "@nomiclabs/hardhat-etherscan";
+import "@nomicfoundation/hardhat-verify";
 import "hardhat-deploy";
 import "@layerzerolabs/toolbox-hardhat";
 import * as dotenv from "dotenv";
@@ -52,24 +52,16 @@ const config: HardhatUserConfig | any = {
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
             chainId: 11155420,
         },
-        celoSepolia: {
+        celoAlfajores: {
             url: process.env.CELO_SEPOLIA_RPC_URL || "https://alfajores-forno.celo-testnet.org",
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
             chainId: 44787,
         },
     },
     etherscan: {
-        apiKey: {
-            // Mainnet
-            base: process.env.BASESCAN_API_KEY || "",
-            optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY || process.env.BASESCAN_API_KEY || "",
-            celo: process.env.CELOSCAN_API_KEY || "",
-            zora: "no-api-key-needed",
-            // Testnet
-            baseSepolia: process.env.BASESCAN_API_KEY || "",
-            optimismSepolia: process.env.OPTIMISTIC_ETHERSCAN_API_KEY || "",
-            celoSepolia: process.env.CELOSCAN_API_KEY || "",
-        },
+        // ✅ Single API key V2 for all networks
+        apiKey: "MVCUIKT5HKRY6U86ZBYUVBJT6NQ6N3CIPW",
+
         customChains: [
             {
                 network: "base",
@@ -88,19 +80,19 @@ const config: HardhatUserConfig | any = {
                 },
             },
             {
+                network: "optimism",
+                chainId: 10,
+                urls: {
+                    apiURL: "https://api-optimistic.etherscan.io/api",
+                    browserURL: "https://optimistic.etherscan.io",
+                },
+            },
+            {
                 network: "optimismSepolia",
                 chainId: 11155420,
                 urls: {
                     apiURL: "https://api-sepolia-optimistic.etherscan.io/api",
                     browserURL: "https://sepolia-optimism.etherscan.io",
-                },
-            },
-            {
-                network: "celoSepolia",
-                chainId: 44787, // Celo Alfajores testnet
-                urls: {
-                    apiURL: "https://api-alfajores.celoscan.io/api",
-                    browserURL: "https://alfajores.celoscan.io",
                 },
             },
             {
@@ -112,6 +104,14 @@ const config: HardhatUserConfig | any = {
                 },
             },
             {
+                network: "celoAlfajores",
+                chainId: 44787,
+                urls: {
+                    apiURL: "https://api-alfajores.celoscan.io/api",
+                    browserURL: "https://alfajores.celoscan.io",
+                },
+            },
+            {
                 network: "zora",
                 chainId: 7777777,
                 urls: {
@@ -120,6 +120,9 @@ const config: HardhatUserConfig | any = {
                 },
             },
         ],
+    },
+    sourcify: {
+        enabled: true,
     },
 };
 
