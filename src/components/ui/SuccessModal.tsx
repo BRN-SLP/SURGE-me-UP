@@ -48,35 +48,49 @@ export function SuccessModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-            <div className="glass-panel p-8 rounded-3xl border border-white/10 max-w-lg w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={onClose}>
+            <div
+                className="glass-panel p-6 md:p-8 rounded-3xl border border-white/10 w-full max-w-md max-h-[95vh] overflow-y-auto animate-in zoom-in-95 relative"
+                onClick={(e) => e.stopPropagation()}
+            >
+                {/* Close button */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
+                    aria-label="Close modal"
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
                 {/* Success Icon */}
-                <div className="flex justify-center mb-6">
+                <div className="flex justify-center mb-4">
                     <div className="relative">
-                        <CheckCircle2 className="w-16 h-16 text-green-500" />
+                        <CheckCircle2 className="w-12 h-12 text-green-500" />
                         <div className="absolute inset-0 bg-green-500/20 blur-xl animate-pulse" />
                     </div>
                 </div>
 
                 {/* Title */}
-                <h2 className="text-3xl font-bold text-white text-center mb-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-1">
                     SURGE Created Successfully!
                 </h2>
-                <p className="text-white/70 text-center mb-6">
+                <p className="text-white/70 text-center text-sm mb-4">
                     Your unique SURGE is ready to use
                 </p>
 
-                {/* SURGE Preview */}
-                <div className="mb-6 rounded-2xl overflow-hidden border border-white/10">
+                {/* SURGE Preview - Smaller */}
+                <div className="mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5">
                     <img
                         src={surgeImage}
                         alt={surgeTitle}
-                        className="w-full h-auto max-h-[50vh] object-contain"
+                        className="w-full h-auto max-h-[35vh] object-contain"
                     />
                 </div>
 
                 {/* Actions */}
-                <div className="space-y-3 mb-6">
+                <div className="space-y-2.5 mb-4">
                     <Button
                         onClick={onDownload}
                         className="w-full gap-2"
@@ -86,11 +100,12 @@ export function SuccessModal({
                         Download SURGE
                     </Button>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2.5">
                         <Button
                             onClick={handleShareTwitter}
                             variant="outline"
                             className="gap-2 hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2] hover:border-[#1DA1F2]/50"
+                            size="sm"
                         >
                             <Twitter className="w-4 h-4" />
                             Twitter
@@ -99,6 +114,7 @@ export function SuccessModal({
                             onClick={handleShareWarpcast}
                             variant="outline"
                             className="gap-2 hover:bg-[#472A91]/10 hover:text-[#472A91] hover:border-[#472A91]/50"
+                            size="sm"
                         >
                             <Share2 className="w-4 h-4" />
                             Warpcast
@@ -108,6 +124,7 @@ export function SuccessModal({
                         onClick={handleCopyLink}
                         variant="outline"
                         className="w-full gap-2"
+                        size="sm"
                     >
                         <Copy className="w-4 h-4" />
                         {copied ? "Link Copied!" : "Copy Link"}
@@ -115,17 +132,19 @@ export function SuccessModal({
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex gap-3">
+                <div className="flex gap-2.5">
                     <Button
                         onClick={onCreateAnother}
                         variant="outline"
                         className="flex-1"
+                        size="sm"
                     >
                         Create Another
                     </Button>
                     <Button
                         onClick={onClose}
                         className="flex-1"
+                        size="sm"
                     >
                         Done
                     </Button>

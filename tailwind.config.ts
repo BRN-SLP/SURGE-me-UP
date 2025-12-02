@@ -40,6 +40,11 @@ const config: Config = {
                     foreground: "var(--text-primary)",
                     hover: "rgba(255, 255, 255, 0.04)",
                 },
+                // Superchain Network Colors
+                base: "#0052FF",           // Base blue
+                optimism: "#FF0000",       // Optimism red
+                celo: "#FCCC16",           // Celo yellow/gold
+                zora: "#8A63D2",           // Zora purple
             },
             fontFamily: {
                 sans: ["var(--font-inter)", "sans-serif"],
@@ -66,6 +71,7 @@ const config: Config = {
                 "fade-in": "fadeIn 0.6s ease-out forwards",
                 "fade-in-slow": "fadeIn 1s ease-out forwards",
                 "slide-up": "slideUp 0.6s ease-out forwards",
+                "gradient-text": "gradient 8s linear infinite",
             },
             keyframes: {
                 fadeIn: {
@@ -76,9 +82,14 @@ const config: Config = {
                     "0%": { opacity: "0", transform: "translateY(16px)" },
                     "100%": { opacity: "1", transform: "translateY(0)" },
                 },
+                gradient: {
+                    "0%, 100%": { backgroundPosition: "0% 50%" },
+                    "50%": { backgroundPosition: "100% 50%" },
+                },
             },
             backgroundImage: {
                 'dot-pattern': 'radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+                'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))',
             },
             backgroundSize: {
                 'dot': '24px 24px',
