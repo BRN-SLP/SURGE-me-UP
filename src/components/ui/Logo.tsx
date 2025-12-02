@@ -27,7 +27,7 @@ export function Logo({ className, showText = true }: LogoProps) {
 
             {showText && (
                 <span className="font-heading font-bold text-2xl tracking-tight text-white">
-                    SURGE me <span className="text-transparent bg-clip-text bg-gradient-to-r from-base via-optimism to-celo animate-gradient-text bg-[length:200%_auto]">UP</span>
+                    SURGE me <span className="text-white bg-clip-text bg-gradient-to-r from-[#0052FF] via-[#FF0420] to-[#FCCC16] font-extrabold">UP</span>
                 </span>
             )}
         </div>
