@@ -17,6 +17,8 @@ const buttonVariants = cva(
                 minimal: "border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 text-white backdrop-blur-sm",
                 link: "text-accent hover:text-accent-light underline-offset-4 hover:underline",
                 sketch: "border border-white/20 bg-transparent text-white hover:bg-white/[0.03] sketch-border",
+                "gsap-cta": "rounded-full border-2 border-[#0ae448] bg-transparent text-white hover:shadow-[0_0_15px_rgba(10,228,72,0.4)] hover:scale-105 transition-all duration-300",
+                "gsap-demo": "rounded-full border-2 border-white/20 bg-transparent text-white hover:border-white hover:bg-white/5 transition-all duration-300",
             },
             size: {
                 default: "h-11 px-6 py-2.5",
