@@ -76,13 +76,10 @@ export function CursorGradient() {
             aria-hidden="true"
         >
             {/* Multiple gradient blobs for depth */}
-            <div className="gradient-blob absolute w-[800px] h-[800px] rounded-full blur-[120px] opacity-20 bg-gradient-radial from-base/40 via-base/20 to-transparent" />
-            <div className="gradient-blob absolute w-[600px] h-[600px] rounded-full blur-[100px] opacity-25 bg-gradient-radial from-optimism/30 via-optimism/15 to-transparent" style={{ mixBlendMode: 'screen' }} />
-            <div className="gradient-blob absolute w-[700px] h-[700px] rounded-full blur-[110px] opacity-20 bg-gradient-radial from-celo/35 via-celo/18 to-transparent" />
-            <div className="gradient-blob absolute w-[500px] h-[500px] rounded-full blur-[90px] opacity-30 bg-gradient-radial from-zora/25 via-zora/12 to-transparent" style={{ mixBlendMode: 'screen' }} />
-
-            {/* Ambient background glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black via-black/95 to-black/90" />
+            <div className="gradient-blob absolute w-[800px] h-[800px] rounded-full blur-[120px] opacity-30 bg-gradient-radial from-base/50 via-base/25 to-transparent" />
+            <div className="gradient-blob absolute w-[600px] h-[600px] rounded-full blur-[100px] opacity-35 bg-gradient-radial from-optimism/40 via-optimism/20 to-transparent" style={{ mixBlendMode: 'screen' }} />
+            <div className="gradient-blob absolute w-[700px] h-[700px] rounded-full blur-[110px] opacity-30 bg-gradient-radial from-celo/45 via-celo/22 to-transparent" />
+            <div className="gradient-blob absolute w-[500px] h-[500px] rounded-full blur-[90px] opacity-40 bg-gradient-radial from-zora/35 via-zora/18 to-transparent" style={{ mixBlendMode: 'screen' }} />
         </div>
     );
 }
