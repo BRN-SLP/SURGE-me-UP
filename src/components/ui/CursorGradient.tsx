@@ -14,14 +14,6 @@ export function CursorGradient() {
         const canvas = canvasRef.current;
         let rafId: number;
 
-        // Brand colors from Superchain networks
-        const colors = [
-            { color: "rgb(0, 82, 255)", name: "base" },        // Base blue
-            { color: "rgb(255, 0, 0)", name: "optimism" },     // Optimism red
-            { color: "rgb(252, 204, 22)", name: "celo" },      // Celo yellow/gold
-            { color: "rgb(138, 99, 210)", name: "zora" },      // Zora purple
-        ];
-
         //Track mouse position
         const handleMouseMove = (e: MouseEvent) => {
             targetRef.current.x = e.clientX;
@@ -59,14 +51,6 @@ export function CursorGradient() {
             window.removeEventListener("mousemove", handleMouseMove);
             if (rafId) cancelAnimationFrame(rafId);
         };
-    }, []);
-
-    // Respect user's reduced motion preference
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        if (mediaQuery.matches && canvasRef.current) {
-            canvasRef.current.style.display = "none";
-        }
     }, []);
 
     return (
