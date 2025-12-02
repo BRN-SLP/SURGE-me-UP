@@ -29,8 +29,9 @@ export function Navbar() {
         <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-black/60 backdrop-blur-sm">
             <div className="container mx-auto px-6 h-16 flex items-center justify-between">
                 {/* Logo Area */}
-                <Link href="/" className="group">
-                    <Logo />
+                <Link href="/" className="group flex-shrink-0">
+                    <Logo className="hidden sm:flex" />
+                    <Logo showText={false} className="flex sm:hidden" />
                 </Link>
 
                 {/* Right Side: Navigation & Connect */}
