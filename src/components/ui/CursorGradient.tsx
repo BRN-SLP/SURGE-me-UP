@@ -1,69 +1,19 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-
 export function CursorGradient() {
-    const canvasRef = useRef<HTMLDivElement>(null);
-    const cursorRef = useRef({ x: 0, y: 0 });
-    const targetRef = useRef({ x: 0, y: 0 });
-
-    useEffect(() => {
-        if (!canvasRef.current) return;
-
-        const canvas = canvasRef.current;
-        let rafId: number;
-
-        //Track mouse position
-        const handleMouseMove = (e: MouseEvent) => {
-            targetRef.current.x = e.clientX;
-            targetRef.current.y = e.clientY;
-        };
-
-        // Animate cursor position with GSAP quickTo for performance
-        const animatePosition = () => {
-            // Smooth lerp to target
-            cursorRef.current.x += (targetRef.current.x - cursorRef.current.x) * 0.1;
-            cursorRef.current.y += (targetRef.current.y - cursorRef.current.y) * 0.1;
-
-            // Update gradient positions
-            const gradients = canvas.querySelectorAll('.gradient-blob') as NodeListOf<HTMLDivElement>;
-            gradients.forEach((blob, index) => {
-                const speed = 0.8 + (index * 0.2); // Different speeds for depth
-                const offsetX = cursorRef.current.x * speed;
-                const offsetY = cursorRef.current.y * speed;
-
-                gsap.set(blob, {
-                    x: offsetX - window.innerWidth / 2,
-                    y: offsetY - window.innerHeight / 2,
-                });
-            });
-
-            rafId = requestAnimationFrame(animatePosition);
-        };
-
-        // Start animation loop
-        window.addEventListener("mousemove", handleMouseMove);
-        animatePosition();
-
-        // Cleanup
-        return () => {
-            window.removeEventListener("mousemove", handleMouseMove);
-            if (rafId) cancelAnimationFrame(rafId);
-        };
-    }, []);
-
     return (
         <div
-            ref={canvasRef}
             className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
             aria-hidden="true"
-        >
-            {/* Multiple gradient blobs for depth */}
-            <div className="gradient-blob absolute w-[800px] h-[800px] rounded-full blur-[120px] opacity-30 bg-gradient-radial from-base/50 via-base/25 to-transparent" />
-            <div className="gradient-blob absolute w-[600px] h-[600px] rounded-full blur-[100px] opacity-35 bg-gradient-radial from-optimism/40 via-optimism/20 to-transparent" style={{ mixBlendMode: 'screen' }} />
-            <div className="gradient-blob absolute w-[700px] h-[700px] rounded-full blur-[110px] opacity-30 bg-gradient-radial from-celo/45 via-celo/22 to-transparent" />
-            <div className="gradient-blob absolute w-[500px] h-[500px] rounded-full blur-[90px] opacity-40 bg-gradient-radial from-zora/35 via-zora/18 to-transparent" style={{ mixBlendMode: 'screen' }} />
-        </div>
+            style={{
+                background: `
+                    radial-gradient(circle 800px at 20% 30%, rgba(0, 82, 255, 0.15), transparent),
+                    radial-gradient(circle 600px at 80% 70%, rgba(255, 4, 32, 0.12), transparent),
+                    radial-gradient(circle 700px at 50% 50%, rgba(252, 204, 22, 0.10), transparent),
+                    radial-gradient(circle 500px at 70% 20%, rgba(138, 99, 210, 0.13), transparent),
+                    black
+                `,
+            }}
+        />
     );
 }
