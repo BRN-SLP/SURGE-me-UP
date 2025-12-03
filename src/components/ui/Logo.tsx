@@ -18,15 +18,15 @@ export function Logo({ className, showText = true }: LogoProps) {
                 <Image
                     src="/logos/surge_logo_new.png"
                     alt="SURGE me UP Logo"
-                    width={40}
-                    height={40}
+                    width={30}
+                    height={30}
                     className="relative z-10 group-hover:scale-105 transition-transform duration-300"
                     priority
                 />
             </div>
 
             {showText && (
-                <span className="font-heading font-bold text-2xl tracking-tight text-white">
+                <span className="font-heading font-bold text-xl tracking-tight text-white">
                     SURGE me <span className="text-white bg-clip-text bg-gradient-to-r from-[#0052FF] via-[#FF0420] to-[#FCCC16] font-extrabold">UP</span>
                 </span>
             )}
