@@ -5,8 +5,8 @@
   --foreground: #f5f5f5;
   --border: #2a2a2a;
   --border-light: #1a1a1a;
-  --accent: #4a9eff;
-  --accent-muted: #2a5a8f;
+  --accent: #000080;
+  --accent-muted: #000050;
   --text-primary: #f5f5f5;
   --text-secondary: #d0d0d0;
   --text-muted: #a0a0a0;
@@ -27,7 +27,7 @@ body {
 }
 
 ::selection {
-  background: rgba(74, 158, 255, 0.2);
+  background: rgba(0, 0, 128, 0.2);
   color: white;
 }
 
@@ -60,7 +60,7 @@ body::before {
   z-index: -2;
   background-color: #0a0a0a;
   background-image: 
-    radial-gradient(circle at 50% 20%, rgba(74, 158, 255, 0.03), transparent 50%);
+    radial-gradient(circle at 50% 20%, rgba(0, 0, 128, 0.03), transparent 50%);
 }
 
 /* Fine Grain Texture */
@@ -167,7 +167,7 @@ body::after {
   }
 
   .btn-minimal-accent:hover {
-    background: rgba(74, 158, 255, 0.05);
+    background: rgba(0, 0, 128, 0.05);
     border-color: var(--accent);
   }
 
@@ -185,7 +185,7 @@ body::after {
   }
 
   .btn-minimal-filled:hover {
-    background: rgba(74, 158, 255, 0.9);
+    background: rgba(0, 0, 128, 0.9);
   }
 
   /* Sketch Effect for Lines */
@@ -266,7 +266,7 @@ body::after {
 
   /* Subtle Glow (very minimal) */
   .subtle-glow {
-    box-shadow: 0 0 40px rgba(74, 158, 255, 0.05);
+    box-shadow: 0 0 40px rgba(0, 0, 128, 0.05);
   }
 
   /* Text with Inline Accent */
