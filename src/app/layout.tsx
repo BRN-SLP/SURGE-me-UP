@@ -36,6 +36,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { Footer } from "@/components/ui/footer";
 import { WalletStatus } from "@/components/ui/WalletStatus";
 import { LiquidGradient } from "@/components/ui/LiquidGradient";
+import { LenisProvider } from "@/components/providers/LenisProvider";
 
 export default async function RootLayout({
   children,
@@ -56,12 +57,14 @@ export default async function RootLayout({
       >
         <LiquidGradient />
         <ContextProvider cookies={cookies}>
-          <div className="relative z-10">
-            <Navbar />
-            <WalletStatus />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <LenisProvider>
+            <div className="relative z-10">
+              <Navbar />
+              <WalletStatus />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </LenisProvider>
         </ContextProvider>
       </body>
     </html>
