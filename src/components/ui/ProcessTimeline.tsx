@@ -2,9 +2,20 @@
 
 import { useStagger } from "@/lib/gsap-hooks";
 import { Palette, Sparkles, Wallet, CheckCircle } from "lucide-react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+}
 
 export function ProcessTimeline() {
     const timelineRef = useStagger(0.3, 0.2);
+    const pathRef = useRef<SVGPathElement>(null);
+    const markerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const steps = [
         {
@@ -37,13 +48,88 @@ export function ProcessTimeline() {
         }
     ];
 
+    useEffect(() => {
+        if (!pathRef.current || !markerRef.current || !containerRef.current) return;
+
+        const path = pathRef.current;
+        const marker = markerRef.current;
+
+        // Draw the path progressively
+        const pathLength = path.getTotalLength();
+        gsap.set(path, {
+            strokeDasharray: pathLength,
+            strokeDashoffset: pathLength,
+        });
+
+        // Animate the path drawing
+        gsap.to(path, {
+            strokeDashoffset: 0,
+            duration: 2,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 70%",
+                end: "bottom 30%",
+                scrub: 1.5,
+            },
+        });
+
+        // Animate marker along the path
+        gsap.to(marker, {
+            motionPath: {
+                path: path,
+                align: path,
+                alignOrigin: [0.5, 0.5],
+                autoRotate: false,
+            },
+            duration: 2,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 70%",
+                end: "bottom 30%",
+                scrub: 1.5,
+            },
+        });
+
+        return () => {
+            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+        };
+    }, []);
+
     return (
         <div className="space-y-12">
-            <div ref={timelineRef} className="relative max-w-4xl mx-auto">
-                {/* Timeline line */}
-                <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-white/[0.08] hidden md:block" />
+            <div ref={containerRef} className="relative max-w-4xl mx-auto">
+                {/* SVG Path connecting steps */}
+                <svg
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    style={{ zIndex: 1 }}
+                >
+                    <path
+                        ref={pathRef}
+                        d="M 50% 8% Q 70% 25%, 50% 35% T 50% 65% T 50% 92%"
+                        fill="none"
+                        stroke="url(#pathGradient)"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                    />
+                    <defs>
+                        <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#0052FF" stopOpacity="0.6" />
+                            <stop offset="50%" stopColor="#FF0420" stopOpacity="0.6" />
+                            <stop offset="100%" stopColor="#FCCC16" stopOpacity="0.6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
 
-                <div className="space-y-12">
+                {/* Animated marker */}
+                <div
+                    ref={markerRef}
+                    className="absolute w-3 h-3 rounded-full bg-accent shadow-[0_0_20px_rgba(31,59,85,0.8)]"
+                    style={{ zIndex: 2 }}
+                />
+
+                <div ref={timelineRef} className="space-y-12 relative" style={{ zIndex: 3 }}>
                     {steps.map((step, index) => (
                         <div
                             key={index}
@@ -69,7 +155,7 @@ export function ProcessTimeline() {
 
                             {/* Step number */}
                             <div className="relative z-10 flex-shrink-0">
-                                <div className={`w-16 h-16 rounded-full border-2 border-accent/40 bg-white/[0.02] flex items-center justify-center`}>
+                                <div className={`w-16 h-16 rounded-full border-2 border-accent/40 bg-black/80 backdrop-blur-sm flex items-center justify-center`}>
                                     <span className="text-xl font-light text-white">{index + 1}</span>
                                 </div>
                             </div>
