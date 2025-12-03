@@ -47,7 +47,7 @@ export function LiquidGradient() {
     return (
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-black">
             {/* Liquid Gradient Container */}
-            <div className="absolute inset-0 z-0 filter blur-[100px] opacity-40">
+            <div className="absolute inset-0 z-0 filter blur-[100px] opacity-20">
                 {/* Blob 1: Base Blue - Follows closely */}
                 <motion.div
                     className="absolute w-[600px] h-[600px] rounded-full bg-[#0052FF]"

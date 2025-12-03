@@ -39,6 +39,13 @@ export function Navbar() {
                     {/* Navigation Links */}
                     <div className="hidden md:flex items-center gap-1">
                         <Link
+                            href="/"
+                            onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/" } })}
+                            className="px-4 py-2 text-sm font-light text-neutral-400 hover:text-white hover:bg-white/[0.03] rounded-md transition-all duration-200"
+                        >
+                            Home
+                        </Link>
+                        <Link
                             href="/generator"
                             onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/generator" } })}
                             className="px-4 py-2 text-sm font-light text-neutral-400 hover:text-white hover:bg-white/[0.03] rounded-md transition-all duration-200"

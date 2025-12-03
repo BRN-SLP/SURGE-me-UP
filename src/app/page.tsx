@@ -49,7 +49,7 @@ export default function Home() {
                     </h1>
 
                     <p ref={subtitleRef} className="text-xl md:text-2xl text-neutral-300 max-w-3xl mx-auto leading-relaxed font-light tracking-wide">
-                        Amplify your achievements with <span className="text-white font-bold">SURGE</span> – the recognition engine built on <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF0420] to-white">Superchain</span>.
+                        Amplify your achievements with SURGE – the recognition engine built on <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF0420] to-white">Superchain</span>.
                         <br />
                         <span className="text-neutral-400 text-lg mt-4 block">Support for <span className="text-[#0052FF] font-bold">Base</span>, <span className="text-[#FF0420] font-bold">Optimism</span>, and <span className="text-[#FCCC16] font-bold">Celo</span>.</span>
                     </p>
