@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useFadeIn, useFloating, useHeroScroll, useStagger, useParallax } from "@/lib/gsap-hooks";
+import { useFadeIn, useFloating, useHeroScroll, useStagger, useParallax, useScrollGradientText } from "@/lib/gsap-hooks";
 import { useRef } from "react";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { SURGEExplainer } from "@/components/ui/SURGEExplainer";
@@ -17,6 +17,8 @@ export default function Home() {
     const heroRef = useFadeIn(0);
     const subtitleRef = useFadeIn(0.2);
     const buttonsRef = useFadeIn(0.4);
+
+    const surgeGradientRef = useScrollGradientText();
 
     // Subtle floating background elements
     const blob1Ref = useFloating(6, 10);
@@ -43,13 +45,13 @@ export default function Home() {
 
                 <div className="relative z-10 max-w-5xl mx-auto space-y-12">
                     <h1 ref={heroRef} className="text-7xl md:text-9xl font-heading font-light tracking-tighter text-white leading-[0.95]">
-                        SURGE me <span className="text-accent font-normal">UP</span>
+                        <span ref={surgeGradientRef} className="font-bold">SURGE</span> me <span className="text-accent font-normal">UP</span>
                     </h1>
 
                     <p ref={subtitleRef} className="text-xl md:text-2xl text-neutral-300 max-w-3xl mx-auto leading-relaxed font-light tracking-wide">
-                        Amplify your achievements with <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#0052FF] via-[#FF0420] to-[#FCCC16] animate-gradient-text">SURGE</span> – the recognition engine built on <span className="text-accent font-normal">Superchain</span>.
+                        Amplify your achievements with <span className="text-white font-bold">SURGE</span> – the recognition engine built on <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF0420] to-white">Superchain</span>.
                         <br />
-                        <span className="text-neutral-400 text-lg mt-4 block">Support for <span className="text-[#0052FF] font-medium">Base</span>, <span className="text-[#FF0420] font-medium">Optimism</span>, and <span className="text-[#FCCC16] font-medium">Celo</span>.</span>
+                        <span className="text-neutral-400 text-lg mt-4 block">Support for <span className="text-[#0052FF] font-bold">Base</span>, <span className="text-[#FF0420] font-bold">Optimism</span>, and <span className="text-[#FCCC16] font-bold">Celo</span>.</span>
                     </p>
 
                     <div ref={buttonsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">

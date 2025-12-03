@@ -452,3 +452,41 @@ export function useHoverFill() {
 
     return ref;
 }
+/**
+ * Hook for text gradient animation on scroll
+ */
+export function useScrollGradientText() {
+    const ref = useRef<HTMLHeadingElement>(null);
+
+    useEffect(() => {
+        if (!ref.current) return;
+
+        const element = ref.current;
+
+        // Set initial gradient styles
+        element.style.backgroundImage = "linear-gradient(to right, #0052FF, #FF0420, #FCCC16, #0052FF)";
+        element.style.backgroundSize = "200% auto";
+        element.style.webkitBackgroundClip = "text";
+        element.style.webkitTextFillColor = "transparent";
+        element.style.backgroundClip = "text";
+        element.style.color = "transparent";
+
+        const animation = gsap.to(element, {
+            backgroundPosition: "200% center",
+            ease: "none",
+            scrollTrigger: {
+                trigger: document.body,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1,
+            },
+        });
+
+        return () => {
+            animation.scrollTrigger?.kill();
+            animation.kill();
+        };
+    }, []);
+
+    return ref;
+}
