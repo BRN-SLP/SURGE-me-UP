@@ -1,5 +1,5 @@
 import { useStagger } from "@/lib/gsap-hooks";
-import { Circle, Zap, CircleDot, Disc, Layers, Box } from "lucide-react";
+import { BaseLogo, OptimismLogoSimple, CeloLogoSimple, ZoraLogo, ModeLogo, FraxtalLogo } from "./NetworkLogos";
 
 export function SuperchainEcosystem() {
     const cardsRef = useStagger(0.1, 0.1);
@@ -9,7 +9,7 @@ export function SuperchainEcosystem() {
             name: "Base",
             color: "#0052FF",
             description: "Built by Coinbase, Base is a secure, low-cost Ethereum L2",
-            logo: <Circle className="w-8 h-8" strokeWidth={1.5} />,
+            logo: <BaseLogo className="w-8 h-8" />,
             status: "active",
             stats: { tps: "~1000", fee: "$0.01" }
         },
@@ -17,7 +17,7 @@ export function SuperchainEcosystem() {
             name: "Optimism",
             color: "#FF0420",
             description: "The original Optimistic Rollup, scaling Ethereum sustainably",
-            logo: <Zap className="w-8 h-8" strokeWidth={1.5} />,
+            logo: <OptimismLogoSimple className="w-8 h-8" />,
             status: "active",
             stats: { tps: "~2000", fee: "$0.02" }
         },
@@ -25,7 +25,7 @@ export function SuperchainEcosystem() {
             name: "Celo",
             color: "#FCFF52",
             description: "Mobile-first blockchain for real-world payments",
-            logo: <CircleDot className="w-8 h-8" strokeWidth={1.5} />,
+            logo: <CeloLogoSimple className="w-8 h-8" />,
             status: "active",
             stats: { tps: "~1000", fee: "$0.001" }
         },
@@ -33,7 +33,7 @@ export function SuperchainEcosystem() {
             name: "Zora",
             color: "#111111",
             description: "The best place to mint and collect NFTs",
-            logo: <Disc className="w-8 h-8" strokeWidth={1.5} />,
+            logo: <ZoraLogo className="w-8 h-8" />,
             status: "soon",
             stats: { tps: "Coming", fee: "Soon" }
         },
@@ -41,7 +41,7 @@ export function SuperchainEcosystem() {
             name: "Mode",
             color: "#DFFE00",
             description: "The Modular DeFi L2 rewarding growth",
-            logo: <Layers className="w-8 h-8" strokeWidth={1.5} />,
+            logo: <ModeLogo className="w-8 h-8" />,
             status: "soon",
             stats: { tps: "Coming", fee: "Soon" }
         },
@@ -49,7 +49,7 @@ export function SuperchainEcosystem() {
             name: "Fraxtal",
             color: "#000000",
             description: "Modular rollup with fractal scaling",
-            logo: <Box className="w-8 h-8" strokeWidth={1.5} />,
+            logo: <FraxtalLogo className="w-8 h-8" />,
             status: "soon",
             stats: { tps: "Coming", fee: "Soon" }
         }

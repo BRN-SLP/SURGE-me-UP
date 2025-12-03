@@ -381,3 +381,74 @@ export function useScrollProgress() {
 
     return ref;
 }
+/**
+ * Hook for button hover fill effect (circle expanding from cursor)
+ */
+export function useHoverFill() {
+    const ref = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        if (!ref.current) return;
+
+        const button = ref.current;
+
+        // Create the fill element if it doesn't exist
+        let fill = button.querySelector(".hover-fill") as HTMLDivElement;
+        if (!fill) {
+            fill = document.createElement("div");
+            fill.classList.add("hover-fill");
+            fill.style.position = "absolute";
+            fill.style.width = "0";
+            fill.style.height = "0";
+            fill.style.borderRadius = "50%";
+            fill.style.backgroundColor = "white"; // Or accent color depending on variant
+            fill.style.opacity = "0.1";
+            fill.style.pointerEvents = "none";
+            fill.style.transform = "translate(-50%, -50%)";
+            fill.style.zIndex = "0";
+            button.style.overflow = "hidden"; // Ensure button clips the fill
+            button.style.position = "relative"; // Ensure positioning context
+            button.appendChild(fill);
+        }
+
+        const handleMouseEnter = (e: MouseEvent) => {
+            const { left, top } = button.getBoundingClientRect();
+            const x = e.clientX - left;
+            const y = e.clientY - top;
+
+            gsap.set(fill, { x, y, width: 0, height: 0, opacity: 0.2 });
+            gsap.to(fill, {
+                width: button.offsetWidth * 2.5,
+                height: button.offsetWidth * 2.5,
+                duration: 0.5,
+                ease: "power2.out",
+            });
+        };
+
+        const handleMouseLeave = (e: MouseEvent) => {
+            const { left, top } = button.getBoundingClientRect();
+            const x = e.clientX - left;
+            const y = e.clientY - top;
+
+            gsap.to(fill, {
+                width: 0,
+                height: 0,
+                x,
+                y,
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.in",
+            });
+        };
+
+        button.addEventListener("mouseenter", handleMouseEnter);
+        button.addEventListener("mouseleave", handleMouseLeave);
+
+        return () => {
+            button.removeEventListener("mouseenter", handleMouseEnter);
+            button.removeEventListener("mouseleave", handleMouseLeave);
+        };
+    }, []);
+
+    return ref;
+}

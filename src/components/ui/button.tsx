@@ -40,17 +40,17 @@ export interface ButtonProps
     asChild?: boolean
 }
 
-import { useMagnetic } from "@/lib/gsap-hooks"
+import { useHoverFill } from "@/lib/gsap-hooks"
 import { useMergeRefs } from "@/hooks/useMergeRefs"
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, ...props }, ref) => {
         const Comp = asChild ? Slot : "button"
 
-        // Apply magnetic effect only for GSAP variants
-        const isMagnetic = variant === "gsap-cta" || variant === "gsap-demo";
-        const magneticRef = useMagnetic(isMagnetic ? 0.3 : 0);
-        const mergedRef = useMergeRefs(ref, isMagnetic ? magneticRef : null);
+        // Apply hover fill effect only for GSAP variants
+        const isGsap = variant === "gsap-cta" || variant === "gsap-demo";
+        const hoverRef = useHoverFill();
+        const mergedRef = useMergeRefs(ref, isGsap ? hoverRef : null);
 
         return (
             <Comp
