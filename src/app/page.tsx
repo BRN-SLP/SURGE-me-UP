@@ -54,12 +54,12 @@ export default function Home() {
 
                     <div ref={buttonsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
                         <Link href="/generator">
-                            <Button size="lg" variant="gsap-cta" className="group">
+                            <Button size="lg" variant="default" className="group">
                                 <span className="flex items-center">Start Generating <ArrowRight className="ml-2 h-5 w-5" /></span>
                             </Button>
                         </Link>
                         <Link href="/about">
-                            <Button variant="gsap-demo" size="lg">
+                            <Button variant="outline" size="lg">
                                 Learn More
                             </Button>
                         </Link>
@@ -149,7 +149,7 @@ export default function Home() {
                                 Join thousands of creators preserving memories on the Superchain.
                             </p>
                             <Link href="/generator">
-                                <Button size="lg" variant="gsap-cta" className="mt-4">
+                                <Button size="lg" variant="default" className="mt-4">
                                     Create Your First SURGE
                                 </Button>
                             </Link>

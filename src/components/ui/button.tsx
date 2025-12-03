@@ -47,10 +47,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, ...props }, ref) => {
         const Comp = asChild ? Slot : "button"
 
-        // Apply hover fill effect only for GSAP variants
-        const isGsap = variant === "gsap-cta" || variant === "gsap-demo";
+        // Apply hover fill effect to GSAP variants AND standard variants (as requested)
+        const isAnimated = variant === "gsap-cta" || variant === "gsap-demo" || variant === "default" || variant === "outline";
         const hoverRef = useHoverFill();
-        const mergedRef = useMergeRefs(ref, isGsap ? hoverRef : null);
+        const mergedRef = useMergeRefs(ref, isAnimated ? hoverRef : null);
 
         return (
             <Comp
