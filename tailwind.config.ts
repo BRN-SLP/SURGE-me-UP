@@ -13,9 +13,9 @@ const config: Config = {
                 foreground: "var(--foreground)",
                 // Minimal accent palette
                 accent: {
-                    DEFAULT: "#4a9eff",
-                    muted: "#2a5a8f",
-                    light: "#7ab8ff",
+                    DEFAULT: "#000080", // NavyBlue
+                    muted: "#000050",
+                    light: "#333399",
                 },
                 // Neutral grays
                 neutral: {
