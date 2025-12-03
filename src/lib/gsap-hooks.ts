@@ -382,9 +382,9 @@ export function useScrollProgress() {
     return ref;
 }
 /**
- * Hook for button hover fill effect (circle expanding from cursor)
+ * Hook for button shine effect (cursor-following gradient like GSAP)
  */
-export function useHoverFill() {
+export function useButtonShine() {
     const ref = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
@@ -392,60 +392,62 @@ export function useHoverFill() {
 
         const button = ref.current;
 
-        // Create the fill element if it doesn't exist
-        let fill = button.querySelector(".hover-fill") as HTMLDivElement;
-        if (!fill) {
-            fill = document.createElement("div");
-            fill.classList.add("hover-fill");
-            fill.style.position = "absolute";
-            fill.style.width = "0";
-            fill.style.height = "0";
-            fill.style.borderRadius = "50%";
-            fill.style.backgroundColor = "white"; // Or accent color depending on variant
-            fill.style.opacity = "0.1";
-            fill.style.pointerEvents = "none";
-            fill.style.transform = "translate(-50%, -50%)";
-            fill.style.zIndex = "0";
-            button.style.overflow = "hidden"; // Ensure button clips the fill
-            button.style.position = "relative"; // Ensure positioning context
-            button.appendChild(fill);
+        // Create the shine overlay if it doesn't exist
+        let shine = button.querySelector(".btn-shine") as HTMLDivElement;
+        if (!shine) {
+            shine = document.createElement("div");
+            shine.classList.add("btn-shine");
+            shine.style.position = "absolute";
+            shine.style.inset = "0";
+            shine.style.borderRadius = "inherit";
+            shine.style.pointerEvents = "none";
+            shine.style.zIndex = "1";
+            shine.style.opacity = "0";
+            shine.style.background = "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)";
+            shine.style.backgroundSize = "200% 100%";
+            shine.style.backgroundPosition = "100% 50%";
+            shine.style.mixBlendMode = "overlay";
+
+            button.style.position = "relative";
+            button.style.overflow = "hidden";
+            button.appendChild(shine);
+
+            // Ensure content is above shine
+            Array.from(button.children).forEach((child) => {
+                if (child !== shine && child instanceof HTMLElement) {
+                    child.style.position = "relative";
+                    child.style.zIndex = "2";
+                }
+            });
         }
 
-        const handleMouseEnter = (e: MouseEvent) => {
-            const { left, top } = button.getBoundingClientRect();
-            const x = e.clientX - left;
-            const y = e.clientY - top;
+        const handleMouseMove = (e: MouseEvent) => {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const xPercent = (x / rect.width) * 100;
 
-            gsap.set(fill, { x, y, width: 0, height: 0, opacity: 0.2 });
-            gsap.to(fill, {
-                width: button.offsetWidth * 2.5,
-                height: button.offsetWidth * 2.5,
-                duration: 0.5,
+            // Move gradient based on cursor position
+            gsap.to(shine, {
+                opacity: 1,
+                backgroundPosition: `${xPercent}% 50%`,
+                duration: 0.3,
                 ease: "power2.out",
             });
         };
 
-        const handleMouseLeave = (e: MouseEvent) => {
-            const { left, top } = button.getBoundingClientRect();
-            const x = e.clientX - left;
-            const y = e.clientY - top;
-
-            gsap.to(fill, {
-                width: 0,
-                height: 0,
-                x,
-                y,
+        const handleMouseLeave = () => {
+            gsap.to(shine, {
                 opacity: 0,
-                duration: 0.4,
-                ease: "power2.in",
+                duration: 0.3,
+                ease: "power2.out",
             });
         };
 
-        button.addEventListener("mouseenter", handleMouseEnter);
+        button.addEventListener("mousemove", handleMouseMove);
         button.addEventListener("mouseleave", handleMouseLeave);
 
         return () => {
-            button.removeEventListener("mouseenter", handleMouseEnter);
+            button.removeEventListener("mousemove", handleMouseMove);
             button.removeEventListener("mouseleave", handleMouseLeave);
         };
     }, []);

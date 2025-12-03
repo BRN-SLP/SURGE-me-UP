@@ -40,17 +40,17 @@ export interface ButtonProps
     asChild?: boolean
 }
 
-import { useHoverFill } from "@/lib/gsap-hooks"
+import { useButtonShine } from "@/lib/gsap-hooks"
 import { useMergeRefs } from "@/hooks/useMergeRefs"
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, ...props }, ref) => {
         const Comp = asChild ? Slot : "button"
 
-        // Apply hover fill effect to GSAP variants AND standard variants (as requested)
-        const isAnimated = variant === "gsap-cta" || variant === "gsap-demo" || variant === "default" || variant === "outline";
-        const hoverRef = useHoverFill();
-        const mergedRef = useMergeRefs(ref, isAnimated ? hoverRef : null);
+        // Apply shine effect to default and outline variants
+        const hasShine = variant === "default" || variant === "outline";
+        const shineRef = useButtonShine();
+        const mergedRef = useMergeRefs(ref, hasShine ? shineRef : null);
 
         return (
             <Comp
