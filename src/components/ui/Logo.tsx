@@ -16,7 +16,7 @@ export function Logo({ className, showText = true }: LogoProps) {
                 <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-base via-optimism to-celo opacity-70 blur-md group-hover:opacity-100 transition-opacity duration-500" />
 
                 <Image
-                    src="/logos/surge_minimal_stroke.png"
+                    src="/logos/surge_logo_new.png"
                     alt="SURGE me UP Logo"
                     width={40}
                     height={40}
