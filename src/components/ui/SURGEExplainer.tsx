@@ -8,22 +8,22 @@ export function SURGEExplainer() {
 
     const features = [
         {
-            icon: <Sparkles className="w-6 h-6" />,
+            icon: <Sparkles className="w-8 h-8" />,
             title: "AI-Generated Art",
             description: "Create unique badges with advanced AI image generation"
         },
         {
-            icon: <Shield className="w-6 h-6" />,
+            icon: <Shield className="w-8 h-8" />,
             title: "On-Chain Proof",
             description: "Permanent, verifiable records stored on the blockchain"
         },
         {
-            icon: <Clock className="w-6 h-6" />,
+            icon: <Clock className="w-8 h-8" />,
             title: "Instant Minting",
             description: "Fast and affordable NFT creation across multiple L2s"
         },
         {
-            icon: <Globe className="w-6 h-6" />,
+            icon: <Globe className="w-8 h-8" />,
             title: "Cross-Chain",
             description: "Seamlessly mint across Base, Optimism, and Celo"
         }
@@ -37,7 +37,7 @@ export function SURGEExplainer() {
                     className="minimal-card p-8 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group"
                 >
                     <div className="flex items-start gap-4">
-                        <div className="p-3 rounded-lg bg-accent/10 border border-accent/20 text-accent group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-4 rounded-xl bg-accent/20 border border-accent/40 text-accent shadow-[0_0_20px_rgba(31,59,85,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(31,59,85,0.5)] transition-all duration-300">
                             {feature.icon}
                         </div>
                         <div className="flex-1">
