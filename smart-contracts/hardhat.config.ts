@@ -60,7 +60,7 @@ const config: HardhatUserConfig | any = {
     },
     etherscan: {
         // ✅ Single API key V2 for all networks
-        apiKey: "MVCUIKT5HKRY6U86ZBYUVBJT6NQ6N3CIPW",
+        apiKey: process.env.ETHERSCAN_API_KEY || "",
 
         customChains: [
             {
