@@ -32,6 +32,30 @@ export const SURGE_ADDRESSES = {
         factory: '0x543B57fB141855e5590DBaDfbc1302F5239271f3' as Address,
         bridge: '0xBc084dAAfd26FB35245940072b91Ebdf571C0153' as Address,
     },
+    ink: {
+        chainId: 57073 as const,
+        reputation: '0xa918772Ee4C1843B72c303feb4b77222cc07236D' as Address,
+        factory: '0x543B57fB141855e5590DBaDfbc1302F5239271f3' as Address,
+        bridge: '0xBc084dAAfd26FB35245940072b91Ebdf571C0153' as Address,
+    },
+    lisk: {
+        chainId: 1135 as const,
+        reputation: '0xa918772Ee4C1843B72c303feb4b77222cc07236D' as Address,
+        factory: '0x543B57fB141855e5590DBaDfbc1302F5239271f3' as Address,
+        bridge: '0xBc084dAAfd26FB35245940072b91Ebdf571C0153' as Address,
+    },
+    unichain: {
+        chainId: 130 as const,
+        reputation: '0xa918772Ee4C1843B72c303feb4b77222cc07236D' as Address,
+        factory: '0x543B57fB141855e5590DBaDfbc1302F5239271f3' as Address,
+        bridge: '0xBc084dAAfd26FB35245940072b91Ebdf571C0153' as Address,
+    },
+    soneium: {
+        chainId: 1868 as const,
+        reputation: '0xa918772Ee4C1843B72c303feb4b77222cc07236D' as Address,
+        factory: '0x543B57fB141855e5590DBaDfbc1302F5239271f3' as Address,
+        bridge: '0xBc084dAAfd26FB35245940072b91Ebdf571C0153' as Address,
+    },
 } as const;
 
 // Chain ID to network name mapping
@@ -40,6 +64,10 @@ export const CHAIN_ID_TO_NETWORK = {
     10: 'optimism',
     42220: 'celo',
     7777777: 'zora',
+    57073: 'ink',
+    1135: 'lisk',
+    130: 'unichain',
+    1868: 'soneium',
 } as const;
 
 // Network display names
@@ -48,6 +76,10 @@ export const NETWORK_NAMES = {
     optimism: 'Optimism',
     celo: 'Celo',
     zora: 'Zora',
+    ink: 'Ink',
+    lisk: 'Lisk',
+    unichain: 'Unichain',
+    soneium: 'Soneium',
 } as const;
 
 // ============================================
@@ -278,4 +310,4 @@ export function isSupportedChain(chainId: number): boolean {
 }
 
 // Export all supported chain IDs
-export const SUPPORTED_CHAIN_IDS = [8453, 10, 42220, 7777777] as const;
+export const SUPPORTED_CHAIN_IDS = [8453, 10, 42220, 7777777, 57073, 1135, 130, 1868] as const;
