@@ -1,25 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
+
+gsap.registerPlugin(Draggable);
 
 interface Network {
     id: string;
     name: string;
     color: string;
-    bgColor: string;
+    logo: string;
 }
 
-// BAUHAUS-inspired network palette
+// All 8 Superchain networks
 const networks: Network[] = [
-    { id: "base", name: "Base", color: "#0052FF", bgColor: "#0052FF" },
-    { id: "optimism", name: "Optimism", color: "#FF0420", bgColor: "#FF0420" },
-    { id: "zora", name: "Zora", color: "#5E3FBE", bgColor: "#5E3FBE" },
-    { id: "ink", name: "Ink", color: "#7C3AED", bgColor: "#7C3AED" },
-    { id: "lisk", name: "Lisk", color: "#0ABBED", bgColor: "#0ABBED" },
-    { id: "unichain", name: "Unichain", color: "#FF007A", bgColor: "#FF007A" },
-    { id: "soneium", name: "Soneium", color: "#FFD700", bgColor: "#1E1E1E" },
-    { id: "celo", name: "Celo", color: "#FCFF52", bgColor: "#35D07F" },
+    { id: "base", name: "Base", color: "#0052FF", logo: "/assets/chain-logos/base.png" },
+    { id: "optimism", name: "Optimism", color: "#FF0420", logo: "/assets/chain-logos/OP-Mainnet.png" },
+    { id: "zora", name: "Zora", color: "#5E3FBE", logo: "/assets/chain-logos/zora.png" },
+    { id: "celo", name: "Celo", color: "#35D07F", logo: "/assets/chain-logos/celo.png" },
+    { id: "ink", name: "Ink", color: "#7C3AED", logo: "/assets/chain-logos/Ink.png" },
+    { id: "lisk", name: "Lisk", color: "#0ABBED", logo: "/assets/chain-logos/lisk.png" },
+    { id: "unichain", name: "Unichain", color: "#FF007A", logo: "/assets/chain-logos/Unichain.png" },
+    { id: "soneium", name: "Soneium", color: "#6366F1", logo: "/assets/chain-logos/Soneium.png" },
 ];
 
 interface NetworkSelectorProps {
@@ -27,93 +33,197 @@ interface NetworkSelectorProps {
     onSelect: (networkId: string) => void;
 }
 
-// BAUHAUS geometric icon component
-function BauhausIcon({ color, isSelected }: { color: string; isSelected: boolean }) {
-    return (
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            {/* Primary circle */}
-            <circle
-                cx="16"
-                cy="16"
-                r="14"
-                fill={isSelected ? color : "transparent"}
-                stroke={color}
-                strokeWidth={isSelected ? "0" : "2"}
-            />
-            {/* Inner geometric shape */}
-            <rect
-                x="10"
-                y="10"
-                width="12"
-                height="12"
-                fill={isSelected ? "white" : color}
-                transform="rotate(45 16 16)"
-            />
-        </svg>
-    );
-}
-
 export function NetworkSelector({ selectedNetwork, onSelect }: NetworkSelectorProps) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const trayRef = useRef<HTMLDivElement>(null);
+    const dropZoneRef = useRef<HTMLDivElement>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [draggedNetwork, setDraggedNetwork] = useState<string | null>(null);
+
+    const selectedNetworkData = networks.find(n => n.id === selectedNetwork) || networks[0];
+
+    useGSAP(() => {
+        const draggables: globalThis.Draggable[] = [];
+
+        networks.forEach((network) => {
+            const el = document.getElementById(`network-icon-${network.id}`);
+            if (!el) return;
+
+            // Initial state: ALL icons monochrome (including selected)
+            gsap.set(el, { filter: "grayscale(100%) brightness(0.7)", scale: 1 });
+
+            const d = Draggable.create(el, {
+                type: "x,y",
+                bounds: containerRef.current,
+                inertia: true,
+                onDragStart: () => {
+                    setIsDragging(true);
+                    setDraggedNetwork(network.id);
+                    // Show color when dragging
+                    gsap.to(el, { scale: 1.2, filter: "grayscale(0%) brightness(1)", duration: 0.2 });
+                    // Pulse the drop zone with this network's color
+                    gsap.to(dropZoneRef.current, {
+                        boxShadow: `0 0 40px ${network.color}60`,
+                        borderColor: network.color,
+                        duration: 0.3
+                    });
+                },
+                onDrag: function () {
+                    // Check proximity to drop zone for visual feedback
+                    if (this.hitTest(dropZoneRef.current, "20%")) {
+                        gsap.to(dropZoneRef.current, {
+                            scale: 1.05,
+                            boxShadow: `0 0 60px ${network.color}80`,
+                            duration: 0.2
+                        });
+                    } else {
+                        gsap.to(dropZoneRef.current, {
+                            scale: 1,
+                            boxShadow: `0 0 40px ${network.color}40`,
+                            duration: 0.2
+                        });
+                    }
+                },
+                onDragEnd: function () {
+                    setIsDragging(false);
+                    setDraggedNetwork(null);
+                    const dropZone = dropZoneRef.current;
+
+                    // Reset drop zone styling
+                    gsap.to(dropZone, {
+                        scale: 1,
+                        boxShadow: "none",
+                        borderColor: "rgba(255,255,255,0.1)",
+                        duration: 0.3
+                    });
+
+                    if (this.hitTest(dropZone, "50%")) {
+                        // Dropped in zone - select this network
+                        onSelect(network.id);
+                    }
+
+                    // Always return icon to tray in monochrome state
+                    gsap.to(this.target, {
+                        x: 0,
+                        y: 0,
+                        scale: 1,
+                        filter: "grayscale(100%) brightness(0.7)",
+                        duration: 0.5,
+                        ease: "back.out(1.7)"
+                    });
+                }
+            });
+            draggables.push(d[0]);
+        });
+
+        return () => {
+            draggables.forEach(d => d.kill());
+        };
+    }, { scope: containerRef, dependencies: [selectedNetwork] });
+
+    // Ensure all icons stay monochrome (no selected state highlighting in tray)
+    useEffect(() => {
+        networks.forEach(n => {
+            const el = document.getElementById(`network-icon-${n.id}`);
+            if (el) {
+                gsap.to(el, { filter: "grayscale(100%) brightness(0.7)", scale: 1, duration: 0.3 });
+            }
+        });
+    }, [selectedNetwork]);
+
     return (
-        <div className="w-full">
-            {/* BAUHAUS-style section header */}
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-3 h-3 bg-red-500 rotate-45" />
-                <span className="text-sm font-bold uppercase tracking-[0.3em] text-white/70">
-                    Select Network
-                </span>
-                <div className="flex-1 h-[2px] bg-white/10" />
+        <div ref={containerRef} className="relative w-full py-8 select-none">
+            {/* Tray Area - Chain icons row */}
+            <div ref={trayRef} className="flex flex-wrap justify-center gap-4 mb-12 min-h-[60px]">
+                {networks.map((network) => (
+                    <div
+                        key={network.id}
+                        id={`network-icon-${network.id}`}
+                        className={cn(
+                            "cursor-grab active:cursor-grabbing p-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm transition-all duration-300",
+                            "hover:bg-white/10 hover:border-white/20"
+                        )}
+                        title={`Drag ${network.name} to select`}
+                        onMouseEnter={() => {
+                            const el = document.getElementById(`network-icon-${network.id}`);
+                            if (el) {
+                                // Hover: show color and slight zoom
+                                gsap.to(el, { filter: "grayscale(0%) brightness(1)", scale: 1.1, duration: 0.2 });
+                            }
+                        }}
+                        onMouseLeave={() => {
+                            const el = document.getElementById(`network-icon-${network.id}`);
+                            if (el && draggedNetwork !== network.id) {
+                                // Return to monochrome when not dragging
+                                gsap.to(el, { filter: "grayscale(100%) brightness(0.7)", scale: 1, duration: 0.2 });
+                            }
+                        }}
+                    >
+                        {/* Circular container with overflow hidden for proper clipping */}
+                        <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                            <Image
+                                src={network.logo}
+                                alt={network.name}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                            />
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            {/* Compact Network Grid - BAUHAUS style */}
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-                {networks.map((network) => {
-                    const isSelected = selectedNetwork === network.id;
-                    return (
-                        <button
-                            key={network.id}
-                            onClick={() => onSelect(network.id)}
-                            className={cn(
-                                "group relative flex flex-col items-center gap-2 p-3 rounded-none border-2 transition-all duration-200",
-                                "hover:scale-105 hover:z-10",
-                                isSelected
-                                    ? "border-white bg-white/10"
-                                    : "border-transparent hover:border-white/30 bg-black/20"
-                            )}
-                            style={{
-                                boxShadow: isSelected ? `0 0 20px ${network.color}60` : undefined,
-                            }}
+            {/* Drop Zone - Large Circle */}
+            <div className="flex justify-center">
+                <div
+                    ref={dropZoneRef}
+                    className={cn(
+                        "w-32 h-32 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center transition-all duration-500 relative",
+                        isDragging ? "border-solid" : ""
+                    )}
+                    style={{
+                        background: selectedNetwork
+                            ? `radial-gradient(circle, ${selectedNetworkData.color}30 0%, ${selectedNetworkData.color}10 50%, transparent 70%)`
+                            : "rgba(255,255,255,0.02)"
+                    }}
+                >
+                    {/* Glow effect ring */}
+                    <div
+                        className="absolute inset-0 rounded-full opacity-50 blur-xl transition-all duration-500"
+                        style={{
+                            background: selectedNetwork
+                                ? `radial-gradient(circle, ${selectedNetworkData.color}40 0%, transparent 70%)`
+                                : "transparent"
+                        }}
+                    />
+
+                    {/* Selected chain logo in circular frame or placeholder */}
+                    {selectedNetwork ? (
+                        <div className="relative z-10 w-16 h-16 rounded-full overflow-hidden">
+                            <Image
+                                src={selectedNetworkData.logo}
+                                alt={selectedNetworkData.name}
+                                fill
+                                className="object-cover drop-shadow-2xl"
+                                unoptimized
+                            />
+                        </div>
+                    ) : (
+                        <span className="relative z-10 text-white/30 text-xs font-light uppercase tracking-widest text-center px-4">
+                            {isDragging ? "Drop Here" : "Drag Network"}
+                        </span>
+                    )}
+
+                    {/* Network name label */}
+                    {selectedNetwork && (
+                        <div
+                            className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-sm font-medium tracking-wide whitespace-nowrap"
+                            style={{ color: selectedNetworkData.color }}
                         >
-                            {/* BAUHAUS geometric logo */}
-                            <div
-                                className={cn(
-                                    "w-10 h-10 flex items-center justify-center transition-all duration-200",
-                                    !isSelected && "opacity-50 group-hover:opacity-100"
-                                )}
-                            >
-                                <BauhausIcon color={network.color} isSelected={isSelected} />
-                            </div>
-
-                            {/* Network name - bold sans-serif */}
-                            <span
-                                className={cn(
-                                    "text-[10px] font-bold uppercase tracking-wider transition-colors duration-200",
-                                    isSelected ? "text-white" : "text-white/40 group-hover:text-white/70"
-                                )}
-                            >
-                                {network.name}
-                            </span>
-
-                            {/* Selection indicator - geometric */}
-                            {isSelected && (
-                                <div
-                                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent"
-                                    style={{ borderTopColor: network.color }}
-                                />
-                            )}
-                        </button>
-                    );
-                })}
+                            {selectedNetworkData.name}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
