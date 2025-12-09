@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
-    "@layerzerolabs/onft-evm": "^0.2.3",
     "@radix-ui/react-slot": "^1.2.4",
     "@rainbow-me/rainbowkit": "^2.2.9",
     "@reown/appkit": "^1.8.14",
@@ -22,7 +21,7 @@
     "gsap": "^3.13.0",
     "lenis": "^1.3.15",
     "lucide-react": "^0.554.0",
-    "next": "16.0.3",
+    "next": "^16.0.8",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "replicate": "^1.4.0",
@@ -31,10 +30,8 @@
     "wagmi": "^2.19.5"
   },
   "devDependencies": {
-    "@layerzerolabs/lz-evm-oapp-v2": "^3.0.146",
-    "@layerzerolabs/toolbox-hardhat": "^0.6.12",
     "@nomicfoundation/hardhat-chai-matchers": "^2.1.0",
-    "@nomicfoundation/hardhat-ethers": "^4.0.3",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-network-helpers": "^3.0.3",
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
     "@nomicfoundation/hardhat-verify": "^3.0.7",
