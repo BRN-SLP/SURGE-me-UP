@@ -49,9 +49,9 @@ export default function Home() {
                     </h1>
 
                     <p ref={subtitleRef} className="text-xl md:text-2xl text-neutral-300 max-w-3xl mx-auto leading-relaxed font-light tracking-wide">
-                        Amplify your achievements with SURGE – the recognition engine built on <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#0052FF] via-[#FF0420] to-[#FCCC16]">Superchain</span>.
+                        Amplify your achievements with SURGE – the recognition engine built on <span className="font-bold text-[#FF0420]">Superchain</span>.
                         <br />
-                        <span className="text-neutral-400 text-lg mt-4 block">Support for <span className="text-[#0052FF] font-bold">Base</span>, <span className="text-[#FF0420] font-bold">Optimism</span>, and <span className="text-[#FCCC16] font-bold">Celo</span>.</span>
+                        <span className="text-neutral-400 text-lg mt-4 block">Support for <span className="text-[#0052FF] font-bold">Base</span>, <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF0420] to-white">Optimism</span>, and <span className="text-[#FCCC16] font-bold">Celo</span>.</span>
                     </p>
 
                     <div ref={buttonsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
