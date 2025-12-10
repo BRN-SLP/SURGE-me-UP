@@ -16,56 +16,56 @@ const networks: NetworkData[] = [
         name: "Base",
         color: "#0052FF",
         description: "Built by Coinbase, secure and low-cost Ethereum L2",
-        logo: "/assets/chain-logos/base.svg",
+        logo: "/assets/chain-logos/base.png",
         stats: { tps: "~1000", fee: "$0.01" }
     },
     {
         name: "Optimism",
         color: "#FF0420",
         description: "The original Optimistic Rollup, scaling Ethereum",
-        logo: "/assets/chain-logos/optimism.svg",
+        logo: "/assets/chain-logos/optimism.png",
         stats: { tps: "~2000", fee: "$0.02" }
     },
     {
         name: "Zora",
         color: "#5E3FBE",
         description: "The best place to mint and collect NFTs",
-        logo: "/assets/chain-logos/zora.svg",
+        logo: "/assets/chain-logos/zora.png",
         stats: { tps: "~1000", fee: "$0.01" }
     },
     {
         name: "Ink",
         color: "#7C3AED",
         description: "High-performance L2 for web3 creators",
-        logo: "/assets/chain-logos/ink.svg",
+        logo: "/assets/chain-logos/ink.png",
         stats: { tps: "~1000", fee: "$0.01" }
     },
     {
         name: "Lisk",
         color: "#0ABBED",
         description: "Accessible blockchain for real-world apps",
-        logo: "/assets/chain-logos/lisk.svg",
+        logo: "/assets/chain-logos/lisk.png",
         stats: { tps: "~1000", fee: "$0.01" }
     },
     {
         name: "Unichain",
         color: "#FF007A",
         description: "DeFi-native L2 built by Uniswap",
-        logo: "/assets/chain-logos/unichain.svg",
+        logo: "/assets/chain-logos/unichain.png",
         stats: { tps: "~2000", fee: "$0.001" }
     },
     {
         name: "Soneium",
         color: "#8B5CF6",
         description: "Sony's blockchain for creative industries",
-        logo: "/assets/chain-logos/soneium.svg",
+        logo: "/assets/chain-logos/soneium.png",
         stats: { tps: "~1000", fee: "$0.01" }
     },
     {
         name: "Celo",
         color: "#35D07F",
         description: "Mobile-first blockchain for payments",
-        logo: "/assets/chain-logos/celo.svg",
+        logo: "/assets/chain-logos/celo.png",
         stats: { tps: "~1000", fee: "$0.001" }
     }
 ];
