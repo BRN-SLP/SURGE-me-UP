@@ -74,20 +74,7 @@ export function SuperchainEcosystem() {
     const cardsRef = useStagger(0.08, 0.1);
 
     return (
-        <div className="space-y-12">
-            {/* Section header */}
-            <div className="flex items-center gap-4">
-                <div className="flex gap-2">
-                    <div className="w-4 h-4 bg-red-500" />
-                    <div className="w-4 h-4 bg-yellow-400 rotate-45" />
-                    <div className="w-4 h-4 bg-blue-500 rounded-full" />
-                </div>
-                <h2 className="text-2xl font-bold uppercase tracking-[0.2em] text-white">
-                    Superchain Network
-                </h2>
-                <div className="flex-1 h-[2px] bg-white/10" />
-            </div>
-
+        <div>
             {/* Network Grid */}
             <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {networks.map((network) => (
