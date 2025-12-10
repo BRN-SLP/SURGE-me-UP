@@ -3,23 +3,25 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ExternalLink, Calendar, Twitter, Heart } from "lucide-react";
+import { Sparkles, ExternalLink, Calendar, Twitter, Heart, Copy, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface CreatedSURGEEvent {
     title: string;
     description: string;
-    network: 'base' | 'optimism' | 'celo' | 'zora';
+    network: 'base' | 'optimism' | 'celo' | 'zora' | 'ink' | 'lisk' | 'unichain' | 'soneium';
     imageUrl?: string;
     createdAt: string;
     txHash?: string;
+    eventAddress?: string; // Deployed contract address for claim link
 }
 
 export function GalleryGrid() {
     const [events, setEvents] = useState<CreatedSURGEEvent[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [likedEvents, setLikedEvents] = useState<string[]>([]);
+    const [copiedLink, setCopiedLink] = useState<string | null>(null);
     const { trackEvent } = useAnalytics();
 
     useEffect(() => {
@@ -73,12 +75,26 @@ export function GalleryGrid() {
         );
     };
 
+    const handleCopyClaimLink = (event: CreatedSURGEEvent) => {
+        if (event.eventAddress) {
+            const claimUrl = `${window.location.origin}/claim/${event.eventAddress}`;
+            navigator.clipboard.writeText(claimUrl);
+            setCopiedLink(event.eventAddress);
+            setTimeout(() => setCopiedLink(null), 2000);
+            trackEvent({ name: "SHARE_CLICK", properties: { platform: "claim_link", eventTitle: event.title } });
+        }
+    };
+
     const getNetworkColor = (network: string) => {
         switch (network) {
             case 'base': return 'from-[#0052FF] to-[#3374FF]';
             case 'optimism': return 'from-[#FF0420] to-[#FF334B]';
             case 'celo': return 'from-[#FCFF52] to-[#FEFF85]';
             case 'zora': return 'from-black to-gray-700';
+            case 'ink': return 'from-[#9945FF] to-[#BC6BFF]';
+            case 'lisk': return 'from-[#4070F4] to-[#6690FF]';
+            case 'unichain': return 'from-[#FF007A] to-[#FF339A]';
+            case 'soneium': return 'from-[#5B21B6] to-[#7C3AED]';
             default: return 'from-blue-500 to-purple-500';
         }
     };
@@ -91,6 +107,10 @@ export function GalleryGrid() {
             case 'optimism': return `https://optimistic.etherscan.io/tx/${txHash}`;
             case 'celo': return `https://celoscan.io/tx/${txHash}`;
             case 'zora': return `https://explorer.zora.energy/tx/${txHash}`;
+            case 'ink': return `https://explorer.inkonchain.com/tx/${txHash}`;
+            case 'lisk': return `https://blockscout.lisk.com/tx/${txHash}`;
+            case 'unichain': return `https://unichain.blockscout.com/tx/${txHash}`;
+            case 'soneium': return `https://soneium.blockscout.com/tx/${txHash}`;
             default: return null;
         }
     };
@@ -183,6 +203,17 @@ export function GalleryGrid() {
                                 </div>
 
                                 <div className="flex gap-2 pt-2">
+                                    {event.eventAddress && (
+                                        <Button
+                                            variant="default"
+                                            size="sm"
+                                            onClick={() => handleCopyClaimLink(event)}
+                                            className="flex-1 bg-green-600 hover:bg-green-500 text-white"
+                                        >
+                                            <LinkIcon className="w-3 h-3 mr-1" />
+                                            {copiedLink === event.eventAddress ? "Copied!" : "Claim Link"}
+                                        </Button>
+                                    )}
                                     {explorerUrl && (
                                         <a
                                             href={explorerUrl}
@@ -204,10 +235,9 @@ export function GalleryGrid() {
                                         variant="outline"
                                         size="sm"
                                         onClick={() => handleShare(event)}
-                                        className="flex-1 border-white/10 text-white/70 hover:text-white hover:bg-white/10"
+                                        className="border-white/10 text-white/70 hover:text-white hover:bg-white/10"
                                     >
-                                        <Twitter className="w-3 h-3 mr-1" />
-                                        Share
+                                        <Twitter className="w-3 h-3" />
                                     </Button>
                                 </div>
                             </div>
