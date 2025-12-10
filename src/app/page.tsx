@@ -45,7 +45,7 @@ export default function Home() {
 
                 <div className="relative z-10 max-w-5xl mx-auto space-y-12">
                     <h1 ref={heroRef} className="text-7xl md:text-9xl font-heading font-light tracking-tighter text-white leading-[0.95]">
-                        <span ref={surgeGradientRef} className="font-bold">SURGE</span> me <span className="text-accent font-normal">UP</span>
+                        <span ref={surgeGradientRef} className="font-medium">SURGE</span> me <span className="text-accent font-normal">UP</span>
                     </h1>
 
                     <p ref={subtitleRef} className="text-xl md:text-2xl text-neutral-300 max-w-3xl mx-auto leading-relaxed font-light tracking-wide">
