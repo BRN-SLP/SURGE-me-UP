@@ -63,9 +63,9 @@ export function SuccessModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={onClose}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={onClose}>
             <div
-                className="glass-panel p-6 md:p-8 rounded-3xl border border-white/10 w-full max-w-md max-h-[95vh] overflow-y-auto animate-in zoom-in-95 relative"
+                className="glass-panel p-4 sm:p-6 rounded-2xl border border-white/10 w-full max-w-sm max-h-[90vh] overflow-y-auto animate-in zoom-in-95 relative"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close button */}
@@ -80,112 +80,112 @@ export function SuccessModal({
                 </button>
 
                 {/* Success Icon */}
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-2">
                     <div className="relative">
-                        <CheckCircle2 className="w-12 h-12 text-green-500" />
-                        <div className="absolute inset-0 bg-green-500/20 blur-xl animate-pulse" />
+                        <CheckCircle2 className="w-10 h-10 text-green-500" />
+                        <div className="absolute inset-0 bg-green-500/20 blur-lg animate-pulse" />
                     </div>
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-1">
-                    SURGE Created Successfully!
+                <h2 className="text-xl sm:text-2xl font-bold text-white text-center mb-0.5">
+                    SURGE Created!
                 </h2>
-                <p className="text-white/70 text-center text-sm mb-4">
-                    Your unique SURGE is ready to use
+                <p className="text-white/60 text-center text-xs mb-3">
+                    Your unique SURGE is ready
                 </p>
 
-                {/* SURGE Preview - Smaller */}
-                <div className="mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+                {/* SURGE Preview - Compact */}
+                <div className="mb-3 rounded-xl overflow-hidden border border-white/10 bg-white/5 mx-auto" style={{ maxWidth: '200px' }}>
                     <img
                         src={surgeImage}
                         alt={surgeTitle}
-                        className="w-full h-auto max-h-[35vh] object-contain"
+                        className="w-full h-auto max-h-[25vh] object-contain"
                     />
                 </div>
 
-                {/* Claim URL Section - NEW */}
+                {/* Claim URL Section - Compact */}
                 {claimUrl && (
-                    <div className="mb-4 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <div className="flex items-center gap-2 mb-2">
-                            <LinkIcon className="w-4 h-4 text-green-500" />
-                            <span className="text-sm font-semibold text-white">Share this link to let others mint:</span>
+                    <div className="mb-3 p-2 rounded-lg bg-white/5 border border-white/10">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                            <LinkIcon className="w-3 h-3 text-green-500" />
+                            <span className="text-xs font-medium text-white">Share link to mint:</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                             <input
                                 type="text"
                                 value={claimUrl}
                                 readOnly
-                                className="flex-1 px-3 py-2 text-xs bg-black/30 border border-white/10 rounded-lg text-white/80 font-mono truncate"
+                                className="flex-1 px-2 py-1.5 text-[10px] bg-black/30 border border-white/10 rounded text-white/80 font-mono truncate"
                             />
                             <Button
                                 onClick={handleCopyClaimLink}
                                 variant="outline"
                                 size="sm"
-                                className="border-white/20 hover:bg-white/10 shrink-0"
+                                className="border-white/20 hover:bg-white/10 shrink-0 text-xs px-2 py-1 h-7"
                             >
                                 <Copy className="w-3 h-3 mr-1" />
-                                {claimLinkCopied ? "Copied!" : "Copy"}
+                                {claimLinkCopied ? "✓" : "Copy"}
                             </Button>
                         </div>
                     </div>
                 )}
 
-                {/* Actions */}
-                <div className="space-y-2.5 mb-4">
+                {/* Actions - Compact grid */}
+                <div className="space-y-2 mb-3">
                     <Button
                         onClick={onDownload}
-                        className="w-full gap-2"
-                        size="lg"
+                        className="w-full gap-1.5 h-9"
+                        size="sm"
                     >
-                        <Download className="w-4 h-4" />
+                        <Download className="w-3.5 h-3.5" />
                         Download SURGE
                     </Button>
 
-                    <div className="grid grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-3 gap-1.5">
                         <Button
                             onClick={handleShareTwitter}
                             variant="outline"
-                            className="gap-2 hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2] hover:border-[#1DA1F2]/50"
+                            className="gap-1 hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2] hover:border-[#1DA1F2]/50 text-xs px-2 h-8"
                             size="sm"
                         >
-                            <Twitter className="w-4 h-4" />
-                            Twitter
+                            <Twitter className="w-3 h-3" />
+                            X
                         </Button>
                         <Button
                             onClick={handleShareWarpcast}
                             variant="outline"
-                            className="gap-2 hover:bg-[#472A91]/10 hover:text-[#472A91] hover:border-[#472A91]/50"
+                            className="gap-1 hover:bg-[#472A91]/10 hover:text-[#472A91] hover:border-[#472A91]/50 text-xs px-2 h-8"
                             size="sm"
                         >
-                            <Share2 className="w-4 h-4" />
-                            Warpcast
+                            <Share2 className="w-3 h-3" />
+                            Warp
+                        </Button>
+                        <Button
+                            onClick={handleCopyLink}
+                            variant="outline"
+                            className="gap-1 text-xs px-2 h-8"
+                            size="sm"
+                        >
+                            <Copy className="w-3 h-3" />
+                            {copied ? "✓" : "Copy"}
                         </Button>
                     </div>
-                    <Button
-                        onClick={handleCopyLink}
-                        variant="outline"
-                        className="w-full gap-2"
-                        size="sm"
-                    >
-                        <Copy className="w-4 h-4" />
-                        {copied ? "Link Copied!" : "Copy Link"}
-                    </Button>
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex gap-2.5">
+                <div className="flex gap-2">
                     <Button
                         onClick={onCreateAnother}
                         variant="outline"
-                        className="flex-1"
+                        className="flex-1 h-9 text-sm"
                         size="sm"
                     >
-                        Create Another
+                        New SURGE
                     </Button>
                     <Button
                         onClick={onClose}
-                        className="flex-1"
+                        className="flex-1 h-9 text-sm"
                         size="sm"
                     >
                         Done
