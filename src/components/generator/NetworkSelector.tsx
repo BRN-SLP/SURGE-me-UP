@@ -16,16 +16,16 @@ interface Network {
     logo: string;
 }
 
-// All 8 Superchain networks
+// All 8 Superchain networks with SVG logos
 const networks: Network[] = [
-    { id: "base", name: "Base", color: "#0052FF", logo: "/assets/chain-logos/base.png" },
-    { id: "optimism", name: "Optimism", color: "#FF0420", logo: "/assets/chain-logos/OP-Mainnet.png" },
-    { id: "zora", name: "Zora", color: "#5E3FBE", logo: "/assets/chain-logos/zora.png" },
-    { id: "celo", name: "Celo", color: "#35D07F", logo: "/assets/chain-logos/celo.png" },
-    { id: "ink", name: "Ink", color: "#7C3AED", logo: "/assets/chain-logos/Ink.png" },
-    { id: "lisk", name: "Lisk", color: "#0ABBED", logo: "/assets/chain-logos/lisk.png" },
-    { id: "unichain", name: "Unichain", color: "#FF007A", logo: "/assets/chain-logos/Unichain.png" },
-    { id: "soneium", name: "Soneium", color: "#6366F1", logo: "/assets/chain-logos/Soneium.png" },
+    { id: "base", name: "Base", color: "#0052FF", logo: "/assets/chain-logos/base.svg" },
+    { id: "optimism", name: "Optimism", color: "#FF0420", logo: "/assets/chain-logos/optimism.svg" },
+    { id: "zora", name: "Zora", color: "#5E3FBE", logo: "/assets/chain-logos/zora.svg" },
+    { id: "celo", name: "Celo", color: "#35D07F", logo: "/assets/chain-logos/celo.svg" },
+    { id: "ink", name: "Ink", color: "#7C3AED", logo: "/assets/chain-logos/ink.svg" },
+    { id: "lisk", name: "Lisk", color: "#0ABBED", logo: "/assets/chain-logos/lisk.svg" },
+    { id: "unichain", name: "Unichain", color: "#FF007A", logo: "/assets/chain-logos/unichain.svg" },
+    { id: "soneium", name: "Soneium", color: "#8B5CF6", logo: "/assets/chain-logos/soneium.svg" },
 ];
 
 interface NetworkSelectorProps {
@@ -134,7 +134,7 @@ export function NetworkSelector({ selectedNetwork, onSelect }: NetworkSelectorPr
     return (
         <div ref={containerRef} className="relative w-full py-8 select-none">
             {/* Tray Area - Chain icons row */}
-            <div ref={trayRef} className="flex flex-wrap justify-center gap-4 mb-12 min-h-[60px]">
+            <div ref={trayRef} className="flex flex-wrap justify-center gap-3 mb-8 min-h-[48px]">
                 {networks.map((network) => (
                     <div
                         key={network.id}
@@ -160,7 +160,7 @@ export function NetworkSelector({ selectedNetwork, onSelect }: NetworkSelectorPr
                         }}
                     >
                         {/* Circular container with overflow hidden for proper clipping */}
-                        <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                        <div className="w-10 h-10 relative rounded-full overflow-hidden">
                             <Image
                                 src={network.logo}
                                 alt={network.name}
@@ -178,7 +178,7 @@ export function NetworkSelector({ selectedNetwork, onSelect }: NetworkSelectorPr
                 <div
                     ref={dropZoneRef}
                     className={cn(
-                        "w-32 h-32 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center transition-all duration-500 relative",
+                        "w-24 h-24 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center transition-all duration-500 relative",
                         isDragging ? "border-solid" : ""
                     )}
                     style={{
@@ -199,7 +199,7 @@ export function NetworkSelector({ selectedNetwork, onSelect }: NetworkSelectorPr
 
                     {/* Selected chain logo in circular frame or placeholder */}
                     {selectedNetwork ? (
-                        <div className="relative z-10 w-16 h-16 rounded-full overflow-hidden">
+                        <div className="relative z-10 w-12 h-12 rounded-full overflow-hidden">
                             <Image
                                 src={selectedNetworkData.logo}
                                 alt={selectedNetworkData.name}

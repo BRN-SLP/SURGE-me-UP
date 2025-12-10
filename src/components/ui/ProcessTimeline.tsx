@@ -74,12 +74,17 @@ export function ProcessTimeline() {
 
             if (positions.length < 4) return;
 
-            // Create smooth curved path through all points
+            // Create a more dynamic, serpentine path with S-curves
+            const offsetX = 120; // Horizontal wave amplitude
             const pathData = `
                 M ${positions[0].x} ${positions[0].y}
-                Q ${positions[0].x + 100} ${positions[0].y + 50}, ${positions[1].x} ${positions[1].y}
-                Q ${positions[1].x - 100} ${positions[1].y + 50}, ${positions[2].x} ${positions[2].y}
-                Q ${positions[2].x + 100} ${positions[2].y + 50}, ${positions[3].x} ${positions[3].y}
+                C ${positions[0].x + offsetX} ${positions[0].y + 40},
+                  ${positions[1].x - offsetX} ${positions[1].y - 60},
+                  ${positions[1].x} ${positions[1].y}
+                S ${positions[2].x + offsetX} ${positions[2].y - 60},
+                  ${positions[2].x} ${positions[2].y}
+                S ${positions[3].x - offsetX} ${positions[3].y - 60},
+                  ${positions[3].x} ${positions[3].y}
             `;
 
             path.setAttribute('d', pathData);
@@ -91,20 +96,19 @@ export function ProcessTimeline() {
                 strokeDashoffset: pathLength,
             });
 
-            // Animate the path drawing
+            // Animate the path drawing with longer duration
             gsap.to(path, {
                 strokeDashoffset: 0,
-                duration: 2,
-                ease: "power2.out",
+                duration: 3,
+                ease: "power2.inOut",
                 scrollTrigger: {
                     trigger: container,
-                    start: "top 60%",
-                    end: "bottom 40%",
-                    scrub: 1.5,
+                    start: "top 70%",
+                    end: "bottom 30%",
+                    scrub: 2,
                 },
             });
 
-            // Animate marker along the path
             gsap.to(marker, {
                 motionPath: {
                     path: path,
@@ -112,13 +116,13 @@ export function ProcessTimeline() {
                     alignOrigin: [0.5, 0.5],
                     autoRotate: false,
                 },
-                duration: 2,
-                ease: "power2.out",
+                duration: 3,
+                ease: "power2.inOut",
                 scrollTrigger: {
                     trigger: container,
-                    start: "top 60%",
-                    end: "bottom 40%",
-                    scrub: 1.5,
+                    start: "top 70%",
+                    end: "bottom 30%",
+                    scrub: 2,
                 },
             });
         }, 500);
