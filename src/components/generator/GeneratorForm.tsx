@@ -17,11 +17,47 @@ import { useCreateSurgeEvent } from "@/hooks/useSurgeContracts";
 import { DistributionMode, type EventMetadata, type DistributionConfig } from "@/types/surge";
 import { Sparkles, RefreshCw, Download, Wallet, CheckCircle2, Loader2, Upload, Image as ImageIcon, X } from "lucide-react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSwitchChain } from "wagmi";
-import { base, optimism, celo, zora } from "wagmi/chains";
+import { base, optimism, celo, zora, defineChain } from "wagmi/chains";
 import { useFadeIn, useMagnetic } from "@/lib/gsap-hooks";
 import { NetworkSelector } from "./NetworkSelector";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+
+// Define additional Superchain networks
+const ink = defineChain({
+    id: 57073,
+    name: 'Ink',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: { default: { http: ['https://rpc-gel.inkonchain.com'] } },
+    blockExplorers: { default: { name: 'Inkscout', url: 'https://explorer.inkonchain.com' } },
+});
+
+const lisk = defineChain({
+    id: 1135,
+    name: 'Lisk',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: { default: { http: ['https://rpc.api.lisk.com'] } },
+    blockExplorers: { default: { name: 'Blockscout', url: 'https://blockscout.lisk.com' } },
+});
+
+const unichain = defineChain({
+    id: 130,
+    name: 'Unichain',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: { default: { http: ['https://mainnet.unichain.org'] } },
+    blockExplorers: { default: { name: 'Blockscout', url: 'https://unichain.blockscout.com' } },
+});
+
+const soneium = defineChain({
+    id: 1868,
+    name: 'Soneium',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: { default: { http: ['https://rpc.soneium.org'] } },
+    blockExplorers: { default: { name: 'Blockscout', url: 'https://soneium.blockscout.com' } },
+});
+
+// All supported network IDs
+type NetworkId = "base" | "optimism" | "celo" | "zora" | "ink" | "lisk" | "unichain" | "soneium";
 
 export function GeneratorForm() {
     const { address, isConnected, chain } = useAccount();
@@ -40,14 +76,22 @@ export function GeneratorForm() {
     const bgRef = useRef<HTMLDivElement>(null);
 
     const handleNetworkSelect = async (selectedNetwork: string) => {
-        const network = selectedNetwork as "base" | "celo" | "optimism" | "zora";
+        const network = selectedNetwork as NetworkId;
         setFormData(prev => ({ ...prev, network }));
 
         // Auto-switch wallet to selected network if different from current
         if (isConnected && chain) {
-            const newTargetChainId = network === "base" ? base.id :
-                network === "optimism" ? optimism.id :
-                    network === "celo" ? celo.id : zora.id;
+            const chainMap: Record<NetworkId, number> = {
+                base: base.id,
+                optimism: optimism.id,
+                celo: celo.id,
+                zora: zora.id,
+                ink: ink.id,
+                lisk: lisk.id,
+                unichain: unichain.id,
+                soneium: soneium.id,
+            };
+            const newTargetChainId = chainMap[network] || base.id;
 
             if (chain.id !== newTargetChainId) {
                 try {
@@ -67,7 +111,7 @@ export function GeneratorForm() {
         title: string;
         description: string;
         date: string;
-        network: "base" | "celo" | "optimism" | "zora";
+        network: NetworkId;
         distributionMode: DistributionMode;
         maxSupply: number;
         expiryDate: string; // ISO string, empty if no expiry
@@ -88,12 +132,15 @@ export function GeneratorForm() {
 
     // Dynamic background color based on network
     useGSAP(() => {
-        const colors = {
+        const colors: Record<NetworkId, string> = {
             base: "#0052FF",
             optimism: "#FF0420",
             celo: "#FCFF52",
-            zora: "#111111",
-            mode: "#DFFE00"
+            zora: "#5E3FBE",
+            ink: "#7C3AED",
+            lisk: "#0ABBED",
+            unichain: "#FF007A",
+            soneium: "#8B5CF6",
         };
         const color = colors[formData.network] || colors.base;
 
@@ -274,12 +321,17 @@ export function GeneratorForm() {
     }, []);
 
     const getTargetChainId = () => {
-        switch (formData.network) {
-            case "base": return base.id;
-            case "optimism": return optimism.id;
-            case "celo": return celo.id;
-            default: return base.id;
-        }
+        const chainMap: Record<NetworkId, number> = {
+            base: base.id,
+            optimism: optimism.id,
+            celo: celo.id,
+            zora: zora.id,
+            ink: ink.id,
+            lisk: lisk.id,
+            unichain: unichain.id,
+            soneium: soneium.id,
+        };
+        return chainMap[formData.network] || base.id;
     };
 
     // Style-specific prompt templates

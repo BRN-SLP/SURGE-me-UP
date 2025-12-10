@@ -16,17 +16,16 @@ interface Network {
     logo: string;
 }
 
-// Currently supported networks (with smart contract deployment)
+// All 8 Superchain networks with PNG logos from atlas.optimism.io
 const networks: Network[] = [
     { id: "base", name: "Base", color: "#0052FF", logo: "/assets/chain-logos/base.png" },
     { id: "optimism", name: "Optimism", color: "#FF0420", logo: "/assets/chain-logos/optimism.png" },
     { id: "zora", name: "Zora", color: "#5E3FBE", logo: "/assets/chain-logos/zora.png" },
     { id: "celo", name: "Celo", color: "#35D07F", logo: "/assets/chain-logos/celo.png" },
-    // Coming soon - need smart contract deployment:
-    // { id: "ink", name: "Ink", color: "#7C3AED", logo: "/assets/chain-logos/ink.png" },
-    // { id: "lisk", name: "Lisk", color: "#0ABBED", logo: "/assets/chain-logos/lisk.png" },
-    // { id: "unichain", name: "Unichain", color: "#FF007A", logo: "/assets/chain-logos/unichain.png" },
-    // { id: "soneium", name: "Soneium", color: "#8B5CF6", logo: "/assets/chain-logos/soneium.png" },
+    { id: "ink", name: "Ink", color: "#7C3AED", logo: "/assets/chain-logos/ink.png" },
+    { id: "lisk", name: "Lisk", color: "#0ABBED", logo: "/assets/chain-logos/lisk.png" },
+    { id: "unichain", name: "Unichain", color: "#FF007A", logo: "/assets/chain-logos/unichain.png" },
+    { id: "soneium", name: "Soneium", color: "#8B5CF6", logo: "/assets/chain-logos/soneium.png" },
 ];
 
 interface NetworkSelectorProps {

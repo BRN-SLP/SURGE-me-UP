@@ -8,7 +8,7 @@ import { Sparkles, Circle, Zap, CircleDot } from "lucide-react";
 interface LivePreviewProps {
     title: string;
     date: string;
-    network: "base" | "celo" | "optimism" | "zora";
+    network: "base" | "celo" | "optimism" | "zora" | "ink" | "lisk" | "unichain" | "soneium";
     theme: "sketch" | "modern" | "flat" | "pixel" | "monochrome" | "abstract";
     keywords: string;
     imageUrl?: string;
@@ -44,8 +44,28 @@ export function LivePreview({
             },
             zora: {
                 Icon: Circle,
-                gradient: "from-black to-gray-700",
-                color: "#000000"
+                gradient: "from-[#5E3FBE] to-[#8B6BD8]",
+                color: "#5E3FBE"
+            },
+            ink: {
+                Icon: Circle,
+                gradient: "from-[#7C3AED] to-[#A855F7]",
+                color: "#7C3AED"
+            },
+            lisk: {
+                Icon: Circle,
+                gradient: "from-[#0ABBED] to-[#4DD4F7]",
+                color: "#0ABBED"
+            },
+            unichain: {
+                Icon: Zap,
+                gradient: "from-[#FF007A] to-[#FF4DA1]",
+                color: "#FF007A"
+            },
+            soneium: {
+                Icon: Circle,
+                gradient: "from-[#8B5CF6] to-[#A78BFA]",
+                color: "#8B5CF6"
             }
         };
 
