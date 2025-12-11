@@ -23,7 +23,7 @@
 
 ### 1.1 Site Map
 
-```
+```text
 SURGE me UP
 ├── / (Home)
 ├── /create (Badge Generator)
@@ -41,7 +41,7 @@ SURGE me UP
 
 **Main Navigation Bar:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │ [SURGE Logo]  [Home] [Create] [Gallery] [Identity] [About]  [👤 Connect] │
 └─────────────────────────────────────────────────────────────────────┘
@@ -53,7 +53,7 @@ SURGE me UP
 
 When wallet is connected, show extended dropdown:
 
-```
+```text
 ┌─────────────────────────────┐
 │ 0xABC...1234               │
 │ ─────────────────────────── │
@@ -69,7 +69,7 @@ When wallet is connected, show extended dropdown:
 
 If connected wallet is **NOT primary**, show:
 
-```
+```text
 │ Score: 435 (Individual)     │
 │ Total Score on Primary →    │
 ```
@@ -80,7 +80,7 @@ If connected wallet is **NOT primary**, show:
 
 ### 2.1 Page Layout
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        IDENTITY HEADER                               │
 │  ┌─────────────────────────────────────────────────────────────┐    │
@@ -125,7 +125,7 @@ If connected wallet is **NOT primary**, show:
 
 **State: Primary Wallet Connected**
 
-```
+```text
 Identity #12345                              [Active ●]
 
        ╭──────────────╮
@@ -136,7 +136,7 @@ Identity #12345                              [Active ●]
 
 **State: Non-Primary Wallet Connected**
 
-```
+```text
 Identity #12345                              [Active ●]
 
        ╭──────────────╮
@@ -149,7 +149,7 @@ Identity #12345                              [Active ●]
 
 **State: Identity Suspended**
 
-```
+```text
 Identity #12345                              [Suspended ◐]
 
        ╭──────────────╮
@@ -160,7 +160,7 @@ Identity #12345                              [Suspended ◐]
 
 ### 2.3 Wallet Card Component
 
-```
+```text
 ┌─────────────────────────────┐
 │ 0xAAA...1111                │ ← Address (monospace)
 │ [PRIMARY ⭐]                 │ ← Status badge
@@ -187,7 +187,7 @@ Identity #12345                              [Suspended ◐]
 
 When connected wallet has no identity:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │                        🆔                                            │
@@ -211,7 +211,7 @@ When connected wallet has no identity:
 
 ### 3.1 Step 1: Introduction
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │                    Link a Wallet to Your Identity                    │
@@ -241,7 +241,7 @@ When connected wallet has no identity:
 
 ### 3.2 Step 2: Dual Signature
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │                    Verify Wallet Ownership                           │
@@ -286,7 +286,7 @@ When connected wallet has no identity:
 
 After new wallet connected:
 
-```
+```text
 │  STEP 2: New Wallet                                         │
 │  ─────────────────────────────────                          │
 │  0xBBB...2222 (connected)                                   │
@@ -296,7 +296,7 @@ After new wallet connected:
 
 ### 3.4 Step 3: Confirmation
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │                         ✓ Wallet Linked!                             │
@@ -325,7 +325,7 @@ After new wallet connected:
 
 ### 4.1 Page Layout
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │                    Manage Identity Wallets                           │
@@ -410,7 +410,7 @@ After new wallet connected:
 
 When identity is suspended, show prominent banner at top:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │ 🔒 IDENTITY SUSPENDED                                                │
 │                                                                      │
@@ -430,7 +430,7 @@ When identity is suspended, show prominent banner at top:
 
 **Mark as Compromised Modal:**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │               ⚠️ Confirm Mark as Compromised                         │
@@ -462,7 +462,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 5.1 Page Layout
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │                    🎖️ Heritage Badges                                 │
@@ -515,7 +515,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 5.2 Badge Card Component
 
-```
+```text
 ┌─────────────────────────────┐
 │         🏅                   │  ← Icon/illustration
 │                             │
@@ -548,7 +548,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 6.1 Has Identity — Primary Wallet
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │              SURGE Identity Verification                             │
@@ -587,7 +587,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 6.2 Has Identity — Non-Primary Wallet
 
-```
+```text
 │  ✓ Linked to SURGE Identity #12345                         │
 │                                                             │
 │  Status: Active                                             │
@@ -604,7 +604,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 6.3 Compromised Wallet
 
-```
+```text
 │  ⚠️ Linked to SURGE Identity #12345                         │
 │                                                             │
 │  Status: COMPROMISED 🚫                                      │
@@ -620,7 +620,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 6.4 No Identity
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                                                                      │
 │              SURGE Identity Verification                             │
@@ -648,7 +648,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 7.1 Color Palette
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │ DESIGN TOKENS                                                        │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -674,7 +674,7 @@ When identity is suspended, show prominent banner at top:
 
 ### 7.2 Status Chips
 
-```
+```text
 [Active ●]        → Green pill, white text
 [PRIMARY ⭐]       → Indigo pill, white text  
 [Pending ◐]       → Amber pill, dark text
@@ -704,7 +704,7 @@ CSS:
 
 ### 7.3 Buttons
 
-```
+```text
 PRIMARY BUTTON
 ┌─────────────────────────┐
 │    Create Identity      │  Background: #4F46E5
@@ -723,7 +723,7 @@ DESTRUCTIVE BUTTON
 
 ### 7.4 Alert Banners
 
-```
+```text
 INFO BANNER
 ┌─────────────────────────────────────────────────────────────────────┐
 │ ℹ️  Your wallet score contributes to the total Identity score.       │
@@ -858,35 +858,35 @@ flowchart TD
 
 **Identity Dashboard Header:**
 
-```
+```text
 "Your SURGE Identity Score represents your aggregated on-chain 
 reputation across all linked wallets."
 ```
 
 **Wallet Linking Warning:**
 
-```
+```text
 "This action is permanent. Once linked, a wallet cannot be 
 unlinked or transferred to another identity."
 ```
 
 **Compromise Warning:**
 
-```
+```text
 "Marking a wallet as compromised will immediately block it from 
 all SURGE functions. You have 30 days to cancel if this was a mistake."
 ```
 
 **Suspended Identity:**
 
-```
+```text
 "Your identity is temporarily locked because no Primary wallet is set. 
 Select a new Primary to continue using SURGE."
 ```
 
 **Heritage Badges Intro:**
 
-```
+```text
 "Heritage badges honor your on-chain journey. They prove your 
 experience survives even when wallets don't."
 ```
@@ -907,7 +907,7 @@ experience survives even when wallets don't."
 
 ### 9.4 Error Messages
 
-```
+```text
 "Wallet already linked to another identity. Each wallet can only 
 belong to one SURGE Identity."
 
@@ -923,21 +923,21 @@ Connect a different linked wallet first."
 
 **Primary Badge Tooltip:**
 
-```
+```text
 "Primary wallet receives all rewards, airdrops, and exposes the 
 total Identity Score for external verification."
 ```
 
 **Individual Score Tooltip:**
 
-```
+```text
 "This wallet's individual contribution to your total Identity Score. 
 Only the Primary wallet shows the aggregated score externally."
 ```
 
 **Dispute Period Tooltip:**
 
-```
+```text
 "30-day window where you can cancel a compromise marking from 
 another linked wallet. After this period, the action is permanent."
 ```
@@ -970,7 +970,7 @@ another linked wallet. After this period, the action is permanent."
 
 **Wallet Cards (Mobile):**
 
-```
+```text
 ┌─────────────────────────────┐
 │ 0xAAA...1111  [PRIMARY ⭐]   │
 │ Score: 420 pts              │

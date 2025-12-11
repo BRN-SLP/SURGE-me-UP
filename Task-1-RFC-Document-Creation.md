@@ -12,6 +12,7 @@ The output must fully reflect the latest design decisions:
 - Primary wallet, suspended identity, compromised flow, heritage badges.
 
 The result must be suitable for:
+
 - Internal engineering team
 - External reviewers (grants, auditors, ecosystem partners)
 - Community discussion (KARMA, forums, Snapshot)
@@ -163,7 +164,9 @@ Functions to specify:
 1. **Identity Creation**
 function createIdentity(address initialWallet) external returns (uint256 identityId);
 
-text
+```
+
+```text
 - Creates new identity if wallet has none.
 - Mints SBT via IdentityAnchor to `initialWallet`.
 - Sets `primaryWallet = initialWallet`.
@@ -178,7 +181,9 @@ bytes existingWalletSignature,
 bytes newWalletSignature
 ) external;
 
-text
+```
+
+```text
 Requirements:
 - both wallets have signed a message linking newWallet to identityId.
 - existingLinkedWallet is already linked to identityId.
@@ -293,8 +298,7 @@ PENDING_COMPROMISE
 └─ finalizeCompromise() → COMPROMISED (after 30 days)
 COMPROMISED
 └─ Final, irreversible
-
-text
+```
 
 Clarify:
 
@@ -445,6 +449,7 @@ Answers must align with all logic above.
 Agent should format questions like:
 
 SURGE Identity – Governance Questions
+
 1. Dispute Period Length
 Option A: 14 days
 
@@ -454,7 +459,7 @@ Option C: 60 days
 
 ...
 
-text
+```
 
 ---
 

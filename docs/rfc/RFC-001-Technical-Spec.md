@@ -490,7 +490,7 @@ uint256 public eventCollectorMinBadges = 20;
 
 ### 5.2 Transitions
 
-```
+```text
 UNLINKED
     └─ createIdentity() OR linkWallet() → ACTIVE
 
@@ -643,7 +643,7 @@ graph LR
 
 **Request:**
 
-```
+```http
 GET /api/identity/0xCCC...
 ```
 
@@ -774,4 +774,4 @@ Optional endpoint for detailed activity history.
 
 ---
 
-*RFC-001 Technical Spec v1.0.0 — SURGE Core Team — 2025-12-11*
+*Document updated: 2025-12-11 — SURGE Core Team*

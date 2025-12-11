@@ -69,12 +69,12 @@ After changing Primary wallet, a cooldown prevents rapid switching. This prevent
 
 When a compromised wallet was the Primary, and no new Primary is set before finalization, the identity becomes "suspended." How should this be handled?
 
-### Options
+### Available Options
 
 | Option | Behavior | Pros | Cons |
 |--------|----------|------|------|
 | **A** ⭐ | Suspension | Identity frozen until new Primary set | Requires user action to recover |
-| **B** | Auto-assign | Automatically assign oldest active wallet as Primary | No user intervention needed | May assign unwanted wallet |
+| **B** | Auto-assign | Auto-assign oldest active wallet | No user intervention needed, may assign unwanted wallet |
 | **C** | Vote-based | Linked wallets vote on new Primary | Democratic | Complex, slow |
 
 ### Default: **Option A (Suspension)**
@@ -281,4 +281,4 @@ Before formal voting, share thoughts:
 
 ---
 
-*RFC-001 Voting Questions — SURGE Core Team — 2025-12-11*
+*Document updated: 2025-12-11 — SURGE Core Team*

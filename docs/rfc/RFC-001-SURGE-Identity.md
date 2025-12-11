@@ -87,7 +87,7 @@ SURGE takes a different approach:
 
 ### Core Concepts
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                      SURGE IDENTITY                          │
 │                                                              │
@@ -278,4 +278,4 @@ See [RFC-001-Voting-Questions.md](./RFC-001-Voting-Questions.md) for governance 
 
 ---
 
-*RFC-001 Draft — SURGE Core Team — 2025-12-11*
+*Document updated: 2025-12-11 — SURGE Core Team*
