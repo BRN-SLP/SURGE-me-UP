@@ -74,19 +74,21 @@ smart-contracts/contracts/
 
 ---
 
-## 3. Proposed: Identity Layer (RFC-001)
+## 3. Identity Layer (RFC-001)
 
-> **Status:** RFC In Progress
+> **Status:** ✅ Contracts Implemented
 
 New layer to add multi-wallet identity, compromise protection, and reputation preservation.
 
-### Proposed New Contracts
+### Identity Contracts
 
 | Contract | Purpose | Status |
 |----------|---------|--------|
-| IdentityAnchor.sol | Soulbound ERC-721, same tokenId per identity | 📋 RFC |
-| IdentityRegistry.sol | Core identity logic: link wallets, compromise flow | 📋 RFC |
-| HeritageBadges.sol | Claim reputation from compromised wallet history | 📋 RFC |
+| IdentityAnchor.sol | Soulbound ERC-721, same tokenId per identity | ✅ Implemented |
+| IdentityRegistry.sol | Core identity logic: link wallets, compromise flow | ✅ Implemented |
+| HeritageBadges.sol | Claim reputation from compromised wallet history | ✅ Implemented |
+
+**Location:** `/smart-contracts/contracts/identity/`
 
 ### Architecture Diagram
 
@@ -210,6 +212,55 @@ graph TB
 - Create Figma mockups based on wireframes
 - Implement React components
 - Add to existing Next.js app
+
+---
+
+### 2025-12-11 — Smart Contracts Agent
+
+**Task:** Implement SURGE Identity smart contracts
+
+**Status:** ✅ COMPLETED
+
+**Completed:**
+
+- [x] Created `/smart-contracts/contracts/identity/` directory
+- [x] Created `IdentityAnchor.sol` — Soulbound ERC-721 (7.5 KB)
+- [x] Created `IdentityRegistry.sol` — Core identity logic (18 KB)
+- [x] Created `HeritageBadges.sol` — Heritage badge claim (14 KB)
+- [x] Created `deploy-identity.ts` — Deployment script
+- [x] All contracts compiled successfully
+
+**Contract Features:**
+
+1. **IdentityAnchor.sol:**
+   - Non-transferable ERC-721 (soulbound)
+   - Same tokenId for all wallets in identity
+   - Only IdentityRegistry can mint
+
+2. **IdentityRegistry.sol:**
+   - Create identity with automatic SBT minting
+   - Link wallets with dual-signature verification
+   - Primary wallet with 14-day cooldown
+   - 30-day compromise dispute period
+   - Identity suspension on primary loss
+
+3. **HeritageBadges.sol:**
+   - 5 badge types (Veteran, Volume, CrossChain, Maestro, Collector)
+   - Claim from compromised wallet history
+   - Configurable thresholds
+
+**Files Created:**
+
+- `/smart-contracts/contracts/identity/IdentityAnchor.sol`
+- `/smart-contracts/contracts/identity/IdentityRegistry.sol`
+- `/smart-contracts/contracts/identity/HeritageBadges.sol`
+- `/smart-contracts/scripts/deploy-identity.ts`
+
+**Next Steps (for future agents/tasks):**
+
+- Deploy to Base testnet for testing
+- Write unit tests
+- Implement frontend Identity pages
 
 ---
 
