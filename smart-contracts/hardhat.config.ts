@@ -79,8 +79,8 @@ const config: HardhatUserConfig | any = {
         },
     },
     etherscan: {
-        // ✅ Single API key V2 for all networks
-        apiKey: process.env.ETHERSCAN_API_KEY || "",
+        // Etherscan V2 API - single key for all networks
+        apiKey: process.env.BASESCAN_API_KEY || "",
 
         customChains: [
             {
@@ -137,6 +137,38 @@ const config: HardhatUserConfig | any = {
                 urls: {
                     apiURL: "https://explorer.zora.energy/api",
                     browserURL: "https://explorer.zora.energy",
+                },
+            },
+            {
+                network: "ink",
+                chainId: 57073,
+                urls: {
+                    apiURL: "https://explorer.inkonchain.com/api",
+                    browserURL: "https://explorer.inkonchain.com",
+                },
+            },
+            {
+                network: "lisk",
+                chainId: 1135,
+                urls: {
+                    apiURL: "https://blockscout.lisk.com/api",
+                    browserURL: "https://blockscout.lisk.com",
+                },
+            },
+            {
+                network: "unichain",
+                chainId: 130,
+                urls: {
+                    apiURL: "https://unichain.blockscout.com/api",
+                    browserURL: "https://unichain.blockscout.com",
+                },
+            },
+            {
+                network: "soneium",
+                chainId: 1868,
+                urls: {
+                    apiURL: "https://soneium.blockscout.com/api",
+                    browserURL: "https://soneium.blockscout.com",
                 },
             },
         ],
