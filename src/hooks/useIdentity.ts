@@ -74,9 +74,57 @@ export function useIdentity() {
         return 'active';
     };
 
+    // Base chainId
+    const BASE_CHAIN_ID = 8453;
+
+    // Ensure wallet is on Base network
+    const ensureBaseNetwork = useCallback(async () => {
+        if (!walletProvider) throw new Error('Wallet not connected');
+
+        try {
+            // Get current chainId
+            const currentChainId = await walletProvider.request({ method: 'eth_chainId' });
+            const currentChainIdDecimal = parseInt(currentChainId as string, 16);
+
+            if (currentChainIdDecimal !== BASE_CHAIN_ID) {
+                // Request network switch
+                try {
+                    await walletProvider.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: `0x${BASE_CHAIN_ID.toString(16)}` }],
+                    });
+                } catch (switchError: unknown) {
+                    // If chain not added, add it
+                    if ((switchError as { code?: number })?.code === 4902) {
+                        await walletProvider.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: `0x${BASE_CHAIN_ID.toString(16)}`,
+                                chainName: 'Base',
+                                nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                                rpcUrls: ['https://mainnet.base.org'],
+                                blockExplorerUrls: ['https://basescan.org'],
+                            }],
+                        });
+                    } else {
+                        throw switchError;
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Failed to switch network:', err);
+            throw new Error('Please switch to Base network to continue');
+        }
+    }, [walletProvider]);
+
     // Get contract instance
     const getContract = useCallback(async (withSigner = false) => {
         if (!walletProvider) throw new Error('Wallet not connected');
+
+        // Ensure we're on Base before getting contract
+        if (withSigner) {
+            await ensureBaseNetwork();
+        }
 
         const provider = new BrowserProvider(walletProvider);
         const registryAddress = SURGE_ADDRESSES.base.identityRegistry;
@@ -87,7 +135,7 @@ export function useIdentity() {
         }
 
         return new Contract(registryAddress, IDENTITY_REGISTRY_ABI, provider);
-    }, [walletProvider]);
+    }, [walletProvider, ensureBaseNetwork]);
 
     // Fetch identity data from contract
     const fetchIdentity = useCallback(async () => {
