@@ -40,6 +40,26 @@ const config: HardhatUserConfig | any = {
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
             chainId: 7777777,
         },
+        ink: {
+            url: process.env.INK_RPC_URL || "https://rpc-gel.inkonchain.com",
+            accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+            chainId: 57073,
+        },
+        lisk: {
+            url: process.env.LISK_RPC_URL || "https://rpc.api.lisk.com",
+            accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+            chainId: 1135,
+        },
+        unichain: {
+            url: process.env.UNICHAIN_RPC_URL || "https://mainnet.unichain.org",
+            accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+            chainId: 130,
+        },
+        soneium: {
+            url: process.env.SONEIUM_RPC_URL || "https://rpc.soneium.org",
+            accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+            chainId: 1868,
+        },
 
         // ===== TESTNET NETWORKS =====
         baseSepolia: {
