@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFadeIn, useFloating, useHeroScroll, useStagger, useParallax, useScrollGradientText } from "@/lib/gsap-hooks";
 import { useRef } from "react";
@@ -9,8 +9,6 @@ import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { SURGEExplainer } from "@/components/ui/SURGEExplainer";
 import { SuperchainEcosystem } from "@/components/ui/SuperchainEcosystem";
 import { ProcessTimeline } from "@/components/ui/ProcessTimeline";
-
-import { GradientText, HighlightText } from "@/components/ui/TextHighlight";
 
 export default function Home() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -35,29 +33,46 @@ export default function Home() {
     useHeroScroll(containerRef, heroRef, [blob1Ref, blob2Ref]);
 
     return (
-        <div className="flex flex-col min-h-screen relative overflow-hidden dot-pattern bg-dot">
+        <div className="flex flex-col min-h-screen relative overflow-hidden">
             {/* Hero Section */}
             <section ref={containerRef} className="flex-1 flex flex-col items-center justify-center px-4 py-32 text-center relative z-10 min-h-screen">
 
-                {/* Subtle Background Accents */}
-                <div ref={blob1Ref} className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-accent/[0.02] rounded-full blur-[80px] -z-10 opacity-40" />
-                <div ref={blob2Ref} className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/[0.015] rounded-full blur-[100px] -z-10 opacity-30" />
+                {/* Gradient Background Accents */}
+                <div ref={blob1Ref} className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-accent/[0.04] rounded-full blur-[100px] -z-10" />
+                <div ref={blob2Ref} className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-secondary/[0.03] rounded-full blur-[120px] -z-10" />
 
                 <div className="relative z-10 max-w-5xl mx-auto space-y-12">
+                    {/* Badge */}
+                    <div className="flex justify-center">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/5 text-accent text-sm font-medium">
+                            <Sparkles className="w-4 h-4" />
+                            <span>Now Live on 8 Networks</span>
+                        </div>
+                    </div>
+
                     <h1 ref={heroRef} className="text-7xl md:text-9xl font-heading font-light tracking-tighter text-white leading-[0.95]">
-                        <span ref={surgeGradientRef} className="font-medium">SURGE</span> me <span className="text-accent font-normal">UP</span>
+                        <span ref={surgeGradientRef} className="font-semibold gradient-text">SURGE</span>
+                        <span className="text-neutral-300"> me </span>
+                        <span className="text-accent font-medium text-glow">UP</span>
                     </h1>
 
-                    <p ref={subtitleRef} className="text-xl md:text-2xl text-neutral-300 max-w-3xl mx-auto leading-relaxed font-light tracking-wide">
-                        Amplify your achievements with SURGE – the recognition engine built on <span className="font-bold text-[#FF0420]">Superchain</span>.
+                    <p ref={subtitleRef} className="text-xl md:text-2xl text-neutral-300 max-w-3xl mx-auto leading-relaxed font-light">
+                        Amplify your achievements with SURGE – the recognition engine built on{" "}
+                        <span className="font-semibold text-[#FF0420]">Superchain</span>.
                         <br />
-                        <span className="text-neutral-400 text-lg mt-4 block">Support for <span className="text-[#0052FF] font-bold">Base</span>, <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FF0420] to-white">Optimism</span>, and <span className="text-[#FCCC16] font-bold">Celo</span>.</span>
+                        <span className="text-neutral-400 text-lg mt-4 block">
+                            Supporting{" "}
+                            <span className="text-base font-semibold">Base</span>,{" "}
+                            <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#FF0420] to-white">Optimism</span>,{" "}
+                            <span className="text-celo font-semibold">Celo</span>,{" "}
+                            <span className="text-zora font-semibold">Zora</span>, and more.
+                        </span>
                     </p>
 
                     <div ref={buttonsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
                         <Link href="/generator">
                             <Button size="lg" variant="default" className="group">
-                                <span className="flex items-center">Start Generating <ArrowRight className="ml-2 h-5 w-5" /></span>
+                                <span className="flex items-center">Start Generating <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" /></span>
                             </Button>
                         </Link>
                         <Link href="/about">
@@ -70,24 +85,24 @@ export default function Home() {
             </section>
 
             {/* Stats Section */}
-            <section ref={statsRef} className="py-24 px-4 relative z-10 border-y border-white/[0.06]">
+            <section ref={statsRef} className="py-24 px-4 relative z-10 border-y border-accent/10 bg-neutral-900/30">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
                     <AnimatedCounter
-                        target={6}
+                        target={8}
                         label="Superchain Networks"
-                        description="Expanding ecosystem support"
+                        description="Base, OP, Celo, Zora, Ink, Lisk, Unichain, Soneium"
                     />
                     <AnimatedCounter
-                        target={15000}
-                        suffix="+"
+                        target={0}
+                        suffix=" — Just Launched!"
                         label="SURGEs Minted"
-                        description="Achievements amplified on-chain"
+                        description="Be among the first to mint"
                     />
                     <AnimatedCounter
                         target={0}
                         prefix="$"
                         label="Minting Fee"
-                        description="Free minting on testnets"
+                        description="Free minting on all networks"
                     />
                 </div>
             </section>
@@ -97,10 +112,10 @@ export default function Home() {
                 <div className="max-w-7xl mx-auto space-y-16">
                     <div ref={explainerHeaderRef} className="text-center space-y-6">
                         <h2 className="text-4xl md:text-6xl font-heading font-light text-white tracking-tight">
-                            Preserve Your Memories
+                            Preserve Your <span className="gradient-text font-medium">Memories</span>
                         </h2>
                         <p className="text-lg text-neutral-400 max-w-2xl mx-auto font-light">
-                            Turn moments into digital collectibles that last forever
+                            Turn moments into digital collectibles that last forever on-chain
                         </p>
                     </div>
                     <SURGEExplainer />
@@ -108,10 +123,10 @@ export default function Home() {
             </section>
 
             {/* Ecosystem Section */}
-            <section className="py-32 px-4 relative z-10">
+            <section className="py-32 px-4 relative z-10 bg-neutral-900/20">
                 <div ref={ecosystemHeaderRef} className="text-center mb-16">
                     <h2 className="text-4xl md:text-6xl font-heading font-light text-white tracking-tight mb-4">
-                        Superchain Ecosystem
+                        Superchain <span className="text-accent">Ecosystem</span>
                     </h2>
                     <p className="text-lg text-neutral-400 max-w-2xl mx-auto font-light">
                         Built for the future of interoperable blockchains
@@ -126,7 +141,7 @@ export default function Home() {
             <section className="py-32 px-4 relative z-10">
                 <div ref={timelineHeaderRef} className="text-center mb-16">
                     <h2 className="text-4xl md:text-6xl font-heading font-light text-white tracking-tight mb-4">
-                        How It Works
+                        How It <span className="text-secondary">Works</span>
                     </h2>
                     <p className="text-lg text-neutral-400 max-w-2xl mx-auto font-light">
                         Create and mint your SURGE in four simple steps
@@ -140,15 +155,21 @@ export default function Home() {
             {/* CTA Section */}
             <section className="py-32 px-4 relative z-10 text-center">
                 <div ref={ctaRef} className="relative">
-                    <div className="max-w-4xl mx-auto minimal-card p-16 md:p-20 rounded-2xl border border-white/[0.08] relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-accent/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="max-w-4xl mx-auto glow-card p-16 md:p-20 relative overflow-hidden group">
+                        {/* Gradient overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         <div className="relative z-10 space-y-8">
+                            <div className="flex justify-center mb-6">
+                                <div className="p-3 rounded-full bg-accent/10 border border-accent/30">
+                                    <Zap className="w-8 h-8 text-accent" />
+                                </div>
+                            </div>
                             <h2 className="text-5xl md:text-7xl font-heading font-light text-white tracking-tight">
-                                Ready to Mint?
+                                Ready to <span className="gradient-text font-medium">Mint</span>?
                             </h2>
                             <p className="text-lg text-neutral-400 max-w-2xl mx-auto font-light">
-                                Join thousands of creators preserving memories on the Superchain.
+                                Join creators building on-chain recognition across the Superchain ecosystem.
                             </p>
                             <Link href="/generator">
                                 <Button size="lg" variant="default" className="mt-4">

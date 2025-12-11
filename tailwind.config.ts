@@ -11,24 +11,34 @@ const config: Config = {
             colors: {
                 background: "var(--background)",
                 foreground: "var(--foreground)",
-                // Minimal accent palette
+                // LayerZero-inspired accent palette
                 accent: {
-                    DEFAULT: "#1f3b55", // Sampled Navy Blue
-                    muted: "#15263d",
-                    light: "#2a4d6e",
+                    DEFAULT: "#0ae448", // Bright green (LayerZero style)
+                    muted: "#0ac23c",
+                    light: "#3dff6f",
+                    dark: "#089e38",
                 },
-                // Neutral grays
+                // Secondary accents
+                secondary: {
+                    DEFAULT: "#00d9ff", // Teal/cyan
+                    muted: "#00b8d9",
+                },
+                tertiary: {
+                    DEFAULT: "#ff0080", // Pink/magenta
+                    muted: "#d9006c",
+                },
+                // Neutral grays (darker for LayerZero style)
                 neutral: {
                     50: "#f5f5f5",
                     100: "#e0e0e0",
                     200: "#c0c0c0",
                     300: "#a0a0a0",
-                    400: "#808080",
-                    500: "#6a6a6a",
-                    600: "#4a4a4a",
-                    700: "#2a2a2a",
-                    800: "#1a1a1a",
-                    900: "#0a0a0a",
+                    400: "#707070",
+                    500: "#505050",
+                    600: "#2a2a2a",
+                    700: "#1a1a1a",
+                    800: "#141414",
+                    900: "#0d0d0d",
                 },
                 border: "var(--border)",
                 muted: {
@@ -36,15 +46,26 @@ const config: Config = {
                     foreground: "var(--text-secondary)",
                 },
                 card: {
-                    DEFAULT: "rgba(255, 255, 255, 0.02)",
+                    DEFAULT: "rgba(255, 255, 255, 0.03)",
                     foreground: "var(--text-primary)",
-                    hover: "rgba(255, 255, 255, 0.04)",
+                    hover: "rgba(255, 255, 255, 0.06)",
                 },
                 // Superchain Network Colors
                 base: "#0052FF",           // Base blue
-                optimism: "#FF0000",       // Optimism red
-                celo: "#FCCC16",           // Celo yellow/gold
-                zora: "#8A63D2",           // Zora purple
+                optimism: "#FF0420",       // Optimism red
+                celo: "#35D07F",           // Celo green
+                zora: "#5E3FBE",           // Zora purple
+                ink: "#7C3AED",            // Ink purple
+                lisk: "#0ABBED",           // Lisk blue
+                unichain: "#FF007A",       // Unichain pink
+                soneium: "#8B5CF6",        // Soneium purple
+            },
+            boxShadow: {
+                'glow-sm': '0 0 10px rgba(10, 228, 72, 0.3)',
+                'glow': '0 0 20px rgba(10, 228, 72, 0.4)',
+                'glow-lg': '0 0 30px rgba(10, 228, 72, 0.5)',
+                'glow-teal': '0 0 20px rgba(0, 217, 255, 0.4)',
+                'glow-pink': '0 0 20px rgba(255, 0, 128, 0.4)',
             },
             fontFamily: {
                 sans: ["var(--font-inter)", "sans-serif"],

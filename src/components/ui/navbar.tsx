@@ -26,7 +26,7 @@ export function Navbar() {
     };
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-black/60 backdrop-blur-sm">
+        <nav className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-neutral-900/80 backdrop-blur-md">
             <div className="container mx-auto px-6 h-16 flex items-center justify-between">
                 {/* Logo Area */}
                 <Link href="/" className="group flex-shrink-0">
@@ -41,35 +41,35 @@ export function Navbar() {
                         <Link
                             href="/"
                             onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/" } })}
-                            className="px-4 py-2 text-sm font-light text-neutral-400 hover:text-white hover:bg-white/[0.03] rounded-md transition-all duration-200"
+                            className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-all duration-200"
                         >
                             Home
                         </Link>
                         <Link
                             href="/generator"
                             onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/generator" } })}
-                            className="px-4 py-2 text-sm font-light text-neutral-400 hover:text-white hover:bg-white/[0.03] rounded-md transition-all duration-200"
+                            className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-all duration-200"
                         >
                             Generator
                         </Link>
                         <Link
                             href="/gallery"
                             onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/gallery" } })}
-                            className="px-4 py-2 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+                            className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-all duration-200"
                         >
                             Collection
                         </Link>
                         <Link
                             href="/identity"
                             onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/identity" } })}
-                            className="px-4 py-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-lg transition-all duration-200"
+                            className="px-4 py-2 text-sm font-medium text-secondary hover:text-secondary hover:bg-secondary/10 rounded-lg transition-all duration-200"
                         >
                             Identity
                         </Link>
                         <Link
                             href="/about"
                             onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/about" } })}
-                            className="px-4 py-2 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+                            className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-accent hover:bg-accent/5 rounded-lg transition-all duration-200"
                         >
                             About
                         </Link>
@@ -81,9 +81,9 @@ export function Navbar() {
                     {/* Connect Wallet Button */}
                     <button
                         onClick={() => open()}
-                        className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-light text-white hover:text-white bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.12] hover:border-white/[0.2] transition-all duration-200"
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-accent hover:text-accent bg-accent/5 hover:bg-accent/10 border border-accent/30 hover:border-accent/60 hover:shadow-glow-sm transition-all duration-300"
                     >
-                        <Wallet className="w-3.5 h-3.5" />
+                        <Wallet className="w-4 h-4" />
                         <span>
                             {isConnected && address ? formatAddress(address) : "Connect"}
                         </span>

@@ -80,18 +80,35 @@ export function SuperchainEcosystem() {
                 {networks.map((network) => (
                     <div
                         key={network.name}
-                        className="group relative p-6 border-2 border-white/10 hover:border-white/30 transition-all duration-300 bg-black/40 hover:bg-black/60"
+                        className="group relative p-6 bg-neutral-900/60 border border-white/[0.08] hover:border-white/20 rounded-xl transition-all duration-300 hover:bg-neutral-900/80 overflow-hidden"
+                        style={{
+                            boxShadow: `0 0 0 rgba(${hexToRgb(network.color)}, 0)`,
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.boxShadow = `0 0 25px rgba(${hexToRgb(network.color)}, 0.3)`;
+                            e.currentTarget.style.borderColor = network.color;
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.boxShadow = `0 0 0 rgba(${hexToRgb(network.color)}, 0)`;
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                        }}
                     >
                         {/* Color accent bar */}
                         <div
-                            className="absolute top-0 left-0 right-0 h-1 transition-all duration-300 group-hover:h-2"
-                            style={{ backgroundColor: network.color }}
+                            className="absolute top-0 left-0 right-0 h-1 transition-all duration-300 group-hover:h-[3px]"
+                            style={{
+                                backgroundColor: network.color,
+                                boxShadow: `0 0 10px ${network.color}`,
+                            }}
                         />
 
                         <div className="space-y-4 pt-2">
                             {/* Logo */}
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                                <div
+                                    className="w-12 h-12 relative rounded-full overflow-hidden border-2 transition-all duration-300"
+                                    style={{ borderColor: `${network.color}40` }}
+                                >
                                     <Image
                                         src={network.logo}
                                         alt={network.name}
@@ -101,7 +118,7 @@ export function SuperchainEcosystem() {
                                     />
                                 </div>
                                 <h3
-                                    className="text-xl font-bold uppercase tracking-wider"
+                                    className="text-lg font-bold tracking-wide"
                                     style={{ color: network.color }}
                                 >
                                     {network.name}
@@ -109,19 +126,19 @@ export function SuperchainEcosystem() {
                             </div>
 
                             {/* Description */}
-                            <p className="text-white/60 text-sm leading-relaxed min-h-[40px]">
+                            <p className="text-neutral-400 text-sm leading-relaxed min-h-[40px]">
                                 {network.description}
                             </p>
 
                             {/* Stats */}
-                            <div className="flex gap-4 pt-3 border-t border-white/10">
+                            <div className="flex gap-6 pt-3 border-t border-white/[0.06]">
                                 <div>
-                                    <div className="text-[10px] uppercase tracking-wider text-white/40">TPS</div>
-                                    <div className="text-sm font-bold text-white">{network.stats.tps}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-1">TPS</div>
+                                    <div className="text-sm font-semibold text-white">{network.stats.tps}</div>
                                 </div>
                                 <div>
-                                    <div className="text-[10px] uppercase tracking-wider text-white/40">Fee</div>
-                                    <div className="text-sm font-bold text-white">{network.stats.fee}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-1">Fee</div>
+                                    <div className="text-sm font-semibold text-accent">{network.stats.fee}</div>
                                 </div>
                             </div>
                         </div>
@@ -132,3 +149,10 @@ export function SuperchainEcosystem() {
     );
 }
 
+// Helper function to convert hex to RGB
+function hexToRgb(hex: string): string {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+        ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+        : '255, 255, 255';
+}

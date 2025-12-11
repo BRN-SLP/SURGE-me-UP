@@ -20,12 +20,12 @@ export function SURGEExplainer() {
         {
             icon: <Clock className="w-8 h-8" />,
             title: "Instant Minting",
-            description: "Fast and affordable NFT creation across multiple L2s"
+            description: "Fast and affordable NFT creation across 8 L2 networks"
         },
         {
             icon: <Globe className="w-8 h-8" />,
             title: "Cross-Chain",
-            description: "Seamlessly mint across Base, Optimism, and Celo"
+            description: "Seamlessly mint across Base, Optimism, Celo, Zora, and more"
         }
     ];
 
@@ -34,14 +34,14 @@ export function SURGEExplainer() {
             {features.map((feature, index) => (
                 <div
                     key={index}
-                    className="minimal-card p-8 rounded-xl border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 group"
+                    className="lz-card p-8 rounded-xl group"
                 >
                     <div className="flex items-start gap-4">
-                        <div className="p-4 rounded-xl bg-accent/20 border border-accent/40 text-accent shadow-[0_0_20px_rgba(31,59,85,0.3)] group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(31,59,85,0.5)] transition-all duration-300">
+                        <div className="p-4 rounded-xl bg-accent/10 border border-accent/30 text-accent shadow-glow-sm group-hover:scale-110 group-hover:shadow-glow transition-all duration-300">
                             {feature.icon}
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-xl font-heading font-normal text-white mb-2 group-hover:text-accent transition-colors duration-300">
+                            <h3 className="text-xl font-heading font-medium text-white mb-2 group-hover:text-accent transition-colors duration-300">
                                 {feature.title}
                             </h3>
                             <p className="text-neutral-400 font-light leading-relaxed">

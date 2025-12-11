@@ -23,36 +23,31 @@ export function ProcessTimeline() {
             icon: <Palette className="h-8 w-8" />,
             title: "Design Your SURGE",
             description: "Choose your event details, select a theme style, and add custom keywords",
-            color: "accent",
-            gradient: ""
+            color: "#0ae448"
         },
         {
             icon: <Sparkles className="h-8 w-8" />,
             title: "Generate with AI",
             description: "Our advanced AI creates stunning artwork in seconds using your specifications",
-            color: "accent",
-            gradient: ""
+            color: "#00d9ff"
         },
         {
             icon: <Wallet className="h-8 w-8" />,
             title: "Choose Network",
-            description: "Select Base, Optimism, or Celo based on your preference and community",
-            color: "accent",
-            gradient: ""
+            description: "Select from 8 Superchain networks based on your preference",
+            color: "#ff0080"
         },
         {
             icon: <CheckCircle className="h-8 w-8" />,
             title: "Mint & Share",
             description: "Mint your SURGE on-chain and share it with your community instantly",
-            color: "accent",
-            gradient: ""
+            color: "#0ae448"
         }
     ];
 
     useEffect(() => {
         if (!pathRef.current || !markerRef.current || !containerRef.current) return;
 
-        // Wait for layout
         const timer = setTimeout(() => {
             const path = pathRef.current;
             const marker = markerRef.current;
@@ -60,7 +55,6 @@ export function ProcessTimeline() {
 
             if (!path || !marker || !container) return;
 
-            // Calculate positions based on step elements
             const positions = stepRefs.current
                 .filter(el => el !== null)
                 .map(el => {
@@ -74,8 +68,7 @@ export function ProcessTimeline() {
 
             if (positions.length < 4) return;
 
-            // Create a more dynamic, serpentine path with S-curves
-            const offsetX = 120; // Horizontal wave amplitude
+            const offsetX = 120;
             const pathData = `
                 M ${positions[0].x} ${positions[0].y}
                 C ${positions[0].x + offsetX} ${positions[0].y + 40},
@@ -89,14 +82,12 @@ export function ProcessTimeline() {
 
             path.setAttribute('d', pathData);
 
-            // Draw the path progressively
             const pathLength = path.getTotalLength();
             gsap.set(path, {
                 strokeDasharray: pathLength,
                 strokeDashoffset: pathLength,
             });
 
-            // Animate the path drawing with longer duration
             gsap.to(path, {
                 strokeDashoffset: 0,
                 duration: 3,
@@ -136,7 +127,7 @@ export function ProcessTimeline() {
     return (
         <div className="space-y-12">
             <div ref={containerRef} className="relative max-w-4xl mx-auto">
-                {/* SVG Path connecting steps */}
+                {/* SVG Path */}
                 <svg
                     className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
                     style={{ zIndex: 1 }}
@@ -145,16 +136,16 @@ export function ProcessTimeline() {
                         ref={pathRef}
                         d=""
                         fill="none"
-                        stroke="url(#pathGradient)"
+                        stroke="url(#pathGradientLZ)"
                         strokeWidth="3"
                         strokeLinecap="round"
                         opacity="0.8"
                     />
                     <defs>
-                        <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#0052FF" stopOpacity="0.8" />
-                            <stop offset="50%" stopColor="#FF0420" stopOpacity="0.8" />
-                            <stop offset="100%" stopColor="#FCCC16" stopOpacity="0.8" />
+                        <linearGradient id="pathGradientLZ" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#0ae448" stopOpacity="0.8" />
+                            <stop offset="50%" stopColor="#00d9ff" stopOpacity="0.8" />
+                            <stop offset="100%" stopColor="#ff0080" stopOpacity="0.8" />
                         </linearGradient>
                     </defs>
                 </svg>
@@ -162,7 +153,7 @@ export function ProcessTimeline() {
                 {/* Animated marker */}
                 <div
                     ref={markerRef}
-                    className="absolute w-4 h-4 rounded-full bg-accent shadow-[0_0_30px_rgba(31,59,85,1)] border-2 border-white/50"
+                    className="absolute w-4 h-4 rounded-full bg-accent shadow-glow border-2 border-white/50"
                     style={{ zIndex: 2 }}
                 />
 
@@ -175,12 +166,21 @@ export function ProcessTimeline() {
                         >
                             {/* Content */}
                             <div className={`flex-1 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
-                                <div className={`minimal-card p-8 rounded-xl border border-white/[0.08] hover:border-white/[0.12] transition-all duration-300 group ${step.gradient}`}>
+                                <div className="lz-card p-8 rounded-xl group">
                                     <div className={`flex items-center gap-4 mb-4 ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}>
-                                        <div className={`p-4 rounded-xl bg-white/[0.02] border border-white/[0.08] transition-all duration-300 text-accent`}>
+                                        <div
+                                            className="p-4 rounded-xl bg-white/[0.03] border transition-all duration-300"
+                                            style={{
+                                                borderColor: `${step.color}40`,
+                                                color: step.color,
+                                                boxShadow: `0 0 15px ${step.color}30`
+                                            }}
+                                        >
                                             {step.icon}
                                         </div>
-                                        <h3 className={`text-xl font-heading font-normal text-white ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
+                                        <h3
+                                            className={`text-xl font-heading font-medium text-white ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
+                                        >
                                             {step.title}
                                         </h3>
                                     </div>
@@ -195,12 +195,18 @@ export function ProcessTimeline() {
                                 ref={(el) => { stepRefs.current[index] = el; }}
                                 className="relative z-10 flex-shrink-0"
                             >
-                                <div className={`w-16 h-16 rounded-full border-2 border-accent/40 bg-black/80 backdrop-blur-sm flex items-center justify-center`}>
-                                    <span className="text-xl font-light text-white">{index + 1}</span>
+                                <div
+                                    className="w-16 h-16 rounded-full border-2 bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center transition-all duration-300"
+                                    style={{
+                                        borderColor: `${step.color}60`,
+                                        boxShadow: `0 0 20px ${step.color}30`
+                                    }}
+                                >
+                                    <span className="text-xl font-medium text-white">{index + 1}</span>
                                 </div>
                             </div>
 
-                            {/* Spacer for alternating layout */}
+                            {/* Spacer */}
                             <div className="flex-1 hidden md:block" />
                         </div>
                     ))}
