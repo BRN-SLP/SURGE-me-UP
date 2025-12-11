@@ -124,6 +124,12 @@ graph TB
 | RFC-001-FAQ.md | `/docs/rfc/` | ✅ Complete |
 | RFC-001-Voting-Questions.md | `/docs/rfc/` | ✅ Complete |
 
+### Design Documents
+
+| Document | Path | Status |
+|----------|------|--------|
+| UI-UX-Specification.md | `/docs/design/` | ✅ Complete |
+
 ---
 
 ## 4. Agent Coordination Log
@@ -167,6 +173,43 @@ graph TB
 - Implement IdentityRegistry.sol contract
 - Implement HeritageBadges.sol contract
 - Community review and voting on RFC questions
+
+---
+
+### 2025-12-11 — UI/UX Design Agent
+
+**Task:** Create SURGE Identity UI/UX Specification
+
+**Status:** ✅ COMPLETED
+
+**Completed:**
+
+- [x] Created `/docs/design/` directory structure
+- [x] Created `UI-UX-Specification.md` (28 KB) — Complete UI/UX spec
+
+**Deliverables:**
+
+1. Information Architecture (site map, navigation)
+2. Wireframes for all 6 pages:
+   - `/identity` — Dashboard
+   - `/identity/link` — Wallet Linking
+   - `/identity/manage` — Manage Wallets
+   - `/identity/badges` — Heritage Badges
+   - `/identity/recover` — Future Placeholder
+   - `/verify/{wallet}` — Public Verification
+3. Visual Design System (colors, typography, components)
+4. User Flows (6 flows with mermaid diagrams)
+5. Copy & UX Guidelines
+
+**Files Created:**
+
+- `/docs/design/UI-UX-Specification.md` — Complete specification
+
+**Next Steps (for future agents/tasks):**
+
+- Create Figma mockups based on wireframes
+- Implement React components
+- Add to existing Next.js app
 
 ---
 
