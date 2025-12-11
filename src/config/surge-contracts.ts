@@ -13,6 +13,10 @@ export const SURGE_ADDRESSES = {
         reputation: '0x170fb7943d29299D6941029e5dF6C42281C90e47' as Address,
         factory: '0xEeB8fB619dD0cf0e185e590955Ba98487d6A3547' as Address,
         bridge: '0x43dB642E37750BE34fd5f1e34BFDd3aB5F9c7f22' as Address,
+        // Identity Layer contracts (Phase 0 - Base only)
+        identityAnchor: '0x60ECC66e77663083d417F9b3Eb946B4b7fc99F6a' as Address,
+        identityRegistry: '0x7Be26Cc7823eBf117E55079f8fB83833452514a2' as Address,
+        heritageBadges: '0xC7B3F56a1b1C5b9E2ad2fb4115a5e728F19F8032' as Address,
     },
     optimism: {
         chainId: 10 as const,

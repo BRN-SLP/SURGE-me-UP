@@ -4,7 +4,7 @@ async function main() {
     const [deployer] = await ethers.getSigners();
 
     console.log("Deploying SURGE Identity contracts with account:", deployer.address);
-    console.log("Account balance:", (await deployer.provider.getBalance(deployer.address)).toString());
+    console.log("Account balance:", (await deployer.getBalance()).toString());
 
     // ============================================
     // 1. Deploy IdentityAnchor
@@ -18,9 +18,8 @@ async function main() {
         "https://surge-me-up.vercel.app/api/identity/metadata/"
     );
 
-    await identityAnchor.waitForDeployment();
-    const anchorAddress = await identityAnchor.getAddress();
-    console.log("   IdentityAnchor deployed to:", anchorAddress);
+    await identityAnchor.deployed();
+    console.log("   IdentityAnchor deployed to:", identityAnchor.address);
 
     // ============================================
     // 2. Deploy IdentityRegistry
@@ -28,11 +27,10 @@ async function main() {
     console.log("\n2. Deploying IdentityRegistry...");
 
     const IdentityRegistry = await ethers.getContractFactory("IdentityRegistry");
-    const identityRegistry = await IdentityRegistry.deploy(anchorAddress);
+    const identityRegistry = await IdentityRegistry.deploy(identityAnchor.address);
 
-    await identityRegistry.waitForDeployment();
-    const registryAddress = await identityRegistry.getAddress();
-    console.log("   IdentityRegistry deployed to:", registryAddress);
+    await identityRegistry.deployed();
+    console.log("   IdentityRegistry deployed to:", identityRegistry.address);
 
     // ============================================
     // 3. Deploy HeritageBadges
@@ -41,20 +39,19 @@ async function main() {
 
     const HeritageBadges = await ethers.getContractFactory("HeritageBadges");
     const heritageBadges = await HeritageBadges.deploy(
-        registryAddress,
+        identityRegistry.address,
         "https://surge-me-up.vercel.app/api/heritage/metadata/"
     );
 
-    await heritageBadges.waitForDeployment();
-    const badgesAddress = await heritageBadges.getAddress();
-    console.log("   HeritageBadges deployed to:", badgesAddress);
+    await heritageBadges.deployed();
+    console.log("   HeritageBadges deployed to:", heritageBadges.address);
 
     // ============================================
     // 4. Configure: Set IdentityRegistry as minter for IdentityAnchor
     // ============================================
     console.log("\n4. Configuring IdentityAnchor...");
 
-    const setRegistryTx = await identityAnchor.setIdentityRegistry(registryAddress);
+    const setRegistryTx = await identityAnchor.setIdentityRegistry(identityRegistry.address);
     await setRegistryTx.wait();
     console.log("   IdentityRegistry set as authorized minter for IdentityAnchor");
 
@@ -67,18 +64,19 @@ async function main() {
 
     console.log("Contract Addresses:");
     console.log("-------------------");
-    console.log("IdentityAnchor:   ", anchorAddress);
-    console.log("IdentityRegistry: ", registryAddress);
-    console.log("HeritageBadges:   ", badgesAddress);
+    console.log("IdentityAnchor:   ", identityAnchor.address);
+    console.log("IdentityRegistry: ", identityRegistry.address);
+    console.log("HeritageBadges:   ", heritageBadges.address);
 
-    console.log("\nNetwork:", (await ethers.provider.getNetwork()).name);
-    console.log("Chain ID:", (await ethers.provider.getNetwork()).chainId.toString());
+    const network = await ethers.provider.getNetwork();
+    console.log("\nNetwork:", network.name);
+    console.log("Chain ID:", network.chainId);
 
     // Return addresses for programmatic use
     return {
-        identityAnchor: anchorAddress,
-        identityRegistry: registryAddress,
-        heritageBadges: badgesAddress,
+        identityAnchor: identityAnchor.address,
+        identityRegistry: identityRegistry.address,
+        heritageBadges: heritageBadges.address,
     };
 }
 
