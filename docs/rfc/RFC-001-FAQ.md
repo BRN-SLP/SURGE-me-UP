@@ -330,4 +330,4 @@ See [RFC-001-Voting-Questions.md](./RFC-001-Voting-Questions.md) for active gove
 
 ---
 
-*Document updated: 2025-12-11 — SURGE Core Team*
+Document updated: 2025-12-11 — SURGE Core Team
