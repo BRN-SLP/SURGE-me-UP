@@ -15,8 +15,8 @@ export function CreateIdentityCard({ onCreateIdentity, isLoading }: CreateIdenti
         <div className="max-w-lg mx-auto my-16 md:my-24">
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.03] to-white/[0.01] p-8 md:p-12 text-center">
                 {/* Icon */}
-                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-                    <Fingerprint className="w-8 h-8 text-indigo-400" />
+                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-base/10 border border-base/20 flex items-center justify-center">
+                    <Fingerprint className="w-8 h-8 text-base" />
                 </div>
 
                 {/* Title */}
@@ -52,7 +52,7 @@ export function CreateIdentityCard({ onCreateIdentity, isLoading }: CreateIdenti
                 <button
                     onClick={onCreateIdentity}
                     disabled={isLoading}
-                    className="w-full max-w-xs mx-auto px-6 py-3 bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-500/50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all"
+                    className="w-full max-w-xs mx-auto px-6 py-3 bg-primary hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-medium rounded-xl transition-all shadow-lg shadow-white/5"
                 >
                     {isLoading ? 'Creating...' : 'Create Identity'}
                 </button>
@@ -63,7 +63,7 @@ export function CreateIdentityCard({ onCreateIdentity, isLoading }: CreateIdenti
                         onClick={() => open()}
                         className="text-sm text-white/50 hover:text-white/70 transition-colors"
                     >
-                        Already have an identity? <span className="text-indigo-400">Link This Wallet</span>
+                        Already have an identity? <span className="text-base font-medium">Link This Wallet</span>
                     </button>
                 </div>
             </div>
@@ -80,7 +80,7 @@ interface FeatureItemProps {
 function FeatureItem({ icon: Icon, title, description }: FeatureItemProps) {
     return (
         <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-            <Icon className="w-5 h-5 text-indigo-400 mx-auto mb-2" />
+            <Icon className="w-5 h-5 text-base mx-auto mb-2" />
             <div className="text-sm font-medium text-white mb-1">{title}</div>
             <div className="text-xs text-white/50">{description}</div>
         </div>

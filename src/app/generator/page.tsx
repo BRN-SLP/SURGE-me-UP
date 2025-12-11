@@ -2,6 +2,7 @@
 
 import { GeneratorForm } from "@/components/generator/GeneratorForm";
 import dynamic from 'next/dynamic';
+import { Card } from "@/components/ui/card";
 
 const SocialProof = dynamic(() => import('@/components/ui/SocialProof').then(mod => mod.SocialProof), {
     loading: () => <div className="h-96 animate-pulse bg-white/5 rounded-3xl" />
@@ -20,29 +21,29 @@ export default function GeneratorPage() {
                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                         AI Model Ready
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-bold font-heading tracking-tight">
-                        Create Your <span className="text-gradient-optimism">Legacy</span>
+                    <h1 className="text-4xl md:text-6xl font-bold font-heading tracking-tight text-white">
+                        Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-optimism to-optimism-neon">Legacy</span>
                     </h1>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                         Generate unique SURGE artwork using our fine-tuned Pro AI model.
                     </p>
                 </div>
 
-                <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-base via-optimism to-celo rounded-2xl opacity-20 blur-xl group-hover:opacity-30 transition duration-1000"></div>
-                    <div className="relative bg-[#0A0A0A] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                        {/* Terminal Header */}
-                        <div className="h-10 bg-white/5 border-b border-white/5 flex items-center px-4 gap-2">
-                            <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                            <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                            <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-                            <div className="ml-4 text-xs text-white/30 font-mono">generator.exe</div>
+                <Card className="border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden shadow-2xl relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-base via-optimism to-celo opacity-50" />
+                    <div className="h-10 bg-white/5 border-b border-white/5 flex items-center px-4 justify-between">
+                        <div className="text-xs text-white/40 font-mono tracking-widest uppercase">
+                            // Generator.exe
                         </div>
-                        <div className="p-6 md:p-8">
-                            <GeneratorForm />
+                        <div className="flex gap-2">
+                            <div className="w-2 h-2 rounded-full bg-white/10"></div>
+                            <div className="w-2 h-2 rounded-full bg-white/10"></div>
                         </div>
                     </div>
-                </div>
+                    <div className="p-6 md:p-8">
+                        <GeneratorForm />
+                    </div>
+                </Card>
 
                 <SocialProof />
                 <OnboardingModal />

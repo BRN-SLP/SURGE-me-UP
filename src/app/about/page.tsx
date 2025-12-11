@@ -24,18 +24,18 @@ export default function AboutPage() {
             </div>
 
             <div ref={contentRef} className="grid gap-8">
-                <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl">
+                <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
                     <CardHeader>
                         <CardTitle className="text-3xl font-heading text-white">Our Mission</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-lg text-white/70 leading-relaxed">
-                            SURGE me UP is designed to simplify the creation and distribution of recognition tokens across the Superchain ecosystem. By leveraging the power of <span className="text-base-neon font-medium">Base</span>, <span className="text-optimism-neon font-medium">Optimism</span>, and <span className="text-celo-neon font-medium">Celo</span>, we provide a unified platform for communities to celebrate achievements without the friction of high fees or complex bridging.
+                            SURGE me UP is designed to simplify the creation and distribution of recognition tokens across the Superchain ecosystem. By leveraging the power of <span className="text-base-neon font-medium">Base</span>, <span className="text-optimism-neon font-medium">Optimism</span>, <span className="text-celo-neon font-medium">Celo</span>, and emerging networks like <span className="text-ink-neon font-medium">Ink</span> and <span className="text-unichain-neon font-medium">Unichain</span>, we provide a unified platform for communities to celebrate achievements without the friction of high fees or complex bridging.
                         </p>
                     </CardContent>
                 </Card>
 
-                <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl">
+                <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
                     <CardHeader>
                         <CardTitle className="text-3xl font-heading text-white">Roadmap</CardTitle>
                     </CardHeader>
@@ -52,7 +52,7 @@ export default function AboutPage() {
                             <div className="pb-4 pt-1">
                                 <h3 className="font-bold text-xl text-white mb-2">Phase 1: Launch</h3>
                                 <p className="text-white/60">
-                                    Initial release with AI-powered generator, support for Base, Optimism, and Celo, and basic minting functionality.
+                                    Initial release with AI-powered generator and support for 8 Superchain networks including Base, Optimism, Celo, Zora, Ink, and Lisk.
                                 </p>
                             </div>
                         </div>
@@ -88,7 +88,7 @@ export default function AboutPage() {
                 </Card>
 
                 <div className="grid md:grid-cols-2 gap-8">
-                    <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl">
+                    <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
                         <CardHeader>
                             <CardTitle className="text-2xl font-heading text-white">Technology Stack</CardTitle>
                         </CardHeader>

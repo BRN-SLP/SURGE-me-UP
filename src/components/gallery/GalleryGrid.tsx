@@ -87,15 +87,15 @@ export function GalleryGrid() {
 
     const getNetworkColor = (network: string) => {
         switch (network) {
-            case 'base': return 'from-[#0052FF] to-[#3374FF]';
-            case 'optimism': return 'from-[#FF0420] to-[#FF334B]';
-            case 'celo': return 'from-[#FCFF52] to-[#FEFF85]';
-            case 'zora': return 'from-black to-gray-700';
-            case 'ink': return 'from-[#9945FF] to-[#BC6BFF]';
-            case 'lisk': return 'from-[#4070F4] to-[#6690FF]';
-            case 'unichain': return 'from-[#FF007A] to-[#FF339A]';
-            case 'soneium': return 'from-[#5B21B6] to-[#7C3AED]';
-            default: return 'from-blue-500 to-purple-500';
+            case 'base': return 'from-base to-base-neon';
+            case 'optimism': return 'from-optimism to-optimism-neon';
+            case 'celo': return 'from-celo to-celo-neon text-black'; // Celo yellow needs dark text
+            case 'zora': return 'from-zora to-zora-neon';
+            case 'ink': return 'from-ink to-ink-neon';
+            case 'lisk': return 'from-lisk to-lisk-neon';
+            case 'unichain': return 'from-unichain to-unichain-neon';
+            case 'soneium': return 'from-soneium to-soneium-neon';
+            default: return 'from-gray-600 to-gray-500';
         }
     };
 

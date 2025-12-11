@@ -102,6 +102,10 @@ export default function ClaimPage() {
             case 10: return "Optimism";
             case 42220: return "Celo";
             case 7777777: return "Zora";
+            case 57073: return "Ink";
+            case 1135: return "Lisk";
+            case 130: return "Unichain";
+            case 1868: return "Soneium";
             default: return `Chain ${chainId}`;
         }
     };
@@ -109,12 +113,29 @@ export default function ClaimPage() {
     const networkName = getNetworkName(Number(metadata.chainId));
     const isWrongNetwork = chain && Number(chain.id) !== Number(metadata.chainId);
 
+    const getExplorerBaseUrl = (name: string) => {
+        switch (name.toLowerCase()) {
+            case 'base': return "https://basescan.org";
+            case 'optimism': return "https://optimistic.etherscan.io";
+            case 'celo': return "https://celoscan.io";
+            case 'zora': return "https://explorer.zora.energy";
+            case 'ink': return "https://explorer.inkonchain.com";
+            case 'lisk': return "https://blockscout.lisk.com";
+            case 'unichain': return "https://unichain.blockscout.com";
+            case 'soneium': return "https://soneium.blockscout.com";
+            default: return "https://etherscan.io";
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background/90 py-12 px-4">
-            <div className="max-w-4xl mx-auto space-y-8">
+        <div className="min-h-screen bg-background relative overflow-hidden py-12 px-4">
+            {/* Background Grid */}
+            <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none" />
+
+            <div className="max-w-4xl mx-auto space-y-8 relative z-10">
                 {/* Event Card */}
-                <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-                    <CardHeader className="bg-gradient-to-r from-base/20 via-optimism/20 to-celo/20 border-b border-white/10">
+                <Card className="border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden shadow-2xl">
+                    <CardHeader className="bg-white/5 border-b border-white/10">
                         <div className="flex items-start justify-between">
                             <div className="space-y-2 flex-1">
                                 <CardTitle className="text-3xl font-heading text-white">{metadata.name}</CardTitle>
@@ -185,7 +206,7 @@ export default function ClaimPage() {
                                             </Button>
                                         </Link>
                                         <a
-                                            href={`https://${networkName.toLowerCase() === 'base' ? 'basescan.org' : 'etherscan.io'}/tx/${hash}`}
+                                            href={`${getExplorerBaseUrl(networkName)}/tx/${hash}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >

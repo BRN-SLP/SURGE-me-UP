@@ -31,11 +31,39 @@ const config: Config = {
                 },
                 border: "#1F2833", // Subtle border
 
-                // Superchain Network Colors (Preserved)
-                base: "#0052FF",
-                optimism: "#FF0000",
-                celo: "#FCCC16",
-                zora: "#8A63D2",
+                // Superchain Network Colors
+                base: {
+                    DEFAULT: "#0052FF",
+                    neon: "#3374FF",
+                },
+                optimism: {
+                    DEFAULT: "#FF0000",
+                    neon: "#FF334B",
+                },
+                celo: {
+                    DEFAULT: "#FCCC16",
+                    neon: "#FEFF85",
+                },
+                zora: {
+                    DEFAULT: "#8A63D2",
+                    neon: "#A888E0",
+                },
+                ink: {
+                    DEFAULT: "#9945FF",
+                    neon: "#BC6BFF",
+                },
+                lisk: {
+                    DEFAULT: "#4070F4",
+                    neon: "#6690FF",
+                },
+                unichain: {
+                    DEFAULT: "#FF007A",
+                    neon: "#FF339A",
+                },
+                soneium: {
+                    DEFAULT: "#5B21B6",
+                    neon: "#7C3AED",
+                },
             },
             fontFamily: {
                 sans: ["var(--font-inter)", "sans-serif"],

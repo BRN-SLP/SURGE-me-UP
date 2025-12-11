@@ -104,10 +104,10 @@ export default function LinkWalletPage() {
             <div className="max-w-2xl mx-auto">
                 {/* Step: Introduction */}
                 {step === 'intro' && (
-                    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.03] to-white/[0.01] p-8 md:p-12">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 md:p-12 shadow-2xl">
                         <div className="text-center mb-8">
-                            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-                                <LinkIcon className="w-8 h-8 text-indigo-400" />
+                            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-base/10 border border-base/20 flex items-center justify-center">
+                                <LinkIcon className="w-8 h-8 text-base" />
                             </div>
                             <h1 className="text-2xl md:text-3xl font-semibold text-white mb-3">
                                 Link a Wallet to Your Identity
@@ -141,7 +141,7 @@ export default function LinkWalletPage() {
                         <div className="flex flex-col sm:flex-row gap-4">
                             <button
                                 onClick={() => setStep('signing')}
-                                className="flex-1 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-xl transition-all"
+                                className="flex-1 px-6 py-3 bg-primary hover:bg-white/90 text-black font-medium rounded-xl transition-all shadow-lg shadow-white/5"
                             >
                                 Start Linking Process
                             </button>
@@ -157,7 +157,7 @@ export default function LinkWalletPage() {
 
                 {/* Step: Signing */}
                 {step === 'signing' && (
-                    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.03] to-white/[0.01] p-8 md:p-12">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 md:p-12 shadow-2xl">
                         <div className="text-center mb-8">
                             <h1 className="text-2xl font-semibold text-white mb-2">
                                 Verify Wallet Ownership
@@ -178,13 +178,13 @@ export default function LinkWalletPage() {
                                 )}
                             </div>
                             <div className="font-mono text-white mb-4">
-                                {address ? formatAddress(address) : '...'} <span className="text-indigo-400 text-sm">(currently connected)</span>
+                                {address ? formatAddress(address) : '...'} <span className="text-base text-sm">(currently connected)</span>
                             </div>
                             {!existingSigned && (
                                 <button
                                     onClick={handleSignExisting}
                                     disabled={isProcessing}
-                                    className="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-500/50 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
+                                    className="w-full px-4 py-2 bg-primary hover:bg-white/90 disabled:opacity-50 text-black font-medium rounded-lg transition-all flex items-center justify-center gap-2"
                                 >
                                     {isProcessing ? (
                                         <>
@@ -248,7 +248,7 @@ export default function LinkWalletPage() {
                                         <button
                                             onClick={handleSignNew}
                                             disabled={isProcessing}
-                                            className="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-500/50 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
+                                            className="w-full px-4 py-2 bg-primary hover:bg-white/90 disabled:opacity-50 text-black font-medium rounded-lg transition-all flex items-center justify-center gap-2"
                                         >
                                             {isProcessing ? (
                                                 <>
@@ -272,7 +272,7 @@ export default function LinkWalletPage() {
 
                 {/* Step: Confirmation */}
                 {step === 'confirmation' && (
-                    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.03] to-white/[0.01] p-8 md:p-12 text-center">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 md:p-12 text-center shadow-2xl">
                         <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
                             <Check className="w-8 h-8 text-emerald-400" />
                         </div>
