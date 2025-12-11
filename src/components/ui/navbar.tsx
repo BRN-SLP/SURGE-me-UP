@@ -60,6 +60,13 @@ export function Navbar() {
                             Collection
                         </Link>
                         <Link
+                            href="/identity"
+                            onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/identity" } })}
+                            className="px-4 py-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-lg transition-all duration-200"
+                        >
+                            Identity
+                        </Link>
+                        <Link
                             href="/about"
                             onClick={() => trackEvent({ name: "NAVIGATION_CLICK", properties: { to: "/about" } })}
                             className="px-4 py-2 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
