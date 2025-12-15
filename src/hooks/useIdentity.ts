@@ -81,22 +81,24 @@ export function useIdentity() {
     const ensureBaseNetwork = useCallback(async () => {
         if (!walletProvider) throw new Error('Wallet not connected');
 
+        const provider = walletProvider as any;
+
         try {
             // Get current chainId
-            const currentChainId = await walletProvider.request({ method: 'eth_chainId' });
+            const currentChainId = await provider.request({ method: 'eth_chainId' });
             const currentChainIdDecimal = parseInt(currentChainId as string, 16);
 
             if (currentChainIdDecimal !== BASE_CHAIN_ID) {
                 // Request network switch
                 try {
-                    await walletProvider.request({
+                    await provider.request({
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: `0x${BASE_CHAIN_ID.toString(16)}` }],
                     });
                 } catch (switchError: unknown) {
                     // If chain not added, add it
                     if ((switchError as { code?: number })?.code === 4902) {
-                        await walletProvider.request({
+                        await provider.request({
                             method: 'wallet_addEthereumChain',
                             params: [{
                                 chainId: `0x${BASE_CHAIN_ID.toString(16)}`,
@@ -126,7 +128,7 @@ export function useIdentity() {
             await ensureBaseNetwork();
         }
 
-        const provider = new BrowserProvider(walletProvider);
+        const provider = new BrowserProvider(walletProvider as any);
         const registryAddress = SURGE_ADDRESSES.base.identityRegistry;
 
         if (withSigner) {
