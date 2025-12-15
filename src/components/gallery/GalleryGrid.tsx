@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, ExternalLink, Calendar, Twitter, Heart, Copy, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { AnimatePresence } from "framer-motion";
+import { MinimalCard } from "./MinimalCard";
+import { FilterPills } from "./FilterPills";
 
 interface CreatedSURGEEvent {
     title: string;
@@ -17,7 +20,10 @@ interface CreatedSURGEEvent {
     eventAddress?: string; // Deployed contract address for claim link
 }
 
+import { motion } from "framer-motion";
+
 export function GalleryGrid() {
+    const [selectedNetwork, setSelectedNetwork] = useState("all");
     const [events, setEvents] = useState<CreatedSURGEEvent[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [likedEvents, setLikedEvents] = useState<string[]>([]);
@@ -85,23 +91,9 @@ export function GalleryGrid() {
         }
     };
 
-    const getNetworkColor = (network: string) => {
-        switch (network) {
-            case 'base': return 'from-base to-base-neon';
-            case 'optimism': return 'from-optimism to-optimism-neon';
-            case 'celo': return 'from-celo to-celo-neon text-black'; // Celo yellow needs dark text
-            case 'zora': return 'from-zora to-zora-neon';
-            case 'ink': return 'from-ink to-ink-neon';
-            case 'lisk': return 'from-lisk to-lisk-neon';
-            case 'unichain': return 'from-unichain to-unichain-neon';
-            case 'soneium': return 'from-soneium to-soneium-neon';
-            default: return 'from-gray-600 to-gray-500';
-        }
-    };
-
     const getExplorerUrl = (network: string, txHash?: string) => {
         if (!txHash) return null;
-
+        // ... (Keep existing switch case logic or simplify if already imported helpers exist, but sticking to inline for now)
         switch (network) {
             case 'base': return `https://basescan.org/tx/${txHash}`;
             case 'optimism': return `https://optimistic.etherscan.io/tx/${txHash}`;
@@ -115,11 +107,15 @@ export function GalleryGrid() {
         }
     };
 
+    const filteredEvents = events.filter(e =>
+        selectedNetwork === "all" ? true : e.network === selectedNetwork
+    );
+
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-96 rounded-3xl bg-white/5 animate-pulse" />
+                    <div key={i} className="aspect-[4/5] rounded-3xl bg-white/5 animate-pulse" />
                 ))}
             </div>
         );
@@ -127,18 +123,18 @@ export function GalleryGrid() {
 
     if (events.length === 0) {
         return (
-            <div className="text-center py-20">
-                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Sparkles className="w-10 h-10 text-white/20" />
+            <div className="text-center py-24">
+                <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm border border-white/5">
+                    <Sparkles className="w-12 h-12 text-white/20" />
                 </div>
-                <h3 className="text-2xl font-semibold text-white mb-3">No Events Yet</h3>
-                <p className="text-white/60 mb-8 max-w-md mx-auto">
-                    Start creating SURGE events and they'll appear here.
+                <h3 className="text-3xl font-bold text-white mb-4">No Events Yet</h3>
+                <p className="text-white/60 mb-10 max-w-md mx-auto text-lg">
+                    Your collection is empty. Start creating SURGE events on the Superchain today.
                 </p>
                 <Link href="/generator">
-                    <Button className="bg-gradient-to-r from-base via-optimism to-celo text-white">
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        Create Your First Event
+                    <Button className="h-14 px-8 rounded-full text-lg font-bold bg-gradient-to-r from-purple-600 to-cyan-600 hover:opacity-90 transition-opacity">
+                        <Sparkles className="w-5 h-5 mr-2" />
+                        Create First Event
                     </Button>
                 </Link>
             </div>
@@ -146,105 +142,62 @@ export function GalleryGrid() {
     }
 
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between">
+        <div className="space-y-12">
+
+            {/* Controls */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-3xl font-heading font-bold text-white">My SURGE Events</h2>
-                    <p className="text-white/60 mt-1">{events.length} event{events.length !== 1 ? 's' : ''} created</p>
+                    {/* Optional: Add stats or title here if not in parent page */}
                 </div>
-                <Link href="/generator">
-                    <Button variant="outline" className="border-white/10 text-white hover:bg-white/10">
+                <FilterPills selected={selectedNetwork} onSelect={setSelectedNetwork} />
+                <Link href="/generator" className="hidden md:block">
+                    <Button variant="outline" className="border-white/10 text-white hover:bg-white/10 rounded-full">
                         <Sparkles className="w-4 h-4 mr-2" />
-                        Create New Event
+                        New Event
                     </Button>
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {events.map((event, index) => {
-                    const eventId = `${event.title}-${event.createdAt}`;
-                    const isLiked = likedEvents.includes(eventId);
-                    const explorerUrl = getExplorerUrl(event.network, event.txHash);
+            {/* Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <AnimatePresence mode="popLayout">
+                    {filteredEvents.map((event) => {
+                        const eventId = `${event.title}-${event.createdAt}`;
+                        const isLiked = likedEvents.includes(eventId);
 
-                    return (
-                        <Card key={index} className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden group hover:border-white/20 transition-all duration-300">
-                            {event.imageUrl && (
-                                <div className="aspect-square overflow-hidden relative">
-                                    <img
-                                        src={event.imageUrl}
-                                        alt={event.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
-                                    <div className={`absolute top-3 right-3 px-3 py-1 rounded-full bg-gradient-to-r ${getNetworkColor(event.network)} text-white text-xs font-bold uppercase backdrop-blur-sm`}>
-                                        {event.network}
-                                    </div>
-                                    <button
-                                        onClick={() => toggleLike(eventId)}
-                                        className="absolute top-3 left-3 p-2 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-colors"
-                                    >
-                                        <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-white'}`} />
-                                    </button>
-                                </div>
-                            )}
-
-                            <div className="p-6 space-y-4">
-                                <div>
-                                    <h3 className="font-heading font-bold text-lg text-white mb-2 line-clamp-2">
-                                        {event.title}
-                                    </h3>
-                                    <p className="text-white/60 text-sm line-clamp-2">
-                                        {event.description}
-                                    </p>
-                                </div>
-
-                                <div className="flex items-center gap-2 text-xs text-white/50">
-                                    <Calendar className="w-3 h-3" />
-                                    <span>{new Date(event.createdAt).toLocaleDateString()}</span>
-                                </div>
-
-                                <div className="flex gap-2 pt-2">
-                                    {event.eventAddress && (
-                                        <Button
-                                            variant="default"
-                                            size="sm"
-                                            onClick={() => handleCopyClaimLink(event)}
-                                            className="flex-1 bg-green-600 hover:bg-green-500 text-white"
-                                        >
-                                            <LinkIcon className="w-3 h-3 mr-1" />
-                                            {copiedLink === event.eventAddress ? "Copied!" : "Claim Link"}
-                                        </Button>
-                                    )}
-                                    {explorerUrl && (
-                                        <a
-                                            href={explorerUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex-1"
-                                        >
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="w-full border-white/10 text-white/70 hover:text-white hover:bg-white/10"
-                                            >
-                                                <ExternalLink className="w-3 h-3 mr-1" />
-                                                Explorer
-                                            </Button>
-                                        </a>
-                                    )}
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleShare(event)}
-                                        className="border-white/10 text-white/70 hover:text-white hover:bg-white/10"
-                                    >
-                                        <Twitter className="w-3 h-3" />
-                                    </Button>
-                                </div>
-                            </div>
-                        </Card>
-                    );
-                })}
+                        return (
+                            <MinimalCard
+                                key={eventId}
+                                title={event.title}
+                                description={event.description}
+                                createdAt={event.createdAt}
+                                imageUrl={event.imageUrl || ''}
+                                network={event.network}
+                                isLiked={isLiked}
+                                onLike={() => toggleLike(eventId)}
+                                onShare={() => handleShare(event)}
+                                onCopyLink={event.eventAddress ? () => handleCopyClaimLink(event) : undefined}
+                                explorerUrl={getExplorerUrl(event.network, event.txHash)}
+                                linkCopied={copiedLink === event.eventAddress}
+                            />
+                        );
+                    })}
+                </AnimatePresence>
             </div>
+
+            {/* Empty Filter State */}
+            {filteredEvents.length === 0 && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center py-20"
+                >
+                    <p className="text-white/40">No events found for {selectedNetwork}.</p>
+                </motion.div>
+            )}
         </div>
     );
 }
+
+
+

@@ -24,6 +24,10 @@
     --font-heading: var(--font-outfit), sans-serif;
 }
 
+html {
+    font-size: 90%;
+}
+
 /* Fallback for variables used in code but not in theme block if strictly needed */
 :root {
     --background: #0B0C10;
@@ -58,7 +62,29 @@ body {
     background: #45A29E;
 }
 
+
 ::selection {
     background: #66FCF1;
     color: #0B0C10;
+}
+
+/* Button Flair Animation */
+@keyframes flair {
+    0% {
+        transform: translate(50%, 50%) scale(0);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+.animate-flair {
+    animation: flair 0.6s ease-out forwards;
 }

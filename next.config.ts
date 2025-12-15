@@ -1,13 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: false,
-  typescript: {
-    // Required due to @safe-global/protocol-kit ethers v5/v6 type conflict
-    ignoreBuildErrors: true,
-  },
+  /* config options here */
+  transpilePackages: [
+    '@reown/appkit',
+    '@reown/appkit-adapter-wagmi',
+    'wagmi',
+    '@wagmi/core',
+    '@wagmi/connectors',
+    'viem',
+  ],
   webpack: (config) => {
-    config.externals.push("pino-pretty", "lokijs", "encoding", "@react-native-async-storage/async-storage");
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
     return config;
   },
 };

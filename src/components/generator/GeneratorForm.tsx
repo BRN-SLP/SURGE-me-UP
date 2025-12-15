@@ -23,6 +23,10 @@ import { useFadeIn, useMagnetic } from "@/lib/gsap-hooks";
 import { NetworkSelector } from "./NetworkSelector";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { NetworkStep } from "./steps/NetworkStep";
+import { DetailsStep } from "./steps/DetailsStep";
+import { VisualsStep } from "./steps/VisualsStep";
+import { ReviewStep } from "./steps/ReviewStep";
 
 // Define additional Superchain networks
 const ink = defineChain({
@@ -670,373 +674,165 @@ export function GeneratorForm() {
         setIsBridging(false);
     };
 
+    // --- Multi-step Wizard State ---
+    const [currentStep, setCurrentStep] = useState(1);
+    const totalSteps = 4;
+
+    const nextStep = () => {
+        // Validate before moving
+        if (currentStep === 2) {
+            if (!validate('title', formData.title) || !validate('description', formData.description)) {
+                return;
+            }
+        }
+        if (currentStep === 3) {
+            if (!formData.imageUrl) {
+                setError({ title: "Visual Required", message: "Please generate an image first.", canRetry: false });
+                return;
+            }
+        }
+
+        if (currentStep < totalSteps) {
+            setCurrentStep(curr => curr + 1);
+        }
+    };
+
+    const prevStep = () => {
+        if (currentStep > 1) {
+            setCurrentStep(curr => curr - 1);
+        }
+    };
+
+    // --- Render ---
+
     return (
-        <div ref={formRef} className="grid gap-12 xl:grid-cols-2 items-start relative">
-            {/* Dynamic Background */}
+        <div ref={formRef} className="max-w-4xl mx-auto relative min-h-[500px]">
+            {/* Background Blob - Adjusted for compactness */}
             <div
                 ref={bgRef}
-                className="absolute inset-0 -z-10 blur-[100px] opacity-50 transition-all duration-1000"
-                style={{ background: 'radial-gradient(circle at 50% 0%, #0052FF40 0%, transparent 70%)' }}
+                className="absolute inset-0 -z-10 blur-[100px] opacity-30 transition-all duration-1000"
+                style={{ background: 'radial-gradient(circle at 50% 20%, #0052FF40 0%, transparent 70%)' }}
             />
-            <div className="space-y-6">
 
-                <Card className="glass-panel border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-                    <CardContent className="space-y-6 pt-6">
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Network</label>
-                                <HelpButton content="Drag a network logo into the box to select it. Base and Optimism are L2 solutions with low fees." />
-                            </div>
+            {/* Success Modal */}
+            {showSuccessModal && (
+                <SuccessModal
+                    isOpen={showSuccessModal}
+                    onClose={() => setShowSuccessModal(false)}
+                    onCreateAnother={handleCreateAnother}
+                    surgeTitle={formData.title}
+                    surgeImage={formData.imageUrl || ''}
+                    onDownload={handleDownload}
+                    eventAddress={eventAddress || undefined}
+                />
+            )}
 
-                            <NetworkSelector
-                                selectedNetwork={formData.network}
-                                onSelect={handleNetworkSelect}
-                            />
-
-                            {/* Network status indicator */}
-                            {isConnected && chain && (() => {
-                                const targetChainId = getTargetChainId();
-                                const isNetworkMatched = chain.id === targetChainId;
-
-                                if (!isNetworkMatched) {
-                                    return (
-                                        <div className="flex items-center gap-2 text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2 mt-4">
-                                            <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-                                            <span>Connected to {chain.name}, but {formData.network.charAt(0).toUpperCase() + formData.network.slice(1)} is selected. Switch your wallet network.</span>
-                                        </div>
-                                    );
-                                }
-
-                                return (
-                                    <div className="flex items-center gap-2 text-xs text-green-400 mt-4">
-                                        <div className="w-2 h-2 rounded-full bg-green-400" />
-                                        <span>Connected to {chain.name}</span>
-                                    </div>
-                                );
-                            })()}
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Event Title *</label>
-                            <Input
-                                placeholder="e.g. Superchain Summit 2024"
-                                value={formData.title}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, title: e.target.value });
-                                    validate('title', e.target.value);
-                                }}
-                                onBlur={(e) => validate('title', e.target.value)}
-                                className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-lg placeholder:text-white/30 text-white ${errors.title ? 'border-red-500 focus:border-red-500' : ''
-                                    }`}
-                                aria-label="Event Title"
-                                aria-invalid={!!errors.title}
-                                aria-describedby={errors.title ? "title-error" : undefined}
-                            />
-                            {errors.title && (
-                                <p id="title-error" role="alert" className="text-sm text-red-400">{errors.title}</p>
-                            )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Description *</label>
-                            <textarea
-                                placeholder="Describe your event and what makes it special..."
-                                value={formData.description}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, description: e.target.value });
-                                    validate('description', e.target.value);
-                                }}
-                                onBlur={(e) => validate('description', e.target.value)}
-                                className={`bg-black/40 border-white/20 focus:border-white/40 p-3 text-white placeholder:text-white/30 rounded-lg w-full min-h-[100px] resize-y ${errors.description ? 'border-red-500 focus:border-red-500' : ''
-                                    }`}
-                                aria-label="Event Description"
-                                aria-invalid={!!errors.description}
-                                aria-describedby={errors.description ? "description-error" : undefined}
-                            />
-                            {errors.description && (
-                                <p id="description-error" role="alert" className="text-sm text-red-400">{errors.description}</p>
-                            )}
-                        </div>
-
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Distribution Mode *</label>
-                                <HelpButton content="Public: Anyone can claim. Whitelist: Requires merkle proof. Signature: Requires server signature." />
-                            </div>
-                            <div className="grid grid-cols-3 gap-2">
-                                <Button
-                                    variant={formData.distributionMode === DistributionMode.Public ? "default" : "outline"}
-                                    onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Public })}
-                                    className={`h-12 font-medium hover:scale-100 ${formData.distributionMode === DistributionMode.Public
-                                        ? "bg-white/90 text-black hover:bg-white"
-                                        : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
-                                        }`}
-                                    type="button"
-                                >
-                                    Public
-                                </Button>
-                                <Button
-                                    variant={formData.distributionMode === DistributionMode.Whitelist ? "default" : "outline"}
-                                    onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Whitelist })}
-                                    className={`h-12 font-medium hover:scale-100 ${formData.distributionMode === DistributionMode.Whitelist
-                                        ? "bg-white/90 text-black hover:bg-white"
-                                        : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
-                                        }`}
-                                    type="button"
-                                >
-                                    Whitelist
-                                </Button>
-                                <Button
-                                    variant={formData.distributionMode === DistributionMode.Signature ? "default" : "outline"}
-                                    onClick={() => setFormData({ ...formData, distributionMode: DistributionMode.Signature })}
-                                    className={`h-12 font-medium hover:scale-100 ${formData.distributionMode === DistributionMode.Signature
-                                        ? "bg-white/90 text-black hover:bg-white"
-                                        : "border-white/10 text-white/70 hover:text-white hover:bg-white/10"
-                                        }`}
-                                    type="button"
-                                >
-                                    Signature
-                                </Button>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Max Supply *</label>
-                                    <HelpButton content="Maximum number of tokens that can be claimed (1-10,000)" />
-                                </div>
-                                <Input
-                                    type="number"
-                                    min="1"
-                                    max="10000"
-                                    placeholder="100"
-                                    value={formData.maxSupply}
-                                    onChange={(e) => {
-                                        const value = parseInt(e.target.value) || 0;
-                                        setFormData({ ...formData, maxSupply: value });
-                                        validate('maxSupply', value.toString());
-                                    }}
-                                    onBlur={(e) => validate('maxSupply', (parseInt(e.target.value) || 0).toString())}
-                                    className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-white ${errors.maxSupply ? 'border-red-500 focus:border-red-500' : ''
-                                        }`}
-                                    aria-label="Max Supply"
-                                    aria-invalid={!!errors.maxSupply}
-                                    aria-describedby={errors.maxSupply ? "maxSupply-error" : undefined}
-                                />
-                                {errors.maxSupply && (
-                                    <p id="maxSupply-error" role="alert" className="text-sm text-red-400">{errors.maxSupply}</p>
-                                )}
-                            </div>
-
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Expiry (Optional)</label>
-                                    <HelpButton content="When should claims stop? Leave empty for no expiration." />
-                                </div>
-                                <Input
-                                    type="datetime-local"
-                                    value={formData.expiryDate}
-                                    onChange={(e) => {
-                                        setFormData({ ...formData, expiryDate: e.target.value });
-                                        validate('expiryDate', e.target.value);
-                                    }}
-                                    onBlur={(e) => validate('expiryDate', e.target.value)}
-                                    className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-white ${errors.expiryDate ? 'border-red-500 focus:border-red-500' : ''
-                                        }`}
-                                    aria-label="Expiry Date"
-                                    aria-invalid={!!errors.expiryDate}
-                                    aria-describedby={errors.expiryDate ? "expiryDate-error" : undefined}
-                                />
-                                {errors.expiryDate && (
-                                    <p id="expiryDate-error" role="alert" className="text-sm text-red-400">{errors.expiryDate}</p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Date</label>
-                            <Input
-                                type="date"
-                                value={formData.date}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, date: e.target.value });
-                                    validate('date', e.target.value);
-                                }}
-                                onBlur={(e) => validate('date', e.target.value)}
-                                className={`bg-black/40 border-white/20 focus:border-white/40 h-12 text-white ${errors.date ? 'border-red-500 focus:border-red-500' : ''
-                                    }`}
-                                aria-label="Event Date"
-                                aria-invalid={!!errors.date}
-                                aria-describedby={errors.date ? "date-error" : undefined}
-                            />
-                            {errors.date && (
-                                <p id="date-error" role="alert" className="text-sm text-red-400">{errors.date}</p>
-                            )}
-                        </div>
-
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">SURGE Style</label>
-                                <HelpButton content="Select an artistic style for your badge. AI will generate a unique design based on this style." />
-                            </div>
-                            <div className="grid grid-cols-3 gap-2">
-                                {(["sketch", "modern", "flat", "pixel", "monochrome", "abstract"] as const).map((theme) => (
-                                    <Button
-                                        key={theme}
-                                        variant={formData.theme === theme ? "default" : "ghost"}
-                                        size="sm"
-                                        onClick={() => setFormData({ ...formData, theme })}
-                                        className={`capitalize h-10 font-medium ${formData.theme === theme
-                                            ? "bg-white/90 text-black hover:bg-white"
-                                            : "text-white/60 hover:text-white hover:bg-white/10 border border-white/10"
-                                            }`}
-                                    >
-                                        {theme}
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                                <label className="text-sm font-medium text-white/70 uppercase tracking-wider">Keywords (Optional)</label>
-                                <HelpButton content="Add specific visual elements you want to see (e.g., 'futuristic city', 'golden trophy')." />
-                            </div>
-                            <Input
-                                placeholder="e.g., clouds, boat, fish, summer"
-                                value={formData.keywords}
-                                onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
-                                className="bg-black/40 border-white/20 focus:border-white/40 h-12 text-white placeholder:text-white/30"
-                            />
-                            <p className="text-xs text-white/50">Add visual themes and elements for your SURGE</p>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {error && (
+            {/* Error Alert */}
+            {error && (
+                <div className="mb-4 animate-in slide-in-from-top-2 p-4">
                     <ErrorAlert
                         title={error.title}
                         message={error.message}
-                        onRetry={error.canRetry ? handleGenerateAI : undefined}
+                        onRetry={error.canRetry ? () => setError(null) : undefined}
                         onDismiss={() => setError(null)}
+                    />
+                </div>
+            )}
+
+            {/* Stepper Header - Compacted */}
+            <div className="flex justify-between items-center mb-6 px-4 pt-6 relative z-10">
+                {[1, 2, 3, 4].map((step) => {
+                    const isActive = step === currentStep;
+                    const isCompleted = step < currentStep;
+                    const labels = ["Network", "Details", "Visuals", "Review"];
+
+                    return (
+                        <div key={step} className="flex flex-col items-center gap-1.5 relative z-10">
+                            <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs border-2 transition-all duration-500 
+                                ${isActive ? "bg-white text-black border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.4)]" :
+                                        isCompleted ? "bg-green-500 text-white border-green-500" : "bg-white/5 text-white/30 border-white/10"}
+                                `}
+                            >
+                                {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : step}
+                            </div>
+                            <span className={`text-[10px] uppercase tracking-wider font-medium transition-colors duration-300 ${isActive ? "text-white" : "text-white/30"}`}>
+                                {labels[step - 1]}
+                            </span>
+                        </div>
+                    )
+                })}
+                {/* Progress Bar Line */}
+                <div className="absolute top-4 left-8 right-8 h-[2px] bg-white/10 -z-0">
+                    <div
+                        className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 transition-all duration-500 ease-out"
+                        style={{ width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` }}
+                    />
+                </div>
+            </div>
+
+            {/* Step Content - Compacted */}
+            <div className="rounded-b-3xl p-6 md:p-8 relative overflow-hidden">
+                {currentStep === 1 && (
+                    <NetworkStep
+                        selectedNetwork={formData.network}
+                        onSelect={handleNetworkSelect}
+                        isConnected={isConnected}
+                        chain={chain}
+                        getTargetChainId={getTargetChainId}
                     />
                 )}
 
-                <div className="flex gap-4">
+                {currentStep === 2 && (
+                    <DetailsStep
+                        formData={formData}
+                        setFormData={setFormData}
+                        validate={validate}
+                        errors={errors}
+                    />
+                )}
+
+                {currentStep === 3 && (
+                    <VisualsStep
+                        formData={formData}
+                        setFormData={setFormData}
+                        handleGenerateAI={handleGenerateAI}
+                        isGenerating={isGenerating}
+                        generationProgress={generationProgress}
+                        themes={Object.keys(stylePrompts)}
+                    />
+                )}
+
+                {currentStep === 4 && (
+                    <ReviewStep
+                        formData={formData}
+                        handleCreateEvent={handleCreateEvent}
+                        isCreatingEvent={isCreatingEvent || isMinting}
+                        isConfirmingEvent={isConfirmingEvent || isConfirming}
+                    />
+                )}
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-12 pt-8 border-t border-white/10">
                     <Button
-                        className="flex-1 h-14 text-lg font-bold bg-gradient-to-r from-base via-optimism to-celo hover:opacity-90 hover:scale-[1.02] text-white hover:text-black shadow-lg shadow-base/30 hover:shadow-xl hover:shadow-base/50 transition-all duration-200 rounded-xl relative overflow-hidden group"
-                        onClick={handleGenerateAI}
-                        disabled={isGenerating}
+                        variant="ghost"
+                        onClick={prevStep}
+                        disabled={currentStep === 1}
+                        className={`text-white/50 hover:text-white ${currentStep === 1 ? 'opacity-0 pointer-events-none' : ''}`}
                     >
-                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                        <span className="relative z-10 flex items-center justify-center">
-                            {isGenerating ? (
-                                <RefreshCw className="mr-2 h-5 w-5 animate-spin" />
-                            ) : (
-                                <Sparkles className="mr-2 h-5 w-5" />
-                            )}
-                            {isGenerating ? "Generating..." : "Generate with AI"}
-                        </span>
+                        Back
                     </Button>
 
-                    {formData.imageUrl && (
+                    {currentStep < 4 && (
                         <Button
-                            variant="outline"
-                            className="h-14 px-6 border-white/10 hover:bg-white/10 text-white"
-                            onClick={handleClearImage}
+                            onClick={nextStep}
+                            className="bg-white text-black hover:bg-gray-200 px-8 font-bold"
                         >
-                            Clear
+                            Continue
                         </Button>
                     )}
                 </div>
             </div>
-
-            <div className="sticky top-24 flex flex-col items-center gap-8">
-                <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-base via-optimism to-celo rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div className="relative">
-                        <LivePreview {...formData} isGenerating={isGenerating} />
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-4 w-full max-w-md">
-                    <div className="flex gap-4 w-full">
-                        <Button
-                            variant="outline"
-                            className="flex-1 border-white/10 hover:bg-white/5 hover:text-white h-12"
-                            onClick={handleExport}
-                            disabled={!formData.imageUrl}
-                        >
-                            <Download className="mr-2 h-4 w-4" /> Export PNG
-                        </Button>
-                        <Button
-                            className="flex-1 bg-white text-black hover:bg-white/90 h-12 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-                            onClick={handleCreateEvent}
-                            disabled={!isConnected || isCreatingEvent || isConfirmingEvent || !formData.imageUrl}
-                            title={!formData.imageUrl ? "Generate an event image first" : ""}
-                        >
-                            {isCreatingEvent || isConfirmingEvent ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                                <Wallet className="mr-2 h-4 w-4" />
-                            )}
-                            {isCreatingEvent ? "Creating..." : isConfirmingEvent ? "Confirming..." : "Create Event"}
-                        </Button>
-                    </div>
-
-                    {hash && (
-                        <div className="w-full p-4 bg-white/5 rounded-xl border border-white/10 text-sm break-all backdrop-blur-sm">
-                            <p className="font-medium mb-2 flex items-center gap-2 text-green-400">
-                                <CheckCircle2 className="h-4 w-4" />
-                                Transaction Sent
-                            </p>
-                            <a
-                                href={formData.network === 'base'
-                                    ? `https://basescan.org/tx/${hash}`
-                                    : `https://sepolia-optimism.etherscan.io/tx/${hash}`
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-muted-foreground hover:text-white transition-colors underline decoration-white/20 underline-offset-4"
-                            >
-                                {hash}
-                            </a>
-                            {mintedTokenId && (
-                                <div className="mt-4 pt-4 border-t border-white/10">
-                                    <p className="font-medium text-white mb-3">Token ID: {mintedTokenId}</p>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="w-full bg-white/10 hover:bg-white/20 text-white border-0"
-                                        onClick={handleBridge}
-                                        disabled={isBridging}
-                                    >
-                                        Bridge to {formData.network === 'base' ? 'Optimism' : 'Base'}
-                                    </Button>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {mintError && (
-                        <div className="w-full p-4 bg-red-500/10 text-red-400 rounded-xl border border-red-500/20 text-sm">
-                            <p className="font-medium mb-1">Error Minting</p>
-                            <p className="opacity-90">{mintError.message.slice(0, 100)}...</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            <SuccessModal
-                isOpen={showSuccessModal}
-                onClose={() => setShowSuccessModal(false)}
-                surgeImage={formData.imageUrl || ''}
-                surgeTitle={formData.title}
-                onDownload={handleDownload}
-                onCreateAnother={handleCreateAnother}
-                eventAddress={eventAddress || undefined} // NEW: pass deployed event address
-            />
-        </div >
+        </div>
     );
 }

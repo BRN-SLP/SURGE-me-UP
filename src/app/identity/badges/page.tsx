@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { useIdentity } from '@/hooks/useIdentity';
 import { useAppKit } from '@reown/appkit/react';
-import { AlertBanner } from '@/components/identity/AlertBanner';
-import { ArrowLeft, Wallet, Award, Loader2, Check } from 'lucide-react';
+import { ArrowLeft, Wallet, Award, Loader2, Check, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from "@/lib/utils";
+import { motion } from 'framer-motion';
 
 // Mock badge data
 const mockAvailableBadges = [
@@ -15,6 +16,7 @@ const mockAvailableBadges = [
         icon: '🏅',
         description: '3 years 4 months of activity',
         sourceWallet: '0xCCC...3333',
+        rarity: 'Legendary'
     },
     {
         id: 'maestro',
@@ -22,6 +24,7 @@ const mockAvailableBadges = [
         icon: '🎯',
         description: '5,247 unique interactions',
         sourceWallet: '0xCCC...3333',
+        rarity: 'Epic'
     },
     {
         id: 'crosschain',
@@ -29,6 +32,7 @@ const mockAvailableBadges = [
         icon: '🌐',
         description: 'Active on 6 networks',
         sourceWallet: '0xCCC...3333',
+        rarity: 'Rare'
     },
 ];
 
@@ -56,32 +60,9 @@ export default function HeritageBadgesPage() {
     const { open } = useAppKit();
     const [claimingBadge, setClaimingBadge] = useState<string | null>(null);
     const [claimedIds, setClaimedIds] = useState<string[]>([]);
-    const [destinationWallet, setDestinationWallet] = useState('');
 
-    // Not connected / no identity guards
-    if (!isConnected) {
-        return (
-            <div className="container mx-auto px-6 py-16 md:py-24">
-                <div className="max-w-lg mx-auto text-center">
-                    <Wallet className="w-16 h-16 mx-auto mb-6 text-white/40" />
-                    <h2 className="text-2xl font-semibold text-white mb-3">Connect Your Wallet</h2>
-                    <button onClick={() => open()} className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-xl transition-all">
-                        Connect Wallet
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
-    if (!identity) {
-        return (
-            <div className="container mx-auto px-6 py-16">
-                <AlertBanner type="warning" message="You need a SURGE Identity to view heritage badges." action={{ label: 'Create Identity', onClick: () => window.location.href = '/identity' }} />
-            </div>
-        );
-    }
-
-    const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+    if (!isConnected) return <ConnectGuard open={open} />;
+    if (!identity) return <IdentityGuard />;
 
     const handleClaimBadge = async (badgeId: string) => {
         setClaimingBadge(badgeId);
@@ -90,160 +71,149 @@ export default function HeritageBadgesPage() {
         setClaimingBadge(null);
     };
 
-    const handleClaimAll = async () => {
-        for (const badge of mockAvailableBadges) {
-            if (!claimedIds.includes(badge.id)) {
-                await handleClaimBadge(badge.id);
-            }
-        }
-    };
-
     const availableBadges = mockAvailableBadges.filter(b => !claimedIds.includes(b.id));
 
     return (
-        <div className="container mx-auto px-6 py-8 md:py-12">
-            {/* Back Button */}
-            <Link href="/identity" className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white/80 mb-8 transition-colors">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Dashboard
-            </Link>
+        <div className="min-h-screen pt-32 pb-20 bg-surface text-text-main font-display selection:bg-mint-dark selection:text-white relative overflow-x-hidden">
 
-            {/* Header */}
-            <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
-                    <Award className="w-6 h-6 text-amber-400" />
-                </div>
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-semibold text-white">Heritage Badges</h1>
-                    <p className="text-white/50">Identity #{identity.identityId}</p>
-                </div>
+            {/* Background */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-amber-500/10 rounded-full blur-[120px]"></div>
             </div>
 
-            {/* Intro */}
-            <div className="rounded-xl border border-white/10 bg-white/[0.02] p-6 mb-8">
-                <p className="text-white/70">
-                    Heritage badges prove your historical on-chain experience from compromised wallets.
-                    They are minted to your active wallets and help show veteran status and expertise.
-                </p>
-            </div>
+            <div className="w-full mx-auto px-14 relative z-10 max-w-7xl">
 
-            {/* Available to Claim */}
-            {availableBadges.length > 0 && (
-                <div className="mb-8">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-semibold text-white">Available to Claim</h2>
-                        <span className="text-sm text-white/50">{availableBadges.length} badge{availableBadges.length !== 1 ? 's' : ''}</span>
-                    </div>
-
-                    <div className="text-sm text-white/50 mb-4">
-                        From compromised wallet: <code className="text-white">{mockAvailableBadges[0].sourceWallet}</code>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                        {availableBadges.map((badge) => (
-                            <div
-                                key={badge.id}
-                                className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-5 text-center"
-                            >
-                                <div className="text-4xl mb-3">{badge.icon}</div>
-                                <div className="font-semibold text-white mb-1">{badge.name}</div>
-                                <div className="text-sm text-white/50 mb-4">{badge.description}</div>
-                                <button
-                                    onClick={() => handleClaimBadge(badge.id)}
-                                    disabled={claimingBadge !== null}
-                                    className="w-full px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 disabled:opacity-50 text-amber-400 font-medium rounded-lg border border-amber-500/30 transition-all flex items-center justify-center gap-2"
-                                >
-                                    {claimingBadge === badge.id ? (
-                                        <>
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                            Claiming...
-                                        </>
-                                    ) : (
-                                        'Claim Badge'
-                                    )}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Destination Wallet */}
-                    <div className="flex flex-col sm:flex-row gap-4 items-end">
-                        <div className="flex-1">
-                            <label className="text-sm text-white/50 block mb-2">Destination wallet:</label>
-                            <select
-                                value={destinationWallet}
-                                onChange={(e) => setDestinationWallet(e.target.value)}
-                                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500"
-                            >
-                                <option value="">
-                                    {identity.primaryWallet ? `${formatAddress(identity.primaryWallet)} (Primary)` : 'Select wallet...'}
-                                </option>
-                                {identity.linkedWallets.filter(w => w !== identity.primaryWallet).map(w => (
-                                    <option key={w} value={w}>{formatAddress(w)}</option>
-                                ))}
-                            </select>
+                {/* Header */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-16">
+                    <div className="flex items-center gap-4">
+                        <Link href="/identity" className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors">
+                            <ArrowLeft className="w-6 h-6" />
+                        </Link>
+                        <div>
+                            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Heritage Badges</h1>
+                            <p className="text-text-muted">Recover reputation from your historic on-chain activity.</p>
                         </div>
-                        <button
-                            onClick={handleClaimAll}
-                            disabled={claimingBadge !== null || availableBadges.length === 0}
-                            className="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-500/50 text-white font-medium rounded-lg transition-all"
-                        >
-                            Claim All Available Badges
-                        </button>
+                    </div>
+                    <div className="px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-200 text-sm font-bold flex items-center gap-2">
+                        <div className="size-2 rounded-full bg-amber-500 animate-pulse"></div>
+                        BETA ACCESS
                     </div>
                 </div>
-            )}
 
-            {/* No Available Badges */}
-            {availableBadges.length === 0 && mockClaimedBadges.length === 0 && claimedIds.length === 0 && (
-                <div className="rounded-xl border border-white/10 bg-white/[0.02] p-12 text-center mb-8">
-                    <Award className="w-12 h-12 mx-auto mb-4 text-white/20" />
-                    <h3 className="text-lg font-semibold text-white mb-2">No Badges Available</h3>
-                    <p className="text-white/50">
-                        Heritage badges become available when a compromised wallet is finalized.
-                    </p>
+                {/* Available Section */}
+                <div className="mb-16">
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-[2px] bg-amber-500"></span>
+                        Available Artifacts
+                    </h2>
+
+                    {availableBadges.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {availableBadges.map((badge, index) => (
+                                <motion.div
+                                    key={badge.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="group relative rounded-[2.5rem] bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/10"
+                                >
+                                    <div className="flex justify-between items-start mb-8">
+                                        <div className="px-3 py-1 rounded-full bg-black/20 text-white/50 text-xs font-mono border border-white/5">
+                                            {badge.sourceWallet}
+                                        </div>
+                                        <div className="text-amber-500 text-xs font-bold uppercase tracking-widest">{badge.rarity}</div>
+                                    </div>
+
+                                    <div className="flex flex-col items-center text-center mb-8">
+                                        <div className="text-6xl mb-6 drop-shadow-lg transform group-hover:scale-110 transition-transform duration-500">{badge.icon}</div>
+                                        <h3 className="text-2xl font-bold text-white mb-2">{badge.name}</h3>
+                                        <p className="text-text-muted">{badge.description}</p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => handleClaimBadge(badge.id)}
+                                        disabled={claimingBadge !== null}
+                                        className="w-full h-14 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-2xl transition-all shadow-lg shadow-amber-900/20 flex items-center justify-center gap-2"
+                                    >
+                                        {claimingBadge === badge.id ? (
+                                            <>
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                                Minting...
+                                            </>
+                                        ) : (
+                                            'Claim Artifact'
+                                        )}
+                                    </button>
+                                </motion.div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-12 text-center">
+                            <p className="text-white/30">No new badges detected from linked wallets.</p>
+                        </div>
+                    )}
                 </div>
-            )}
 
-            {/* Already Claimed */}
-            {(mockClaimedBadges.length > 0 || claimedIds.length > 0) && (
+                {/* Collection Section */}
                 <div>
-                    <h2 className="text-lg font-semibold text-white mb-4">Already Claimed</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {/* Recently claimed in this session */}
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-[2px] bg-white/20"></span>
+                        Vault
+                    </h2>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                        {/* Recently claimed */}
                         {mockAvailableBadges.filter(b => claimedIds.includes(b.id)).map((badge) => (
-                            <div
+                            <motion.div
                                 key={badge.id}
-                                className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-center"
+                                layoutId={badge.id}
+                                className="aspect-square rounded-3xl bg-surface border border-white/10 p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group"
                             >
-                                <div className="text-3xl mb-2">{badge.icon}</div>
-                                <div className="font-medium text-white text-sm mb-1">{badge.name}</div>
-                                <div className="text-xs text-white/40">{badge.description}</div>
-                                <div className="text-xs text-emerald-400 mt-2 flex items-center justify-center gap-1">
-                                    <Check className="w-3 h-3" /> Just claimed
+                                <div className="absolute inset-0 bg-mint/5 pointer-events-none"></div>
+                                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{badge.icon}</div>
+                                <div className="font-bold text-white text-sm">{badge.name}</div>
+                                <div className="absolute bottom-4 text-[10px] font-bold text-mint uppercase tracking-wider flex items-center gap-1">
+                                    <Check className="w-3 h-3" /> New
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                        {/* Previously claimed */}
+
+                        {/* Old Claimed */}
                         {mockClaimedBadges.map((badge) => (
-                            <div
-                                key={badge.id}
-                                className="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-center"
-                            >
-                                <div className="text-3xl mb-2">{badge.icon}</div>
-                                <div className="font-medium text-white text-sm mb-1">{badge.name}</div>
-                                <div className="text-xs text-white/40 mb-2">{badge.description}</div>
-                                <div className="text-xs text-white/30">
-                                    From: {badge.sourceWallet}
-                                </div>
-                                <div className="text-xs text-white/30">
-                                    Claimed: {badge.claimedAt}
-                                </div>
+                            <div key={badge.id} className="aspect-square rounded-3xl bg-surface border border-white/5 p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group hover:bg-white/5 transition-all">
+                                <div className="text-4xl mb-4 grayscale group-hover:grayscale-0 transition-all duration-500 opacity-80 group-hover:opacity-100">{badge.icon}</div>
+                                <div className="font-bold text-white/60 group-hover:text-white text-sm transition-colors">{badge.name}</div>
                             </div>
                         ))}
+
+                        {/* Locked Slot Metaphor */}
+                        <div className="aspect-square rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center text-white/10">
+                            <Lock className="w-8 h-8 mb-2" />
+                            <span className="text-xs uppercase tracking-widest font-bold">Locked</span>
+                        </div>
+                        <div className="aspect-square rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center text-white/10">
+                            <Lock className="w-8 h-8 mb-2" />
+                            <span className="text-xs uppercase tracking-widest font-bold">Locked</span>
+                        </div>
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     );
+}
+
+function ConnectGuard({ open }: { open: () => void }) {
+    return (
+        <div className="min-h-screen pt-32 flex flex-col items-center justify-center">
+            <button onClick={() => open()} className="h-12 px-8 rounded-full bg-white text-black font-bold">Connect Wallet</button>
+        </div>
+    )
+}
+
+function IdentityGuard() {
+    return (
+        <div className="min-h-screen pt-32 flex flex-col items-center justify-center">
+            <h2 className="text-white">Profile Not Found</h2>
+        </div>
+    )
 }
