@@ -11,7 +11,9 @@ if (!projectId) {
     throw new Error("Project ID is not defined")
 }
 
-export const networks = [mainnet, arbitrum, optimism, base, scroll, polygon, celo]
+import { AppKitNetwork } from '@reown/appkit/networks'
+
+export const networks = [mainnet, arbitrum, optimism, base, scroll, polygon, celo] as [AppKitNetwork, ...AppKitNetwork[]]
 
 // Set up Wagmi Adapter
 export const wagmiAdapter = new WagmiAdapter({
