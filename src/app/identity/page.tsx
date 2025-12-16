@@ -66,10 +66,10 @@ export default function IdentityPage() {
                 </motion.div>
 
                 <div className="space-y-4 max-w-lg px-6">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Connect to Matrix</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Access Identity Anchor</h2>
                     <p className="text-xl text-text-muted leading-relaxed">
-                        Access your decentralized identity. <br />
-                        Manage your reputation score across the Superchain.
+                        Manage your persistent reputation. <br />
+                        One identity across all Superchain networks.
                     </p>
                 </div>
 
@@ -128,7 +128,7 @@ export default function IdentityPage() {
                             <span className="w-2 h-2 rounded-full bg-mint animate-pulse"></span>
                             <span className="text-sm font-mono text-mint uppercase tracking-widest">Identity Active</span>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Command Center</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Identity Dashboard</h1>
                     </div>
                     <div className={cn("px-4 py-2 rounded-full border text-sm font-bold uppercase tracking-wider flex items-center gap-2", tierBorder, tierColor)}>
                         {tier === "Verified Tier 1" ? <ShieldCheck className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4 opacity-50" />}
@@ -207,7 +207,7 @@ export default function IdentityPage() {
                                     </div>
 
                                     <div className="text-sm text-text-muted max-w-[200px]">
-                                        Your total trust score aggregated from {identity.linkedWallets.length} data points.
+                                        Your global reputation score aggregated across all linked wallets and Superchain networks.
                                     </div>
                                 </div>
                             </div>

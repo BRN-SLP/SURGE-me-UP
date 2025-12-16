@@ -113,44 +113,33 @@ export default function AboutPage() {
                     </div>
 
                     <h1 className="text-5xl md:text-7xl font-bold font-heading tracking-tighter text-white mb-8">
-                        When Everything <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Disappeared</span>
+                        Long Story <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Short</span>
                     </h1>
 
                     <div className="grid md:grid-cols-2 gap-12 text-lg leading-relaxed text-text-muted">
                         <div className="space-y-6">
                             <p>
-                                SURGE wasn't born in a boardroom. It started with a single, devastating moment.
-                                Despite years of experience and "knowing all the rules," our founder fell victim to a seed phrase compromise.
-                            </p>
-                            <p className="text-white border-l-2 border-red-500 pl-4 italic">
-                                "The blockchain remembered everything. But without that private key, it was as if none of it ever happened."
+                                My main account got wrecked by a phishing app from Google Market. The scammer dropped a <span className="text-white font-bold">sweeper bot</span> that vanishes all funds over $15-20 instantly.
                             </p>
                             <p>
-                                In seconds, years of DeFi activity, DAO voting power, and community badges were gone.
-                                From the perspective of every protocol, this experienced contributor became a ghost.
+                                Since I had only one wallet, my entire crypto history, all interactions, and digital identity are toast. Starting over is not my idea of fun.
+                            </p>
+                            <p className="text-white border-l-2 border-red-500 pl-4 italic">
+                                "On the bright side, my elite phishing skills earned me a new roommate—a sweeper bot with a bottomless appetite! My whole crypto past is tied to this address, which is… less than ideal."
                             </p>
                         </div>
                         <div className="space-y-6">
                             <p>
-                                We realized the uncomfortable truth: <strong>If this can happen to us, it's happening to thousands.</strong>
+                                Tried fighting the bot, but it drains faster than you can say "rekt". Lost zkSync, LayerZero, OP swag. Managed to ninja my Pyth stake and some others, so it's about 50/50.
                             </p>
-                            <ul className="space-y-4">
-                                <li className="flex gap-3">
-                                    <span className="material-symbols-outlined text-red-400">cancel</span>
-                                    <span>No airdrop eligibility (too "new")</span>
-                                </li>
-                                <li className="flex gap-3">
-                                    <span className="material-symbols-outlined text-red-400">cancel</span>
-                                    <span>No DAO voting power (zero tokens)</span>
-                                </li>
-                                <li className="flex gap-3">
-                                    <span className="material-symbols-outlined text-red-400">cancel</span>
-                                    <span>No credit history or reputation</span>
-                                </li>
-                            </ul>
-                            <p className="font-bold text-white mt-4">
-                                SURGE is the answer. An identity layer that survives when keys die.
+                            <p>
+                                The bot’s still looting, and this wallet is officially on life support.
+                                <br /><br />
+                                <strong>The million-dollar question:</strong> Any way to link a new address to my profile and keep my progress? Basically, a <span className="text-mint font-bold">witness protection program</span> for crypto identities?
+                            </p>
+                            <p className="font-bold text-white mt-4 text-xl">
+                                That's why SURGE exists. To decouple your identity from your compromised keys.
                             </p>
                         </div>
                     </div>

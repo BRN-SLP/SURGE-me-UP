@@ -24,16 +24,16 @@ export default function Home() {
                                         <span className="text-xs font-bold text-mint-light uppercase tracking-wider">Live on Superchain</span>
                                     </div>
                                     <h1 className="text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-text-header">
-                                        Your Identity <br />
+                                        Your On-Chain Identity. <br />
                                         <span className="bg-clip-text text-transparent bg-gradient-to-br from-[#d8b4fe] to-[#67e8f9] inline-block relative drop-shadow-[0_0_20px_rgba(165,243,252,0.3)]">
-                                            Outlives Your Keys
+                                            Protected. Portable. Permanent.
                                             <svg className="absolute w-full h-4 -bottom-2 left-0 text-aqua/30" preserveAspectRatio="none" viewBox="0 0 100 10">
                                                 <path d="M0 5 Q 50 15 100 5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="4"></path>
                                             </svg>
                                         </span>
                                     </h1>
                                     <p className="text-xl text-text-muted leading-relaxed max-w-lg mx-auto lg:mx-0 font-light">
-                                        The first identity-persistent reputation system for the <span className="font-medium text-white">Optimism Superchain</span>. Save your legacy from lost keys.
+                                        Preserve your reputation across wallets and chains. Even if your keys are compromised.
                                     </p>
                                 </div>
                                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
@@ -152,62 +152,62 @@ export default function Home() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Feature 1: Identity Death */}
+                            {/* Feature 1: Identity Continuity */}
                             <div className="bg-[#1e293b]/30 backdrop-blur-md rounded-3xl p-8 relative overflow-hidden group hover:bg-white/[0.03] transition-all duration-500 border border-white/5 hover:border-red-500/30">
                                 <div className="relative z-10 h-full flex flex-col">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="size-12 rounded-xl bg-white/5 text-white border border-white/10 flex items-center justify-center shadow-sm group-hover:bg-red-500/10 group-hover:text-red-500 transition-colors duration-500">
-                                            <span className="material-symbols-outlined text-[24px]">broken_image</span>
+                                            <span className="material-symbols-outlined text-[24px]">hourglass_top</span>
                                         </div>
-                                        <h3 className="text-xl font-bold text-text-header">No More Application Death</h3>
+                                        <h3 className="text-xl font-bold text-text-header">Identity Continuity</h3>
                                     </div>
                                     <p className="text-text-muted text-lg leading-relaxed">
-                                        Currently, if you lose your private key, you lose your entire on-chain history. With SURGE, your identity outlives any single compromised wallet.
+                                        Your on-chain history shouldn't die just because a wallet does. We decouple your reputation from your keys.
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Feature 2: Fragmentation */}
+                            {/* Feature 2: Multi-Wallet Support */}
                             <div className="bg-[#1e293b]/30 backdrop-blur-md rounded-3xl p-8 relative overflow-hidden group hover:bg-white/[0.03] transition-all duration-500 border border-white/5">
                                 <div className="h-full flex flex-col relative z-10">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="size-12 rounded-xl bg-white/5 text-white border border-white/10 flex items-center justify-center shadow-sm">
-                                            <span className="material-symbols-outlined text-[24px]">join_full</span>
+                                            <span className="material-symbols-outlined text-[24px]">hub</span>
                                         </div>
-                                        <h3 className="text-xl font-bold text-text-header">Unified Reputation</h3>
+                                        <h3 className="text-xl font-bold text-text-header">Multi-Wallet Support</h3>
                                     </div>
                                     <p className="text-text-muted text-lg leading-relaxed">
-                                        Don't be a stranger on every new chain. SURGE aggregates your history from Base, Optimism, and Zora into one powerful score.
+                                        Link as many addresses as you need. Consolidate your reputation from hot wallets, cold storage, and burners into one profile.
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Feature 3: Sybil Resistance */}
+                            {/* Feature 3: Portable Reputation */}
                             <div className="bg-[#1e293b]/30 backdrop-blur-md rounded-3xl p-8 relative overflow-hidden group hover:bg-white/[0.03] transition-all duration-500 border border-white/5">
                                 <div className="h-full flex flex-col relative z-10">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="size-12 rounded-xl bg-white/5 text-white border border-white/10 flex items-center justify-center shadow-sm">
-                                            <span className="material-symbols-outlined text-[24px]">verified_user</span>
+                                            <span className="material-symbols-outlined text-[24px]">travel_explore</span>
                                         </div>
-                                        <h3 className="text-xl font-bold text-text-header">Anti-Sybil by Design</h3>
+                                        <h3 className="text-xl font-bold text-text-header">Portable Reputation</h3>
                                     </div>
                                     <p className="text-text-muted text-lg leading-relaxed">
-                                        One person, one identity. We stop airdrop farming at the source by verifying distinct human history, not just wallet count.
+                                        Your score travels with you across 19+ Superchain networks. Don't start from zero when you bridge to a new chain.
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Feature 4: Heritage */}
+                            {/* Feature 4: Recovery Built-In */}
                             <div className="bg-[#1e293b]/30 backdrop-blur-md rounded-3xl p-8 relative overflow-hidden group hover:bg-white/[0.03] transition-all duration-500 border border-white/5">
                                 <div className="h-full flex flex-col relative z-10">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="size-12 rounded-xl bg-white/5 text-white border border-white/10 flex items-center justify-center shadow-sm">
-                                            <span className="material-symbols-outlined text-[24px]">history_edu</span>
+                                            <span className="material-symbols-outlined text-[24px]">medical_services</span>
                                         </div>
-                                        <h3 className="text-xl font-bold text-text-header">Heritage Badges</h3>
+                                        <h3 className="text-xl font-bold text-text-header">Recovery Built-In</h3>
                                     </div>
                                     <p className="text-text-muted text-lg leading-relaxed">
-                                        Compromised wallet? Mark it as "Lost" in SURGE and mint a Heritage Badge to keep credit for your past achievements.
+                                        Compromise a wallet? Mark it. Isolate it. Keep going. Your Identity Anchor remains safe even if a linked wallet falls.
                                     </p>
                                 </div>
                             </div>

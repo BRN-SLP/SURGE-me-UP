@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { Draggable } from "gsap/Draggable";
+import { Draggable } from "gsap/all";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
